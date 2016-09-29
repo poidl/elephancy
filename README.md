@@ -9,3 +9,13 @@ Elephancy is a tiny content display system. Currently, notable features are:
 * needs restructuring
 
 It can only get better:)
+
+### Instructions
+
+```
+go build
+./elephancy
+```
+
+Open http://localhost:8080/ in a browser.
+
