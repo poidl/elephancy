@@ -1,0 +1,23 @@
+Bugs:
+*) requesting /robots.txt results in weirdness (only in chromium?) 
+*) Caching: If test1.html is updated and deployed, the old page gets loaded
+*) Caching: don't send "not modified" if frame.html has been changed
+
+CSS:
+*) h2/h3 fonts look way too thin on mobile (see e.g. Skills)
+
+Caching:
+*) in function fingerprint.sh, remove old filename tags automatically
+*) use templating for static files. Automatically update all links to fingerprinted files (e.g. in frame.html) 
+
+Other:
+*) does navigation work if javascript is disabled? browser history? pushState popstate?
+*) Check if directories and/or individual files should be readable. /frontend/staticcache/ /json/pages.json are readable. Is that a problem? Search engines?
+*) check if content header plain text is right in ajaxYesHandler.
+*) check if "304 not modified" is wrongly sent if index.html is modified and / is requested.
+*) change title also in go templates! not only on client side
+*) check if all pages in pages.json have different names, Urlpaths etc.
+*) test if non-xhr calls to /content/ are redirected with a 302 (found) to /.
+
+Documentation:
+*) why not generate static content?

@@ -1,0 +1,188 @@
+* {
+  font-family: Arial, sans-serif;
+}
+
+body {
+  font-size: 100%;
+  max-width: 1300px;
+  /*height: 100%;*/
+  margin: auto; /*Use margin: auto;, to horizontally center an element within its container.*/
+}
+
+.app-bar {
+  height: 40px;
+  width: 100%;
+  padding: 20px 0 10px 0;/*if instead margin is set, backgr. color doesn't apply*/
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;/*Stay above the container *and* navbar. May be superfluous?*/
+  background-color: #FFFFFF;
+  border-bottom: thin solid;
+}
+
+/* color if navbar is open */
+.app-bar.open {
+  background-color: #E0E0E0;
+}
+
+.app-bar button {
+  height: 20px;/* 3/5 of app-bar height */
+  float: right;
+  background-image: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 10px 20px;
+}
+
+.app-bar button img {
+  height: 20px; /* from app-bar */
+}
+
+.app-bar .bartitle {
+  display: inline-block;
+  /*vertical-align: middle*/
+  line-height: 40px;
+  font-size: 40px;
+  margin: 0;
+  padding-left: 50px; /*left padding should align with mainwindow*/
+  /*min-width: 273px;*/
+}
+
+.title {
+  /*background-color: blue;*/
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: none;
+}
+
+.bla {
+  /*background-color: blue;*/
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* The outermost div is of class "container". "display: block" is default in chrome, don't know what this is good for.*/
+.container {
+  display: block;
+  padding-top: 70px; /*must be equal to app-bar height PLUS padding!*/
+}
+
+.navdrawer {
+  /*position: absolute;*//*positioned absolute, relative to the nearest positioned ancestor, which is, I guess, the document body?*//*Tried "width: 250px" instead of min/max, but then it gets squeezed if @media min-width is exceeded only slightly*/
+  position: fixed;
+  top: 70px;/*must be equal to app-bar height PLUS padding!*/
+  left: 0;
+  /*min-width: 250px;*/
+  /*max-width: 250px;*/
+  width: 100%;
+  max-height: 75vh;
+  display: none;
+  /*height: 100%;*/
+  /*backface-visibility: hidden;*/
+  /*transition: transform 0.4s ease-out;*/
+  z-index: 1;
+  background-color: #E0E0E0;
+  /*transition: transform 0.4s ease-out;*/
+  /*transform: translate(-250px,0);*/
+  overflow-y: auto;/*For long link lists. If overflow is clipped, a scroll-bar should be added to see the rest of the content*/
+}
+
+.navdrawer.open {
+  /*transform: translate(0px,0);*/
+  display: block;
+}
+
+.navdrawer ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.navdrawer ul li a {
+  display: block; /*always a column...don't know if necessary?*/
+  height: 60px;
+  padding: 0 20px; /*shorthand for: top and bottom: 0; left and right: 20px*/
+  line-height: 60px;
+  text-decoration: none;
+  color: black;
+  /*-webkit-transition: background-color 0.2s ease-out;*/
+  /*transition: background-color 0.2s ease-out;*/
+}
+
+h1 {
+  font-size: 2.5em; /* 48px/16=3 */
+  font-weight: 100;
+  vertical-align: middle;
+  padding-left: 3em;
+  display: inline
+}
+
+h2, h3 {
+  font-weight: 100;
+} 
+
+.toy {
+  margin:20px;
+  padding:20px;
+  border: thin solid;
+}
+
+.mainwindow {
+  font-size: 1.2em;
+  /*padding: 0 50px;*/
+  margin: 0 12px;
+  /*set overflow to scroll, so the app-bar button doesn't disappear on the right-hand side if mainwindow is overflowing*/
+  /*overflow-x: scroll;*/
+}
+
+.mainwindow a {
+  /*font-size: 60px;*/
+  color: black;
+}
+
+
+
+
+
+    /*.mobile-hidden {
+      display: none;
+    }*/
+
+  @media (min-width: 950px) {
+    /* If the screen is wider then 500px, use Flexbox */
+    .app-bar {
+      display: none
+    }
+    .container {
+      display: flex;
+      flex-flow: row nowrap;
+      padding-top: 0; /* app-bar was removed */
+    }
+    .navdrawer {
+      position: relative;
+      top: 0;
+      /* transition: none 0s ease-out; */
+      /*transform: translate(0,0);*/
+      display: block;
+      min-width: 250px;
+      max-width: 250px;
+      max-height: none;
+    }
+
+    .mainwindow {
+      width: 60%;
+      font-size: 1em;
+      margin: 0  50px;
+    }
+
+    .mainwindow :first-child {
+      margin-top: 0; /* vertically align first line with upper edge of navdrawer box */
+    }
+
+    .title {
+      display: inline;
+    }
+
+  }

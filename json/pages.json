@@ -1,0 +1,23 @@
+{
+  "Page1": {
+      "Urlpath": "/",
+      "Linkname": "Linkname1",
+      "Linkweight": 1,
+      "Metatitle": "Metatitle for Page1",
+      "ContentUrl": "content/test1.html"
+  },
+  "Page2": {
+      "Urlpath": "/urlpath2",
+      "Linkname": "Linkname2",
+      "Linkweight": 2,
+      "Metatitle": "Metatitle for Page2",
+      "ContentUrl": "content/test2.html"
+  },
+  "Page3": {
+      "Urlpath": "/urlpath3",
+      "Linkname": "Linkname3",
+      "Linkweight": 3,
+      "Metatitle": "Metatitle for Page3",
+      "ContentUrl": "content/test3.html"
+  }
+}
