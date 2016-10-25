@@ -60,31 +60,45 @@ func (pcoll *pagesCollection) toArray() (arr []map[string]interface{}) {
 
 // TODO: urlPathToPagename and contentURLToPagename almost same
 
-func (pcoll *pagesCollection) urlPathToPagename(urlpath string) string {
+func (pcoll *pagesCollection) urlPathToPage(urlpath string) (page, error) {
 	// TODO: return error in case it doesn't find anything
-	for pagename, page := range *pcoll {
+	for _, page := range *pcoll {
 		pag := page.(map[string]interface{})
 		if urlpath == pag["Urlpath"].(string) {
-			return pagename
+			return pag, nil
 		}
 	}
-	return ""
+	return nil, &errorString{"Page not found"}
 }
 
-func (pcoll *pagesCollection) contentURLToPagename(contenturl string) string {
+func (pcoll *pagesCollection) contentURLToPage(contenturl string) (page, error) {
 	// TODO: return error in case it doesn't find anything
-	for pagename, page := range *pcoll {
+	for _, page := range *pcoll {
 		pag := page.(map[string]interface{})
 		if contenturl == pag["ContentUrl"].(string) {
-			return pagename
+			return pag, nil
 		}
 	}
-	return ""
+	return nil, &errorString{"Page not found"}
 }
 
-func (pcoll *pagesCollection) getPage(pagename string) (pg page) {
+func contentURLToUrlpath(contenturl string) (string, error) {
+	pcoll, err := loadPages()
+	if err != nil {
+		return "", err
+	}
+	page, err := pcoll.contentURLToPage(contenturl)
+	urlpath := page["Urlpath"].(string)
+	return urlpath, nil
+}
+
+func (pcoll *pagesCollection) getPage(pagename string) (page, error) {
 	// load the page data into a map[string]interface{}
-	return (*pcoll)[pagename].(map[string]interface{})
+	pg := (*pcoll)[pagename].(map[string]interface{})
+	if pg == nil {
+		return nil, &errorString{"Page not found"}
+	}
+	return pg, nil
 }
 
 func (pcoll *pagesCollection) contentFromPage(pg page) (content []byte, modtime time.Time, err error) {
@@ -98,8 +112,10 @@ func getTemplateData(urlpath string) (map[string]interface{}, time.Time, error) 
 	if err != nil {
 		return nil, time.Time{}, err
 	}
-	pagename := pcoll.urlPathToPagename(urlpath)
-	page := pcoll.getPage(pagename)
+	page, err := pcoll.urlPathToPage(urlpath)
+	if err != nil {
+		return nil, time.Time{}, err
+	}
 	content, modtime, err := pcoll.contentFromPage(page)
 	arr := pcoll.toArray()
 	blab := make(map[string]interface{})

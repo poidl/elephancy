@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var pathFavicon string = "staticcache/favicon.ico"
+var pathFavicon = "staticcache/favicon.ico"
 
 // this is modified from package http
 func ifNotModifiedResponse(w http.ResponseWriter, r *http.Request, modtime time.Time) bool {
@@ -37,6 +37,10 @@ var templates = template.Must(template.ParseFiles("./templ/frame.html"))
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
 
 	templdat, modtime, err := getTemplateData(r.URL.Path)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 	// TODO: check if the frame as been modified and set modtime to the more recent time. Maybe no need to read frame.html since we use template caching. Is it possible to compare to the the time of compilation? Or maybe better time since server is started?
 	if ifNotModifiedResponse(w, r, modtime) {
 		return
@@ -93,16 +97,11 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 	if ajax == "XMLHttpRequest" {
 		http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 	} else {
-		// TODO: move this out of this file
-		pcoll, err := loadPages()
-		if err != nil {
-			return
-		}
 		// fill in content
-		contentURL := r.URL.Path
-		pagename := pcoll.contentURLToPagename(contentURL)
-		page := pcoll.getPage(pagename)
-		urlpath := page["Urlpath"].(string)
+		urlpath, err := contentURLToUrlpath(r.URL.Path)
+		if err != nil {
+			http.NotFound(w, r)
+		}
 		http.Redirect(w, r, urlpath, 302)
 	}
 }
