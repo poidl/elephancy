@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"os"
 	"regexp"
 	"time"
 )
@@ -32,7 +33,8 @@ var faviconPath = regexp.MustCompile("^/favicon.ico$")
 var jsonPath = regexp.MustCompile("^/json/([a-zA-Z0-9]+).json$")
 var contentPath = regexp.MustCompile("^/content/([a-zA-Z0-9]+).html$")
 
-var templates = template.Must(template.ParseFiles("./templ/frame.html"))
+var templatefile = "./templ/frame.html"
+var templates = template.Must(template.ParseFiles(templatefile))
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -41,7 +43,19 @@ func pagesHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	// TODO: check if the frame as been modified and set modtime to the more recent time. Maybe no need to read frame.html since we use template caching. Is it possible to compare to the the time of compilation? Or maybe better time since server is started?
+	f, err := os.Open(templatefile)
+	defer f.Close()
+	fi, err := f.Stat()
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	// If frame as been modified after the template, set modtime to the more recent time. Note that template modifications which happen *after* the server has been started are accounted for in the Last-Modified header, but NOT DISPLAYED, perhaps because of template caching? As a consequence, if the template is modified while the server is running, and a user requests the page (gets the header, but not the updated content),than that user will NOT see the updated content if the server is restarted, because the browser has the latest timestamp and retrieves the old content from cache.
+	modtimeTemplate := fi.ModTime()
+	if modtimeTemplate.After(modtime) {
+		modtime = modtimeTemplate
+	}
 	if ifNotModifiedResponse(w, r, modtime) {
 		return
 	}
