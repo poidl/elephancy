@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"os"
 	"sort"
 	"time"
@@ -19,11 +20,11 @@ func (e *errorString) Error() string {
 	return e.s
 }
 
-// loadPages opens a json file and returns the contents as a map[string]interface{}
+// loadJson opens a json file and returns the contents as a map[string]interface{}
 // TODO: handle errors
-func loadPages() (pagesCollection, error) {
+func loadJson(filename string) (pagesCollection, error) {
 
-	filename := "./json/pages.json"
+	// filename := "./json/pages.json"
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -35,6 +36,17 @@ func loadPages() (pagesCollection, error) {
 	}
 	m := p.(map[string]interface{})
 	return m, nil
+}
+
+func writeJson(filename string, pagesCollection map[string]interface{}) {
+
+	// filename := "./json/pages.json"
+
+	data, err := json.Marshal(pagesCollection)
+	err = ioutil.WriteFile(filename, data, 0644)
+	if err != nil {
+		log.Fatal("Writing " + filename + " failed.")
+	}
 }
 
 // map2array orders page data into an array according linkweights. It takes a map[string]interface{}, which maps pagenames to pages. A page is a json object containing page data as unordered list of key:value pairs. It returns an array of these objects, which is sorted corresponding to the "Linkweight" keys of the page objects.
@@ -83,7 +95,8 @@ func (pcoll *pagesCollection) contentURLToPage(contenturl string) (page, error) 
 }
 
 func contentURLToUrlpath(contenturl string) (string, error) {
-	pcoll, err := loadPages()
+	filename := "./json/pages.json"
+	pcoll, err := loadJson(filename)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +121,8 @@ func (pcoll *pagesCollection) contentFromPage(pg page) (content []byte, modtime 
 }
 
 func getTemplateData(urlpath string) (map[string]interface{}, time.Time, error) {
-	pcoll, err := loadPages()
+	filename := "./json/pages.json"
+	pcoll, err := loadJson(filename)
 	if err != nil {
 		return nil, time.Time{}, err
 	}

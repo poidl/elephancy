@@ -4,7 +4,7 @@
 <head>
 <title id="metatitle"> {{.Metatitle}} </title>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="/frontend/staticcache/mystyle_20160803_f9d2cff.css">
+<link rel="stylesheet" type="text/css" href="{{.Stylesheet}}">
 </head>
   <body>
     <header class="app-bar">
@@ -15,7 +15,7 @@
         </a>
       </span>
         <button class="menu">
-          <img src="/frontend/staticcache/pics/menu_20160119_1ce7531.png"></img>
+          <img src="{{.Buttonpic}}"></img>
         </button>
       </div>
     </header>
@@ -47,5 +47,5 @@
         </div>
     </div>
   </body>
-  <script src="/frontend/staticcache/script_20160803_e88531a.js"></script>
+  <script src="{{.Script}}"></script>
 </html>

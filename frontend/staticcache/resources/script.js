@@ -72,7 +72,7 @@ function swapMainwindow(contenturl) {
   }
 
   xhttp.open("GET", "/"+ contenturl, true); // true: asynchronously
-  xhttp.setRequestHeader("x-requested-with",'XMLHttpRequest');
+  xhttp.setRequestHeader("myheader",'XMLHttpRequest');
   xhttp.send();
 }
 

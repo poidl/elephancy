@@ -107,7 +107,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	ajax := r.Header.Get("x-requested-with")
+	ajax := r.Header.Get("myheader")
 	if ajax == "XMLHttpRequest" {
 		http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 	} else {
@@ -132,11 +132,13 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	http.HandleFunc("/", pagesHandler)
-	http.HandleFunc("/json/", jsonHandler)
-	http.HandleFunc("/content/", contentHandler)
-	http.HandleFunc("/files/", filesHandler)
-	http.ListenAndServe(":8080", nil)
+	setupcache()
+	// deepCompare("/home/stefan/programs/go/src/mystuff/elephancy/frontend/staticcache/resources/mystyle.css", "/home/stefan/programs/go/src/mystuff/elephancy/frontend/staticcache/fingerprinted/mystyle_bl.css")
+	// http.HandleFunc("/favicon.ico", faviconHandler)
+	// http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	// http.HandleFunc("/", pagesHandler)
+	// http.HandleFunc("/json/", jsonHandler)
+	// http.HandleFunc("/content/", contentHandler)
+	// http.HandleFunc("/files/", filesHandler)
+	// http.ListenAndServe(":8080", nil)
 }
