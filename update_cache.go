@@ -111,7 +111,9 @@ func setupcache() {
 	filename := "./frontend/staticcache/cache.json"
 	checkResource("mystyle.css", "Frame.html", filename)
 	checkResource("script.js", "Frame.html", filename)
+	// log.Fatal("The next line does not do what's intended, check by removing fingerprinted/pic folder. It doesn't get recreated")
 	checkResource("pics/menu.png", "Frame.html", filename)
+	// checkResource("pics/menu.png", "Frame.html", filename
 }
 
 func checkResource(resource string, templatename string, filename string) {
@@ -143,7 +145,7 @@ func checkResource(resource string, templatename string, filename string) {
 		mv(new, fingerprintdir)
 		log.SetFlags(log.LstdFlags)
 		log.Println("Created " + basename + ".")
-		template[resource] = fingerprintdir + "/" + basename
+		template[resource] = fingerprintdir + new[len(resourcedir):]
 		writeJson(filename, ccoll)
 	} else if err != nil {
 		log.Fatal(err)

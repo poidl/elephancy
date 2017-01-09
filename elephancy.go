@@ -141,13 +141,13 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// setupcache()
+	setupcache()
 
-	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	http.HandleFunc("/", pagesHandler)
-	http.HandleFunc("/json/", jsonHandler)
-	http.HandleFunc("/content/", contentHandler)
-	http.HandleFunc("/files/", filesHandler)
-	http.ListenAndServe(":8080", nil)
+	// 	http.HandleFunc("/favicon.ico", faviconHandler)
+	// 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	// 	http.HandleFunc("/", pagesHandler)
+	// 	http.HandleFunc("/json/", jsonHandler)
+	// 	http.HandleFunc("/content/", contentHandler)
+	// 	http.HandleFunc("/files/", filesHandler)
+	// 	http.ListenAndServe(":8080", nil)
 }
