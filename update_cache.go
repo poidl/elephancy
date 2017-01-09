@@ -11,7 +11,7 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
-var resourcepath = "./frontend/staticcache/resources"
+var resourcedir = "./frontend/staticcache/resources"
 var fingerprintpath = "./frontend/staticcache/fingerprinted"
 
 const chunkSize = 64000
@@ -109,42 +109,44 @@ func fingerprint(fname string) string {
 
 func setupcache() {
 	filename := "./frontend/staticcache/cache.json"
-	stylesheet := resourcepath + "/mystyle.css"
+	checkResource("mystyle.css", "Frame.html", filename)
+	// checkResource("script.js", "Frame.html", filename)
+	// checkResource("menu.svg", "Frame.html", filename)
+}
+
+func checkResource(resource string, templatename string, filename string) {
 	ccoll, err := loadJson(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	pag := ccoll["Frame.html"].(map[string]interface{})
-	stylesheetOld := pag["Stylesheet"].(string)
-	stylesheetOld = fingerprintpath + "/" + stylesheetOld
-	// log.Println("Reading " + filename ". Found entry \\\"Stylesheet)
-	_, err = os.Stat(stylesheetOld)
+	resourceFilepath := resourcedir + "/" + resource
+	println(templatename)
+
+	template := ccoll[templatename].(map[string]interface{})
+	println(template)
+	old := template[resource].(string)
+	old = fingerprintpath + "/" + old
+	_, err = os.Stat(old)
 	if err == nil {
-		if deepCompare(stylesheet, stylesheetOld) {
-			log.Println("Stylesheet " + stylesheetOld + " exists and is up to date.")
+		if deepCompare(resourceFilepath, old) {
+			log.Println("Resource " + old + " exists and is up to date.")
 		} else {
-			log.Println("Stylesheet " + stylesheetOld + " exists but is not up to date. Removing " + stylesheetOld + ".")
-			os.Remove(stylesheetOld)
+			log.Println("Resource " + old + " exists but is not up to date. Removing " + old + ".")
+			os.Remove(old)
 		}
 	}
-	_, err = os.Stat(stylesheetOld)
+	_, err = os.Stat(old)
 	if os.IsNotExist(err) {
-		stylesheetNew := fingerprint(resourcepath + "/mystyle.css")
-		f1, err := os.Stat(stylesheetNew)
+		new := fingerprint(resourceFilepath)
+		f1, err := os.Stat(new)
 		if err != nil {
 			log.Fatal(err)
 		}
 		basename := f1.Name()
-		mv(stylesheetNew, fingerprintpath)
-		log.Print("Stylesheet named " + stylesheetOld + " does not exists. Created " + fingerprintpath + "/" + basename)
-		pag["Stylesheet"] = basename
+		mv(new, fingerprintpath)
+		log.Print("Created " + fingerprintpath + "/" + basename)
+		template[templatename] = basename
 		writeJson(filename, ccoll)
 	}
 
-	// switch _, err := os.Stat(stylesheetOld); err {
-	// case nil:
-	// 	println("Nil")
-	// case os.IsNotExist:
-	// 	println("not exist")
-	// }
 }
