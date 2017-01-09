@@ -4,7 +4,7 @@
 <head>
 <title id="metatitle"> {{.Metatitle}} </title>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="/frontend/staticcache/fingerprinted/mystyle_20170109_f9d2cff.css">
+<link rel="stylesheet" type="text/css" href="{{.Stylesheet}}">
 </head>
   <body>
     <header class="app-bar">
@@ -15,7 +15,7 @@
         </a>
       </span>
         <button class="menu">
-          <img src="/frontend/staticcache/fingerprinted/pics/menu_20170109_1ce7531.png"></img>
+          <img src="{{.Buttonpic}}"></img>
         </button>
       </div>
     </header>
@@ -47,5 +47,5 @@
         </div>
     </div>
   </body>
-  <script src="/frontend/staticcache/fingerprinted/script_20170109_300c65f.js"></script>
+  <script src="{{.Script}}"></script>
 </html>

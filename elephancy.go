@@ -37,7 +37,17 @@ var templatefile = "./templ/frame.html"
 var templates = template.Must(template.ParseFiles(templatefile))
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
-
+	// // TODO: do this at start up
+	// cachedat, err := loadJson("./frontend/staticcache/cache.json")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// bla := cachedat["Frame.html"].(map[string]interface{})
+	// println(bla["mystyle.css"].(string))
+	// // err = templates.ExecuteTemplate(w, "frame.html", &cachedat)
+	// // if err != nil {
+	// // 	log.Fatal(err)
+	// // }
 	templdat, modtime, err := getTemplateData(r.URL.Path)
 	if err != nil {
 		http.NotFound(w, r)
@@ -60,7 +70,6 @@ func pagesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = templates.ExecuteTemplate(w, "frame.html", &templdat)
-
 	if err != nil {
 		http.NotFound(w, r)
 		return
@@ -132,13 +141,13 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	setupcache()
-	// deepCompare("/home/stefan/programs/go/src/mystuff/elephancy/frontend/staticcache/resources/mystyle.css", "/home/stefan/programs/go/src/mystuff/elephancy/frontend/staticcache/fingerprinted/mystyle_bl.css")
-	// http.HandleFunc("/favicon.ico", faviconHandler)
-	// http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	// http.HandleFunc("/", pagesHandler)
-	// http.HandleFunc("/json/", jsonHandler)
-	// http.HandleFunc("/content/", contentHandler)
-	// http.HandleFunc("/files/", filesHandler)
-	// http.ListenAndServe(":8080", nil)
+	// setupcache()
+
+	http.HandleFunc("/favicon.ico", faviconHandler)
+	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	http.HandleFunc("/", pagesHandler)
+	http.HandleFunc("/json/", jsonHandler)
+	http.HandleFunc("/content/", contentHandler)
+	http.HandleFunc("/files/", filesHandler)
+	http.ListenAndServe(":8080", nil)
 }
