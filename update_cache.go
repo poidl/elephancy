@@ -12,7 +12,7 @@ import (
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
 var resourcedir = "./frontend/staticcache/resources"
-var fingerprintpath = "./frontend/staticcache/fingerprinted"
+var fingerprintdir = "./frontend/staticcache/fingerprinted"
 
 const chunkSize = 64000
 
@@ -110,8 +110,8 @@ func fingerprint(fname string) string {
 func setupcache() {
 	filename := "./frontend/staticcache/cache.json"
 	checkResource("mystyle.css", "Frame.html", filename)
-	// checkResource("script.js", "Frame.html", filename)
-	// checkResource("menu.svg", "Frame.html", filename)
+	checkResource("script.js", "Frame.html", filename)
+	checkResource("pics/menu.png", "Frame.html", filename)
 }
 
 func checkResource(resource string, templatename string, filename string) {
@@ -120,18 +120,15 @@ func checkResource(resource string, templatename string, filename string) {
 		log.Fatal(err)
 	}
 	resourceFilepath := resourcedir + "/" + resource
-	println(templatename)
-
 	template := ccoll[templatename].(map[string]interface{})
-	println(template)
 	old := template[resource].(string)
-	old = fingerprintpath + "/" + old
-	_, err = os.Stat(old)
+	fold, err := os.Stat(old)
 	if err == nil {
+		log.SetFlags(log.LstdFlags)
 		if deepCompare(resourceFilepath, old) {
-			log.Println("Resource " + old + " exists and is up to date.")
+			log.Println("Resource " + fold.Name() + " is up to date.")
 		} else {
-			log.Println("Resource " + old + " exists but is not up to date. Removing " + old + ".")
+			log.Println("Resource " + fold.Name() + " is not up to date, deleting.")
 			os.Remove(old)
 		}
 	}
@@ -143,10 +140,13 @@ func checkResource(resource string, templatename string, filename string) {
 			log.Fatal(err)
 		}
 		basename := f1.Name()
-		mv(new, fingerprintpath)
-		log.Print("Created " + fingerprintpath + "/" + basename)
-		template[templatename] = basename
+		mv(new, fingerprintdir)
+		log.SetFlags(log.LstdFlags)
+		log.Println("Created " + basename + ".")
+		template[resource] = fingerprintdir + "/" + basename
 		writeJson(filename, ccoll)
+	} else if err != nil {
+		log.Fatal(err)
 	}
 
 }
