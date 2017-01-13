@@ -44,17 +44,7 @@ func pagesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	f, err := os.Open(ftemplFingerpr)
 	defer f.Close()
-	fi, err := f.Stat()
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
 
-	// If frame as been modified after the template, set modtime to the more recent time. Note that template modifications which happen *after* the server has been started are accounted for in the Last-Modified header, but NOT DISPLAYED, perhaps because of template caching? As a consequence, if the template is modified while the server is running, and a user requests the page (gets the header, but not the updated content),than that user will NOT see the updated content if the server is restarted, because the browser has the latest timestamp and retrieves the old content from cache.
-	modtimeTemplate := fi.ModTime()
-	if modtimeTemplate.After(modtime) {
-		modtime = modtimeTemplate
-	}
 	if ifNotModifiedResponse(w, r, modtime) {
 		return
 	}
