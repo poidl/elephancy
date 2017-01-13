@@ -33,27 +33,16 @@ var faviconPath = regexp.MustCompile("^/favicon.ico$")
 var jsonPath = regexp.MustCompile("^/json/([a-zA-Z0-9]+).json$")
 var contentPath = regexp.MustCompile("^/content/([a-zA-Z0-9]+).html$")
 
-var templatefile = "./templ/frame.html"
-var templates = template.Must(template.ParseFiles(templatefile))
+var ftempl = "./templ/frame_new.html"
+var ftemplFingerpr = "./templ/frame.html"
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
-	// // TODO: do this at start up
-	// cachedat, err := loadJson("./frontend/staticcache/cache.json")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// bla := cachedat["Frame.html"].(map[string]interface{})
-	// println(bla["mystyle.css"].(string))
-	// // err = templates.ExecuteTemplate(w, "frame.html", &cachedat)
-	// // if err != nil {
-	// // 	log.Fatal(err)
-	// // }
 	templdat, modtime, err := getTemplateData(r.URL.Path)
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	f, err := os.Open(templatefile)
+	f, err := os.Open(ftemplFingerpr)
 	defer f.Close()
 	fi, err := f.Stat()
 	if err != nil {
@@ -69,7 +58,12 @@ func pagesHandler(w http.ResponseWriter, r *http.Request) {
 	if ifNotModifiedResponse(w, r, modtime) {
 		return
 	}
-	err = templates.ExecuteTemplate(w, "frame.html", &templdat)
+	templ, err := template.ParseFiles(ftemplFingerpr)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	templ.Execute(w, &templdat)
 	if err != nil {
 		http.NotFound(w, r)
 		return
@@ -142,12 +136,12 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	setupcache()
-
-	// 	http.HandleFunc("/favicon.ico", faviconHandler)
-	// 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	// 	http.HandleFunc("/", pagesHandler)
-	// 	http.HandleFunc("/json/", jsonHandler)
-	// 	http.HandleFunc("/content/", contentHandler)
-	// 	http.HandleFunc("/files/", filesHandler)
-	// 	http.ListenAndServe(":8080", nil)
+	generateFingerprintedTemplate()
+	http.HandleFunc("/favicon.ico", faviconHandler)
+	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	http.HandleFunc("/", pagesHandler)
+	http.HandleFunc("/json/", jsonHandler)
+	http.HandleFunc("/content/", contentHandler)
+	http.HandleFunc("/files/", filesHandler)
+	http.ListenAndServe(":8080", nil)
 }

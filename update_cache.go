@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"html/template"
 	"io"
 	"log"
 	"os"
@@ -11,6 +12,7 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
+var cachepath = "./frontend/staticcache/cache.json"
 var resourcedir = "./frontend/staticcache/resources"
 var fingerprintdir = "./frontend/staticcache/fingerprinted"
 
@@ -107,8 +109,28 @@ func fingerprint(fname string) string {
 	return fout
 }
 
+type TemplateMap struct {
+	Buttonpic  string
+	Script     string
+	Stylesheet string
+}
+
+func getCacheTemplateData() TemplateMap {
+	cachedat, err := loadJson(cachepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bla := cachedat["Frame.html"].(map[string]interface{})
+	// println(bla["mystyle.css"].(string))
+
+	tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
+	return tmp
+}
+
 func setupcache() {
-	filename := "./frontend/staticcache/cache.json"
+
+	filename := cachepath
+	// templatemap :=
 	checkResource("mystyle.css", "Frame.html", filename)
 	checkResource("script.js", "Frame.html", filename)
 	// log.Fatal("The next line does not do what's intended, check by removing fingerprinted/pic folder. It doesn't get recreated")
@@ -151,4 +173,20 @@ func checkResource(resource string, templatename string, filename string) {
 		log.Fatal(err)
 	}
 
+}
+
+func generateFingerprintedTemplate() {
+	tmpl := template.New("frame_new.html")
+	tmpl = tmpl.Delims("[[", "]]")
+	tmpl, err := tmpl.ParseFiles(ftempl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	cachedat := getCacheTemplateData()
+	f, err := os.Create(ftemplFingerpr)
+	err = tmpl.Execute(f, &cachedat)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f.Close()
 }

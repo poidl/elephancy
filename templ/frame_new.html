@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html id="frame">
-
 <head>
-<title id="metatitle"> {{.Metatitle}} </title>
+<title id="metatitle"> {{ .Metatitle }} </title>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="{{.Stylesheet}}">
+[[template "stylesheet" .]]
 </head>
   <body>
     <header class="app-bar">
@@ -15,11 +14,10 @@
         </a>
       </span>
         <button class="menu">
-          <img src="{{.Buttonpic}}"></img>
+[[template "buttonpic" .]]
         </button>
       </div>
     </header>
-
  <!-- style="outline-style: solid; outline-width: 1px;" -->
     <header class="title">
       <!-- clickabel bartitle -> back to home -->
@@ -47,5 +45,8 @@
         </div>
     </div>
   </body>
-  <script src="{{.Script}}"></script>
+[[template "script" .]]
 </html>
+[[define "stylesheet"]]<link rel="stylesheet" type="text/css" href="[[.Stylesheet]]">[[end]]
+[[define "script"]]<script src="[[.Script]]"></script>[[end]]
+[[define "buttonpic"]]<img src="[[.Buttonpic]]"></img>[[end]]
