@@ -164,7 +164,7 @@ func checkResource(resource string, templatename string, filename string) {
 			log.Fatal(err)
 		}
 		basename := f1.Name()
-		mv(new, fingerprintdir)
+		mv(new, fingerprintdir+new[len(resourcedir):])
 		log.SetFlags(log.LstdFlags)
 		log.Println("Created " + basename + ".")
 		template[resource] = fingerprintdir + new[len(resourcedir):]
