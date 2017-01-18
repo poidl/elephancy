@@ -33,8 +33,8 @@ var faviconPath = regexp.MustCompile("^/favicon.ico$")
 var jsonPath = regexp.MustCompile("^/json/([a-zA-Z0-9]+).json$")
 var contentPath = regexp.MustCompile("^/content/([a-zA-Z0-9]+).html$")
 
-var ftempl = "./templ/frame_new.html"
-var ftemplFingerpr = "./templ/frame.html"
+var ftempl = "./frontend/templ/frame_new.html"
+var ftemplFingerpr = "./frontend/templ/frame.html"
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
 	templdat, modtime, err := getTemplateData(r.URL.Path)
