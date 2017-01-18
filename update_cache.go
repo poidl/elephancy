@@ -121,21 +121,20 @@ func getCacheTemplateData() TemplateMap {
 		log.Fatal(err)
 	}
 	bla := cachedat["Frame.html"].(map[string]interface{})
-	// println(bla["mystyle.css"].(string))
 
 	tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
 	return tmp
 }
 
 func setupcache() {
-
+	err := os.MkdirAll(fingerprintdir, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
 	filename := cachepath
-	// templatemap :=
 	checkResource("mystyle.css", "Frame.html", filename)
 	checkResource("script.js", "Frame.html", filename)
-	// log.Fatal("The next line does not do what's intended, check by removing fingerprinted/pic folder. It doesn't get recreated")
 	checkResource("pics/menu.png", "Frame.html", filename)
-	// checkResource("pics/menu.png", "Frame.html", filename
 }
 
 func checkResource(resource string, templatename string, filename string) {
@@ -164,6 +163,11 @@ func checkResource(resource string, templatename string, filename string) {
 			log.Fatal(err)
 		}
 		basename := f1.Name()
+		relpath := new[len(resourcedir) : len(new)-len(basename)]
+		err = os.MkdirAll(fingerprintdir+relpath, 0755)
+		if err != nil {
+			log.Fatal(err)
+		}
 		mv(new, fingerprintdir+new[len(resourcedir):])
 		log.SetFlags(log.LstdFlags)
 		log.Println("Created " + basename + ".")
