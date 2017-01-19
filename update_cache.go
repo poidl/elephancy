@@ -1,57 +1,27 @@
 package main
 
 import (
-	"bytes"
 	"html/template"
-	"io"
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
 )
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
-var templateCacheFile = "./frontend/staticcache/simple_cache.json"
-var cachepath = "./frontend/staticcache/cache.json"
 var resourcedir = "./frontend/staticcache/resources"
 var fingerprintdir = "./frontend/staticcache/fingerprinted"
+var templateCacheFile = "simple_cache.json"
+var templateCacheFileFingerprinted = "simple_cache_fingerprinted.json"
 
-const chunkSize = 64000
-
-func deepCompare(file1, file2 string) bool {
-	// by Pith on SO: http: //stackoverflow.com/questions/29505089/how-can-i-compare-two-files-in-golang
-	// Check file size ...
-	chunkSize := 64000
-	f1, err := os.Open(file1)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	f2, err := os.Open(file2)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for {
-		b1 := make([]byte, chunkSize)
-		_, err1 := f1.Read(b1)
-
-		b2 := make([]byte, chunkSize)
-		_, err2 := f2.Read(b2)
-
-		if err1 != nil || err2 != nil {
-			if err1 == io.EOF && err2 == io.EOF {
-				return true
-			} else if err1 == io.EOF || err2 == io.EOF {
-				return false
-			} else {
-				log.Fatal(err1, err2)
-			}
-		}
-		if !bytes.Equal(b1, b2) {
-			return false
-		}
+func cp(src string, dest string) {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	cmd := "cp"
+	args := []string{src, dest}
+	if err := exec.Command(cmd, args...).Run(); err != nil {
+		log.Fatal("Copying files failed")
 	}
 }
 
@@ -63,6 +33,7 @@ func mv(src string, dest string) {
 		log.Fatal("Moving files failed")
 	}
 }
+
 func fingerprint(fname string) string {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	cmd := "./scripts/fingerprint.sh"
@@ -82,92 +53,80 @@ type TemplateMap struct {
 	Stylesheet string
 }
 
-func getCacheTemplateData() TemplateMap {
-	bla, err := loadJson(cachepath)
+func getCacheResources(fname string) TemplateMap {
+	m, err := loadJSONStruct(templateCacheFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
-	return tmp
+	return m
 }
 
-func getCacheResources() {
-	cachedat, err := loadJson(templateCacheFile)
+func setupcacheNew() {
+	// check if file defining cache resources exists
+	tcf := resourcedir + "/" + templateCacheFile
+	_, err := os.Stat(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for k, v := range cachedat {
-		println(k)
-		println(v.(string))
-	}
-
-	// bla := cachedat["frame.html"].(map[string]interface{})
-
-	// tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
-	// return tmp
-}
-
-func setupcache() {
-	err := os.MkdirAll(fingerprintdir, 0755)
+	// create directory for fingerprinted resources if it doesn't exist
+	err = os.MkdirAll(fingerprintdir, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
-	filename := cachepath
-	checkResource("mystyle.css", filename)
-	checkResource("script.js", filename)
-	checkResource("pics/menu.png", filename)
-}
+	// create file holding fingerprinted resources, overwriting it if it exists
+	tcffp := fingerprintdir + "/" + templateCacheFileFingerprinted
+	cp(tcf, tcffp)
 
-func checkResource(resource string, filename string) {
-	template, err := loadJson(filename)
+	// load the resource data
+	resource, err := loadJSONmsi(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	resourceFilepath := resourcedir + "/" + resource
-	old := template[resource].(string)
-	fold, err := os.Stat(old)
-	if err == nil {
-		log.SetFlags(log.LstdFlags)
-		if deepCompare(resourceFilepath, old) {
-			log.Println("Resource " + fold.Name() + " is up to date.")
-		} else {
-			log.Println("Resource " + fold.Name() + " is not up to date, deleting.")
-			os.Remove(old)
-		}
+
+	// load the fingerprinted data
+	resourceFP, err := loadJSONmsi(tcffp)
+	if err != nil {
+		log.Fatal(err)
 	}
-	_, err = os.Stat(old)
-	if os.IsNotExist(err) {
-		new := fingerprint(resourceFilepath)
-		f1, err := os.Stat(new)
+
+	for k, v := range resource {
+
+		// fingerprint resource
+		fpf := fingerprint(v.(string))
+		fpffd, err := os.Stat(fpf)
 		if err != nil {
 			log.Fatal(err)
 		}
-		basename := f1.Name()
-		relpath := new[len(resourcedir) : len(new)-len(basename)]
+
+		// Copy to fingerprint directory
+		fpfBasename := fpffd.Name()
+		src := fpf
+		relpath := fpf[len(resourcedir) : len(fpf)-len(fpfBasename)]
 		err = os.MkdirAll(fingerprintdir+relpath, 0755)
 		if err != nil {
 			log.Fatal(err)
 		}
-		mv(new, fingerprintdir+new[len(resourcedir):])
-		log.SetFlags(log.LstdFlags)
-		log.Println("Created " + basename + ".")
-		template[resource] = fingerprintdir + new[len(resourcedir):]
-		writeJson(filename, template)
-	} else if err != nil {
-		log.Fatal(err)
+		dest := fingerprintdir + relpath + fpfBasename
+		mv(src, dest)
+		// update map
+		resourceFP[k] = dest
 	}
-
+	// write to file holding fingerprinted resources
+	writeJson(tcffp, resourceFP)
 }
 
 func generateFingerprintedTemplate() {
-	tmpl := template.New("frame_new.html")
+	tmpl := template.New(path.Base(ftempl))
 	tmpl = tmpl.Delims("[[", "]]")
 	tmpl, err := tmpl.ParseFiles(ftempl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	cachedat := getCacheTemplateData()
+	tcffp := fingerprintdir + "/" + templateCacheFileFingerprinted
+	cachedat, err := loadJSONStruct(tcffp)
+	if err != nil {
+		log.Fatal(err)
+	}
 	f, err := os.Create(ftemplFingerpr)
 	err = tmpl.Execute(f, &cachedat)
 	if err != nil {
