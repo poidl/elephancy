@@ -12,6 +12,7 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
+var templateCacheFile = "./frontend/staticcache/simple_cache.json"
 var cachepath = "./frontend/staticcache/cache.json"
 var resourcedir = "./frontend/staticcache/resources"
 var fingerprintdir = "./frontend/staticcache/fingerprinted"
@@ -54,40 +55,6 @@ func deepCompare(file1, file2 string) bool {
 	}
 }
 
-// func filesDiffer(file1 string, file2 string) bool {
-// 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-// 	f1, err := os.Open(file1)
-// 	defer f1.Close()
-// 	_, err = f1.Stat()
-// 	if err != nil {
-// 		log.Fatal("Error opening " + file1)
-// 	}
-// 	f2, err := os.Open(file2)
-// 	defer f2.Close()
-// 	_, err = f2.Stat()
-// 	println(file2)
-// 	if err != nil {
-// 		log.Fatal("Error opening " + file2)
-// 	}
-// 	cmd := "diff"
-// 	args := []string{file1, file2}
-// 	var bout []byte
-// 	println(file1)
-// 	println(file2)
-// 	bout, err = exec.Command(cmd, args...).Output()
-// 	// if bout, err = exec.Command(cmd, args...).Output(); err != nil {
-// 	// println(err)
-// 	// log.Fatal("Error executing diff in bash")
-// 	// }
-// 	out := string(bout)
-// 	println(out)
-// 	log.Fatal(err)
-// 	if out == "" {
-// 		return false
-// 	}
-// 	return true
-// }
-
 func mv(src string, dest string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	cmd := "mv"
@@ -116,14 +83,29 @@ type TemplateMap struct {
 }
 
 func getCacheTemplateData() TemplateMap {
-	cachedat, err := loadJson(cachepath)
+	bla, err := loadJson(cachepath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	bla := cachedat["Frame.html"].(map[string]interface{})
 
 	tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
 	return tmp
+}
+
+func getCacheResources() {
+	cachedat, err := loadJson(templateCacheFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for k, v := range cachedat {
+		println(k)
+		println(v.(string))
+	}
+
+	// bla := cachedat["frame.html"].(map[string]interface{})
+
+	// tmp := TemplateMap{bla["pics/menu.png"].(string), bla["script.js"].(string), bla["mystyle.css"].(string)}
+	// return tmp
 }
 
 func setupcache() {
@@ -132,18 +114,17 @@ func setupcache() {
 		log.Fatal(err)
 	}
 	filename := cachepath
-	checkResource("mystyle.css", "Frame.html", filename)
-	checkResource("script.js", "Frame.html", filename)
-	checkResource("pics/menu.png", "Frame.html", filename)
+	checkResource("mystyle.css", filename)
+	checkResource("script.js", filename)
+	checkResource("pics/menu.png", filename)
 }
 
-func checkResource(resource string, templatename string, filename string) {
-	ccoll, err := loadJson(filename)
+func checkResource(resource string, filename string) {
+	template, err := loadJson(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	resourceFilepath := resourcedir + "/" + resource
-	template := ccoll[templatename].(map[string]interface{})
 	old := template[resource].(string)
 	fold, err := os.Stat(old)
 	if err == nil {
@@ -172,7 +153,7 @@ func checkResource(resource string, templatename string, filename string) {
 		log.SetFlags(log.LstdFlags)
 		log.Println("Created " + basename + ".")
 		template[resource] = fingerprintdir + new[len(resourcedir):]
-		writeJson(filename, ccoll)
+		writeJson(filename, template)
 	} else if err != nil {
 		log.Fatal(err)
 	}

@@ -136,6 +136,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// getCacheResources()
 	setupcache()
 	generateFingerprintedTemplate()
 	http.HandleFunc("/favicon.ico", faviconHandler)

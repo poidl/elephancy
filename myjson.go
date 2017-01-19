@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type pagesCollection map[string]interface{}
+type msi map[string]interface{}
 type page map[string]interface{}
 type errorString struct {
 	s string
@@ -22,7 +22,7 @@ func (e *errorString) Error() string {
 
 // loadJson opens a json file and returns the contents as a map[string]interface{}
 // TODO: handle errors
-func loadJson(filename string) (pagesCollection, error) {
+func loadJson(filename string) (msi, error) {
 
 	// filename := "./json/pages.json"
 	bytearr, err := ioutil.ReadFile(filename)
@@ -38,11 +38,11 @@ func loadJson(filename string) (pagesCollection, error) {
 	return m, nil
 }
 
-func writeJson(filename string, pagesCollection map[string]interface{}) {
+func writeJson(filename string, msi map[string]interface{}) {
 
 	// filename := "./json/pages.json"
 
-	data, err := json.Marshal(pagesCollection)
+	data, err := json.Marshal(msi)
 	err = ioutil.WriteFile(filename, data, 0644)
 	if err != nil {
 		log.Fatal("Writing " + filename + " failed.")
@@ -50,7 +50,7 @@ func writeJson(filename string, pagesCollection map[string]interface{}) {
 }
 
 // map2array orders page data into an array according linkweights. It takes a map[string]interface{}, which maps pagenames to pages. A page is a json object containing page data as unordered list of key:value pairs. It returns an array of these objects, which is sorted corresponding to the "Linkweight" keys of the page objects.
-func (pcoll *pagesCollection) toArray() (arr []map[string]interface{}) {
+func (pcoll *msi) toArray() (arr []map[string]interface{}) {
 	// we need an array for iteration order. see http://blog.golang.org/go-maps-in-action
 	g := make(map[int]string)
 	for pname, page := range *pcoll {
@@ -72,7 +72,7 @@ func (pcoll *pagesCollection) toArray() (arr []map[string]interface{}) {
 
 // TODO: urlPathToPagename and contentURLToPagename almost same
 
-func (pcoll *pagesCollection) urlPathToPage(urlpath string) (page, error) {
+func (pcoll *msi) urlPathToPage(urlpath string) (page, error) {
 	// TODO: return error in case it doesn't find anything
 	for _, page := range *pcoll {
 		pag := page.(map[string]interface{})
@@ -83,7 +83,7 @@ func (pcoll *pagesCollection) urlPathToPage(urlpath string) (page, error) {
 	return nil, &errorString{"Page not found"}
 }
 
-func (pcoll *pagesCollection) contentURLToPage(contenturl string) (page, error) {
+func (pcoll *msi) contentURLToPage(contenturl string) (page, error) {
 	// TODO: return error in case it doesn't find anything
 	for _, page := range *pcoll {
 		pag := page.(map[string]interface{})
@@ -105,7 +105,7 @@ func contentURLToUrlpath(contenturl string) (string, error) {
 	return urlpath, nil
 }
 
-func (pcoll *pagesCollection) getPage(pagename string) (page, error) {
+func (pcoll *msi) getPage(pagename string) (page, error) {
 	// load the page data into a map[string]interface{}
 	pg := (*pcoll)[pagename].(map[string]interface{})
 	if pg == nil {
@@ -114,7 +114,7 @@ func (pcoll *pagesCollection) getPage(pagename string) (page, error) {
 	return pg, nil
 }
 
-func (pcoll *pagesCollection) contentFromPage(pg page) (content []byte, modtime time.Time, err error) {
+func (pcoll *msi) contentFromPage(pg page) (content []byte, modtime time.Time, err error) {
 	// read content from html file and get modification time
 	content, modtime, err = readContent(pg["ContentUrl"].(string))
 	return content, modtime, err
