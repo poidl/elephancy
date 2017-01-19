@@ -20,9 +20,25 @@ func (e *errorString) Error() string {
 	return e.s
 }
 
-// loadJson opens a json file and returns the contents as a map[string]interface{}
+// loadJsonStruct opens a json file and returns the contents as a struct
 // TODO: handle errors
-func loadJson(filename string) (msi, error) {
+func loadJSONStruct(filename string) (TemplateMap, error) {
+
+	bytearr, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return TemplateMap{}, err
+	}
+	var m TemplateMap
+	err = json.Unmarshal(bytearr, &m)
+	if err != nil {
+		return TemplateMap{}, err
+	}
+	return m, nil
+}
+
+// loadJSONmsi opens a json file and returns the contents as a map[string]interface{}
+// TODO: handle errors
+func loadJSONmsi(filename string) (msi, error) {
 
 	// filename := "./json/pages.json"
 	bytearr, err := ioutil.ReadFile(filename)
@@ -96,7 +112,7 @@ func (pcoll *msi) contentURLToPage(contenturl string) (page, error) {
 
 func contentURLToUrlpath(contenturl string) (string, error) {
 	filename := "./json/pages.json"
-	pcoll, err := loadJson(filename)
+	pcoll, err := loadJSONmsi(filename)
 	if err != nil {
 		return "", err
 	}
@@ -122,7 +138,7 @@ func (pcoll *msi) contentFromPage(pg page) (content []byte, modtime time.Time, e
 
 func getTemplateData(urlpath string) (map[string]interface{}, time.Time, error) {
 	filename := "./json/pages.json"
-	pcoll, err := loadJson(filename)
+	pcoll, err := loadJSONmsi(filename)
 	if err != nil {
 		return nil, time.Time{}, err
 	}
