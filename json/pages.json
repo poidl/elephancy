@@ -1,23 +1,26 @@
-{
-  "Page1": {
-      "Urlpath": "/",
+[
+    {
+      "Id": 1,
+      "Resource": "content/test1.html",
+      "Prettyurl": "/",
       "Linkname": "Linkname1",
-      "Linkweight": 1,
-      "Metatitle": "Metatitle for Page1",
-      "ContentUrl": "content/test1.html"
-  },
-  "Page2": {
-      "Urlpath": "/urlpath2",
+      "Linkweight": "1",
+      "Metatitle": "Metatitle for Page1"
+    },
+    {
+      "Id": 2,
+      "Resource": "content/test2.html",
+      "Prettyurl": "/urlpath2",
       "Linkname": "Linkname2",
-      "Linkweight": 2,
-      "Metatitle": "Metatitle for Page2",
-      "ContentUrl": "content/test2.html"
-  },
-  "Page3": {
-      "Urlpath": "/urlpath3",
+      "Linkweight": "2",
+      "Metatitle": "Metatitle for Page2"
+    },
+    {
+      "Id": 3,
+      "Resource": "content/test3.html",
+      "Prettyurl": "/urlpath3",
       "Linkname": "Linkname3",
-      "Linkweight": 3,
-      "Metatitle": "Metatitle for Page3",
-      "ContentUrl": "content/test3.html"
-  }
-}
+      "Linkweight": "3",
+      "Metatitle": "Metatitle for Page3"
+    }
+]

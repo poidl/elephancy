@@ -40,7 +40,6 @@ func loadJSONStruct(filename string) (TemplateMap, error) {
 // TODO: handle errors
 func loadJSONmsi(filename string) (msi, error) {
 
-	// filename := "./json/pages.json"
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -55,8 +54,6 @@ func loadJSONmsi(filename string) (msi, error) {
 }
 
 func writeJson(filename string, msi map[string]interface{}) {
-
-	// filename := "./json/pages.json"
 
 	data, err := json.Marshal(msi)
 	err = ioutil.WriteFile(filename, data, 0644)

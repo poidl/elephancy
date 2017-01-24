@@ -2,6 +2,9 @@ package main
 
 import (
 	"html/template"
+	"log"
+	sw "mystuff/elephancy/swagger"
+	swBackend "mystuff/elephancy/swaggerbackend/go"
 	"net/http"
 	"os"
 	"regexp"
@@ -33,8 +36,8 @@ var faviconPath = regexp.MustCompile("^/favicon.ico$")
 var jsonPath = regexp.MustCompile("^/json/([a-zA-Z0-9]+).json$")
 var contentPath = regexp.MustCompile("^/content/([a-zA-Z0-9]+).html$")
 
-var ftempl = "./frontend/templ/frame_new.html"
-var ftemplFingerpr = "./frontend/templ/frame.html"
+var ftempl = "./frontend/templates/frame_new.html"
+var ftemplFingerpr = "./frontend/templates/frame.html"
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
 	templdat, modtime, err := getTemplateData(r.URL.Path)
@@ -136,15 +139,25 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	router := swBackend.NewRouter()
+	go http.ListenAndServe(":8088", router)
+	time.Sleep(300 * time.Millisecond)
+
+	pages, err := sw.ListPages()
+	if err != nil {
+		log.Fatal(err)
+	}
+	print(pages[0].Resource)
+
 	// getCacheResources()
-	setupcacheNew()
-	// setupcache()
-	generateFingerprintedTemplate()
-	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	http.HandleFunc("/", pagesHandler)
-	http.HandleFunc("/json/", jsonHandler)
-	http.HandleFunc("/content/", contentHandler)
-	http.HandleFunc("/files/", filesHandler)
-	http.ListenAndServe(":8080", nil)
+	// setupcacheNew()
+	// // setupcache()
+	// generateFingerprintedTemplate()
+	// http.HandleFunc("/favicon.ico", faviconHandler)
+	// http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	// http.HandleFunc("/", pagesHandler)
+	// http.HandleFunc("/json/", jsonHandler)
+	// http.HandleFunc("/content/", contentHandler)
+	// http.HandleFunc("/files/", filesHandler)
+	// http.ListenAndServe(":8080", nil)
 }

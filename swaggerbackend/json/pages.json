@@ -1,0 +1,11 @@
+[
+    {
+      "Id": 123121,
+      "Resource": "content/test1.html",
+      "Prettyurl": "/",
+      "Linkname": "Linkname1",
+      "Linkweight": "1",
+      "Metatitle": "Metatitle for Page1"
+    }
+]
+
