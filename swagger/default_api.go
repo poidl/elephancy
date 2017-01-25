@@ -26,6 +26,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	mj "mystuff/elephancy/json"
+	"net/url"
 )
 
 // type DefaultApi struct {
@@ -50,7 +52,7 @@ import (
 
 // /**
 //  *
-//  * Returns a page based on a single ID
+//  * Returns a mj.Page based on a single ID
 //  *
 //  * @param id ID of page to fetch
 //  * @return *Page
@@ -112,14 +114,37 @@ import (
 
 var basepath = "http://127.0.0.1:8088/api"
 
-func ListPages() ([]Page, error) {
-
+// ListPages lists pages
+func ListPages() ([]mj.Page, error) {
 	var httpMethod = "GET"
 	// create path and map variables
 	path := basepath + "/pages"
+	var successPayload = new([]mj.Page)
+	httpResponse, err := callAPI(path, httpMethod, url.Values{})
+	if err != nil {
+		return *successPayload, err
+	}
+	defer httpResponse.Body.Close()
+	var b bytes.Buffer
+	_, err = b.ReadFrom(httpResponse.Body)
+	if err != nil {
+		log.Fatal(err)
 
-	var successPayload = new([]Page)
-	httpResponse, err := callAPI(path, httpMethod)
+	}
+	err = json.Unmarshal(b.Bytes(), &successPayload)
+	return *successPayload, err
+}
+
+// FindPageByPrettyURL returns page ID
+func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
+	var httpMethod = "GET"
+	// create path and map variables
+	path := basepath + "/pages/FindPageByPrettyURL"
+
+	var successPayload = new(mj.Page)
+	v := url.Values{}
+	v.Set("prettyurl", prettyurl)
+	httpResponse, err := callAPI(path, httpMethod, v)
 	if err != nil {
 		return *successPayload, err
 	}

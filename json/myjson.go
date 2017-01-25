@@ -1,4 +1,4 @@
-package main
+package myjson
 
 import (
 	"encoding/json"
@@ -11,6 +11,7 @@ import (
 )
 
 type msi map[string]interface{}
+type ia []Page
 type page map[string]interface{}
 type errorString struct {
 	s string
@@ -20,30 +21,15 @@ func (e *errorString) Error() string {
 	return e.s
 }
 
-// loadJsonStruct opens a json file and returns the contents as a struct
+// LoadJSONmsi opens a json file and returns the contents as a map[string]interface{}
 // TODO: handle errors
-func loadJSONStruct(filename string) (TemplateMap, error) {
-
-	bytearr, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return TemplateMap{}, err
-	}
-	var m TemplateMap
-	err = json.Unmarshal(bytearr, &m)
-	if err != nil {
-		return TemplateMap{}, err
-	}
-	return m, nil
-}
-
-// loadJSONmsi opens a json file and returns the contents as a map[string]interface{}
-// TODO: handle errors
-func loadJSONmsi(filename string) (msi, error) {
+func LoadJSONmsi(filename string) (msi, error) {
 
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
+
 	var p interface{}
 	err = json.Unmarshal(bytearr, &p)
 	if err != nil {
@@ -51,6 +37,24 @@ func loadJSONmsi(filename string) (msi, error) {
 	}
 	m := p.(map[string]interface{})
 	return m, nil
+}
+
+func LoadJSONnew(filename string) (ia, error) {
+
+	bytearr, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var p []Page
+	err = json.Unmarshal(bytearr, &p)
+	if err != nil {
+		return nil, err
+	}
+	// m := p.([]interface{})
+	return p, nil
+	// println(p[""])
+	// return m, nil
 }
 
 func writeJson(filename string, msi map[string]interface{}) {
@@ -96,7 +100,7 @@ func (pcoll *msi) urlPathToPage(urlpath string) (page, error) {
 	return nil, &errorString{"Page not found"}
 }
 
-func (pcoll *msi) contentURLToPage(contenturl string) (page, error) {
+func (pcoll *msi) ContentURLToPage(contenturl string) (page, error) {
 	// TODO: return error in case it doesn't find anything
 	for _, page := range *pcoll {
 		pag := page.(map[string]interface{})
@@ -107,13 +111,23 @@ func (pcoll *msi) contentURLToPage(contenturl string) (page, error) {
 	return nil, &errorString{"Page not found"}
 }
 
-func contentURLToUrlpath(contenturl string) (string, error) {
+func (pcoll *ia) PrettyURLToPage(prettyURL string) (Page, error) {
+	// TODO: return error in case it doesn't find anything
+	for _, page := range *pcoll {
+		if "/"+prettyURL == page.Prettyurl {
+			return page, nil
+		}
+	}
+	return Page{}, &errorString{"Page not found"}
+}
+
+func ContentURLToUrlpath(contenturl string) (string, error) {
 	filename := "./json/pages.json"
-	pcoll, err := loadJSONmsi(filename)
+	pcoll, err := LoadJSONmsi(filename)
 	if err != nil {
 		return "", err
 	}
-	page, err := pcoll.contentURLToPage(contenturl)
+	page, err := pcoll.ContentURLToPage(contenturl)
 	urlpath := page["Urlpath"].(string)
 	return urlpath, nil
 }
@@ -133,9 +147,28 @@ func (pcoll *msi) contentFromPage(pg page) (content []byte, modtime time.Time, e
 	return content, modtime, err
 }
 
-func getTemplateData(urlpath string) (map[string]interface{}, time.Time, error) {
+// func getTemplateData(urlpath string) (map[string]interface{}, time.Time, error) {
+// 	filename := "./json/pages.json"
+// 	pcoll, err := LoadJSONmsi(filename)
+// 	if err != nil {
+// 		return nil, time.Time{}, err
+// 	}
+// 	page, err := pcoll.urlPathToPage(urlpath)
+// 	if err != nil {
+// 		return nil, time.Time{}, err
+// 	}
+// 	content, modtime, err := pcoll.contentFromPage(page)
+// 	arr := pcoll.toArray()
+// 	blab := make(map[string]interface{})
+// 	blab["Pages"] = arr
+// 	blab["Content"] = template.HTML(string(content))
+// 	blab["Metatitle"] = page["Metatitle"].(string)
+// 	return blab, modtime, err
+// }
+
+func GetTemplateData(urlpath string) (map[string]interface{}, time.Time, error) {
 	filename := "./json/pages.json"
-	pcoll, err := loadJSONmsi(filename)
+	pcoll, err := LoadJSONmsi(filename)
 	if err != nil {
 		return nil, time.Time{}, err
 	}

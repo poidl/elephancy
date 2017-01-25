@@ -45,17 +45,23 @@ var routes = Routes{
 		Index,
 	},
 
-	Route{
-		"FindPageById",
-		"GET",
-		"/api/pages/{id}",
-		FindPageById,
-	},
+	// Route{
+	// 	"FindPageById",
+	// 	"GET",
+	// 	"/api/pages/{id}",
+	// 	FindPageById,
+	// },
 
 	Route{
 		"ListPages",
 		"GET",
 		"/api/pages",
 		ListPages,
+	},
+	Route{
+		"FindPageByPrettyURL",
+		"GET",
+		"/api/pages/FindPageByPrettyURL",
+		FindPageByPrettyURL,
 	},
 }

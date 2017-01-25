@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"log"
+	mj "mystuff/elephancy/json"
 	sw "mystuff/elephancy/swagger"
 	swBackend "mystuff/elephancy/swaggerbackend/go"
 	"net/http"
@@ -40,7 +41,7 @@ var ftempl = "./frontend/templates/frame_new.html"
 var ftemplFingerpr = "./frontend/templates/frame.html"
 
 func pagesHandler(w http.ResponseWriter, r *http.Request) {
-	templdat, modtime, err := getTemplateData(r.URL.Path)
+	templdat, modtime, err := mj.GetTemplateData(r.URL.Path)
 	if err != nil {
 		http.NotFound(w, r)
 		return
@@ -119,7 +120,7 @@ func contentHandler(w http.ResponseWriter, r *http.Request) {
 		http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 	} else {
 		// fill in content
-		urlpath, err := contentURLToUrlpath(r.URL.Path)
+		urlpath, err := mj.ContentURLToUrlpath(r.URL.Path)
 		if err != nil {
 			http.NotFound(w, r)
 		}
@@ -139,6 +140,7 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	router := swBackend.NewRouter()
 	go http.ListenAndServe(":8088", router)
 	time.Sleep(300 * time.Millisecond)
@@ -147,8 +149,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	print(pages[0].Resource)
+	println(pages[0].Resource)
 
+	page, err := sw.FindPageByPrettyURL("urlpath2")
+	if err != nil {
+		log.Fatal(err)
+	}
+	println(page.Resource)
+
+	///////////////////////////////////////////
 	// getCacheResources()
 	// setupcacheNew()
 	// // setupcache()

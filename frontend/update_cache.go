@@ -1,8 +1,11 @@
-package main
+package frontend
 
 import (
+	"encoding/json"
 	"html/template"
+	"io/ioutil"
 	"log"
+	mj "mystuff/elephancy/json"
 	"os"
 	"os/exec"
 	"path"
@@ -53,8 +56,24 @@ type TemplateMap struct {
 	Stylesheet string
 }
 
+// loadJsonStruct opens a json file and returns the contents as a struct
+// TODO: handle errors
+func loadJSONStruct(filename string) (TemplateMap, error) {
+
+	bytearr, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return TemplateMap{}, err
+	}
+	var m TemplateMap
+	err = json.Unmarshal(bytearr, &m)
+	if err != nil {
+		return TemplateMap{}, err
+	}
+	return m, nil
+}
+
 func getCacheResources(fname string) TemplateMap {
-	m, err := loadJSONStruct(templateCacheFile)
+	m, err := mj.loadJSONStruct(templateCacheFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -78,13 +97,13 @@ func setupcacheNew() {
 	cp(tcf, tcffp)
 
 	// load the resource data
-	resource, err := loadJSONmsi(tcf)
+	resource, err := mj.LoadJSONmsi(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// load the fingerprinted data
-	resourceFP, err := loadJSONmsi(tcffp)
+	resourceFP, err := mj.LoadJSONmsi(tcffp)
 	if err != nil {
 		log.Fatal(err)
 	}

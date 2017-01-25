@@ -24,15 +24,25 @@ package swagger
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
-func callAPI(path string, method string) (*http.Response, error) {
-
+func callAPI(path string,
+	method string,
+	queryParams url.Values) (*http.Response, error) {
 	switch strings.ToUpper(method) {
 	case "GET":
-		response, err := http.Get(path)
+		req, err := http.NewRequest("GET", path, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+		req.URL.RawQuery = queryParams.Encode()
+		println(req.URL.String())
+		response, err := http.DefaultClient.Do(req)
+
 		return response, err
 		// case "POST":
 		// 	response, err := request.Post(path)
