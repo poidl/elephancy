@@ -40,7 +40,7 @@ func callAPI(path string,
 			log.Fatal(err)
 		}
 		req.URL.RawQuery = queryParams.Encode()
-		println(req.URL.String())
+		// println(req.URL.String())
 		response, err := http.DefaultClient.Do(req)
 
 		return response, err

@@ -25,6 +25,7 @@ package swagger
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	mj "mystuff/elephancy/json"
 	"net/url"
@@ -149,6 +150,9 @@ func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
 		return *successPayload, err
 	}
 	defer httpResponse.Body.Close()
+	if httpResponse.StatusCode == 404 {
+		return *successPayload, fmt.Errorf("Page not found")
+	}
 	var b bytes.Buffer
 	_, err = b.ReadFrom(httpResponse.Body)
 	if err != nil {

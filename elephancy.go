@@ -141,8 +141,10 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	router := swBackend.NewRouter()
-	go http.ListenAndServe(":8088", router)
+	// router := swBackend.NewRouter()
+	// go http.ListenAndServe(":8088", router)
+
+	go http.ListenAndServe(":8088", swBackend.MyRouter())
 	time.Sleep(300 * time.Millisecond)
 
 	pages, err := sw.ListPages()
@@ -151,7 +153,7 @@ func main() {
 	}
 	println(pages[0].Resource)
 
-	page, err := sw.FindPageByPrettyURL("urlpath2")
+	page, err := sw.FindPageByPrettyURL("urlpath3")
 	if err != nil {
 		log.Fatal(err)
 	}
