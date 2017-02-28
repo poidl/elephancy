@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"log"
+	fe "mystuff/elephancy/frontend"
 	mj "mystuff/elephancy/json"
 	sw "mystuff/elephancy/swagger"
 	swBackend "mystuff/elephancy/swaggerbackend/go"
@@ -139,6 +140,16 @@ func defaultHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
+	page, err := sw.FindPageByPrettyURL(r.URL.Path)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	println(page.Links.Self)
+	mj.GetTemplateDataNew(page)
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	// router := swBackend.NewRouter()
@@ -147,17 +158,28 @@ func main() {
 	go http.ListenAndServe(":8088", swBackend.MyRouter())
 	time.Sleep(300 * time.Millisecond)
 
-	pages, err := sw.ListPages()
-	if err != nil {
-		log.Fatal(err)
-	}
-	println(pages[0].Resource)
+	// pages, err := sw.ListPages()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// println(pages[0].Resource)
 
-	page, err := sw.FindPageByPrettyURL("urlpath3")
-	if err != nil {
-		log.Fatal(err)
-	}
-	println(page.Resource)
+	// page, err := sw.FindPageByPrettyURL("urlpath3")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// println(page.Resource)
+
+	// fe.GetCacheResources()
+	fe.SetupcacheNew()
+	fe.GenerateFingerprintedTemplate()
+	http.HandleFunc("/", pagesHandlerNew)
+	http.HandleFunc("/favicon.ico", faviconHandler)
+	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	http.HandleFunc("/json/", jsonHandler)
+	http.HandleFunc("/content/", contentHandler)
+	http.HandleFunc("/files/", filesHandler)
+	http.ListenAndServe(":8080", nil)
 
 	///////////////////////////////////////////
 	// getCacheResources()

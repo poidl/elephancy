@@ -72,15 +72,15 @@ func loadJSONStruct(filename string) (TemplateMap, error) {
 	return m, nil
 }
 
-func getCacheResources(fname string) TemplateMap {
-	m, err := mj.loadJSONStruct(templateCacheFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return m
-}
+// func GetCacheResources(fname string) TemplateMap {
+// 	m, err := loadJSONStruct(templateCacheFile)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	return m
+// }
 
-func setupcacheNew() {
+func SetupcacheNew() {
 	// check if file defining cache resources exists
 	tcf := resourcedir + "/" + templateCacheFile
 	_, err := os.Stat(tcf)
@@ -131,13 +131,15 @@ func setupcacheNew() {
 		resourceFP[k] = dest
 	}
 	// write to file holding fingerprinted resources
-	writeJson(tcffp, resourceFP)
+	mj.WriteJson(tcffp, resourceFP)
 }
 
-func generateFingerprintedTemplate() {
-	tmpl := template.New(path.Base(ftempl))
+func GenerateFingerprintedTemplate() {
+	ftmpl := resourcedir + "/" + templateCacheFile
+	ftmplFingerpr := fingerprintdir + "/" + templateCacheFileFingerprinted
+	tmpl := template.New(path.Base(ftmpl))
 	tmpl = tmpl.Delims("[[", "]]")
-	tmpl, err := tmpl.ParseFiles(ftempl)
+	tmpl, err := tmpl.ParseFiles(ftmpl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -146,7 +148,7 @@ func generateFingerprintedTemplate() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f, err := os.Create(ftemplFingerpr)
+	f, err := os.Create(ftmplFingerpr)
 	err = tmpl.Execute(f, &cachedat)
 	if err != nil {
 		log.Fatal(err)

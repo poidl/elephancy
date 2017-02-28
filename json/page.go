@@ -22,10 +22,14 @@
 
 package myjson
 
+type Links struct {
+	Self string
+}
+
 type Page struct {
 	Id int64 `json:"id,omitempty"`
 
-	Resource string `json:"resource,omitempty"`
+	Links Links `json:"links,omitempty"`
 
 	Prettyurl string `json:"prettyurl,omitempty"`
 

@@ -76,7 +76,7 @@ definitions:
     type: object
     required:
       - id
-      - resource
+      - links
       - prettyurl
       - linkname
       - linkweight
@@ -85,8 +85,8 @@ definitions:
       id:
         type: integer
         format: int64
-      resource:
-        type: string
+      links:
+        "$ref": "#/definitions/links"
       prettyurl:
         type: string
       linkname:
@@ -95,6 +95,13 @@ definitions:
         type: string
       metatitle:
         type: string
+  links:
+    type: object
+    required:
+      - self
+    properties:
+      self:
+        type: string 
   errorModel:
     type: object
     required:

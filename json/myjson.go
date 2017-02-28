@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"sort"
 	"time"
@@ -57,7 +58,7 @@ func LoadJSONnew(filename string) (ia, error) {
 	// return m, nil
 }
 
-func writeJson(filename string, msi map[string]interface{}) {
+func WriteJson(filename string, msi map[string]interface{}) {
 
 	data, err := json.Marshal(msi)
 	err = ioutil.WriteFile(filename, data, 0644)
@@ -114,7 +115,7 @@ func (pcoll *msi) ContentURLToPage(contenturl string) (page, error) {
 func (pcoll *ia) PrettyURLToPage(prettyURL string) (Page, error) {
 	// TODO: return error in case it doesn't find anything
 	for _, page := range *pcoll {
-		if "/"+prettyURL == page.Prettyurl {
+		if prettyURL == page.Prettyurl {
 			return page, nil
 		}
 	}
@@ -183,6 +184,28 @@ func GetTemplateData(urlpath string) (map[string]interface{}, time.Time, error) 
 	blab["Content"] = template.HTML(string(content))
 	blab["Metatitle"] = page["Metatitle"].(string)
 	return blab, modtime, err
+}
+
+// func GetTemplateDataNew(p Page) (map[string]interface{}, time.Time, error) {
+func GetTemplateDataNew(p Page) {
+
+	// if err != nil {
+	// 	return nil, time.Time{}, err
+	// }
+	resp, err := http.Get(":8088" + p.Links.Self)
+	if err != nil {
+		log.Fatal("Cannot get resource.")
+	}
+	for k := range resp.Header {
+		println(k)
+	}
+	// println(resp.Header[""])
+	// blab := make(map[string]interface{})
+	// // arr := pcoll.toArray()
+	// // blab["Pages"] = arr
+	// blab["Content"] = template.HTML(string(content))
+	// // blab["Metatitle"] = page["Metatitle"].(string)
+	// return blab, modtime, err
 }
 
 func readContent(filename string) ([]byte, time.Time, error) {
