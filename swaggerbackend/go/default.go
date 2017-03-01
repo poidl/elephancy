@@ -49,3 +49,7 @@ func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(page)
 }
+
+func ContentServer(w http.ResponseWriter, r *http.Request) {
+	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
+}

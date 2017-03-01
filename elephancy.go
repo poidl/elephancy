@@ -14,6 +14,7 @@ import (
 )
 
 var pathFavicon = "staticcache/favicon.ico"
+var backendIpPort = "http://127.0.0.1:8088"
 
 // this is modified from package http
 func ifNotModifiedResponse(w http.ResponseWriter, r *http.Request, modtime time.Time) bool {
@@ -147,7 +148,18 @@ func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	println(page.Links.Self)
-	mj.GetTemplateDataNew(page)
+	resp, err := http.Get(backendIpPort + page.Links.Self)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for k, v := range resp.Header {
+		println(k + ":")
+		for _, e := range v {
+			print(e + " ** ")
+			println()
+		}
+	}
+	// mj.GetTemplateDataNew(page)
 }
 
 func main() {
