@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"io/ioutil"
 	"log"
 	fe "mystuff/elephancy/frontend"
 	mj "mystuff/elephancy/json"
@@ -148,7 +149,9 @@ func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	println(page.Links.Self)
-	resp, err := http.Get(backendIpPort + page.Links.Self)
+	addr := backendIpPort + page.Links.Self
+	println(addr)
+	resp, err := http.Get(addr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -159,6 +162,9 @@ func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
 			println()
 		}
 	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	print(string(body))
 	// mj.GetTemplateDataNew(page)
 }
 

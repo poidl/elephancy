@@ -51,5 +51,7 @@ func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 }
 
 func ContentServer(w http.ResponseWriter, r *http.Request) {
+	// No caching. Client must ask every time if there is a modified version.
+	w.Header().Add("Cache-Control", "no-cache")
 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 }

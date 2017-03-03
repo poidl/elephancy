@@ -46,7 +46,7 @@ var routes = Routes{
 	Route{
 		"ContentServer",
 		"GET",
-		"/api/content",
+		"/api/content/",
 		ContentServer,
 	},
 }
