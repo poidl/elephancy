@@ -148,20 +148,20 @@ func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	println(page.Links.Self)
 	addr := backendIpPort + page.Links.Self
-	println(addr)
 	resp, err := http.Get(addr)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for k, v := range resp.Header {
-		println(k + ":")
-		for _, e := range v {
-			print(e + " ** ")
-			println()
-		}
-	}
+	lastmodified, _ := http.ParseTime(resp.Header.Get("Last-Modified"))
+
+	// for k, v := range resp.Header {
+	// 	println(k + ":")
+	// 	for _, e := range v {
+	// 		print(e + " ** ")
+	// 		println()
+	// 	}
+	// }
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	print(string(body))
