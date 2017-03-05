@@ -148,24 +148,121 @@ func pagesHandlerNew(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	addr := backendIpPort + page.Links.Self
-	resp, err := http.Get(addr)
+	contentaddr := backendIpPort + page.Links.Self
+	resp, err := http.Get(contentaddr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	lastmodified, _ := http.ParseTime(resp.Header.Get("Last-Modified"))
 
-	// for k, v := range resp.Header {
-	// 	println(k + ":")
-	// 	for _, e := range v {
-	// 		print(e + " ** ")
-	// 		println()
-	// 	}
+	f, err := os.Open(ftemplFingerpr)
+	defer f.Close()
+
+	// check if  frame as been modified
+	fi, err := f.Stat()
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	modtimeTemplate := fi.ModTime()
+	if modtimeTemplate.After(lastmodified) {
+		lastmodified = modtimeTemplate
+	}
+	if ifNotModifiedResponse(w, r, lastmodified) {
+		return
+	}
+
+	// // fill template
+	// templ, err := template.ParseFiles(ftemplFingerpr)
+	// if err != nil {
+	// 	http.NotFound(w, r)
+	// 	return
 	// }
+	// 	templ.Execute(w, &templdat)
+	// 	if err != nil {
+	// 		http.NotFound(w, r)
+	// 		return
+	// 	}
+	// 	if err != nil {
+	// 		return
+	// 	} // for k, v := range resp.Header {
+	// 	// 	println(k + ":")
+	// 	// 	for _, e := range v {
+	// 	// 		print(e + " ** ")
+	// 	// 		println()
+	// 	// 	}
+	// 	// }
+	// 	defer resp.Body.Close()
+	// 	body, _ := ioutil.ReadAll(resp.Body)
+	// 	print(string(body))
+	// 	// mj.GetTemplateDataNew(page)
+}
+
+func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r *http.Request) {
+	println("Page: " + page.Prettyurl)
+	// get the content
+	contentaddr := backendIpPort + page.Links.Self
+	resp, err := http.Get(contentaddr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// check when content was last modified
+	lastmodified, _ := http.ParseTime(resp.Header.Get("Last-Modified"))
+
+	// check when template was last modified
+	f, err := os.Open(ftemplFingerpr)
+	defer f.Close()
+	fi, err := f.Stat()
+	if err != nil {
+		log.Fatal(err)
+	}
+	modtimeTemplate := fi.ModTime()
+
+	// check if template is newer than content
+	if modtimeTemplate.After(lastmodified) {
+		lastmodified = modtimeTemplate
+	}
+	// read content
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	print(string(body))
-	// mj.GetTemplateDataNew(page)
+	templdat := make(map[string]interface{})
+	templdat["Pages"] = pages
+	println("Body: ***********:" + string(body))
+	templdat["Content"] = template.HTML(string(body))
+	templdat["Metatitle"] = page.Metatitle
+
+	// fill template
+	templ, err := template.ParseFiles(ftemplFingerpr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		// send not modified if both template and content are older
+		if ifNotModifiedResponse(w, r, lastmodified) {
+			return
+		}
+
+		templ.Execute(w, &templdat)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		if err != nil {
+			return
+		}
+	}
+}
+
+func addHandleFuncs() {
+	pages, err := sw.ListPages()
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, page := range pages {
+		http.HandleFunc(page.Prettyurl, makeHandleFunc(pages, page))
+	}
 }
 
 func main() {
@@ -190,8 +287,9 @@ func main() {
 
 	// fe.GetCacheResources()
 	fe.SetupcacheNew()
-	fe.GenerateFingerprintedTemplate()
-	http.HandleFunc("/", pagesHandlerNew)
+	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
+	addHandleFuncs()
+	// http.HandleFunc("/", pagesHandlerNew)
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)

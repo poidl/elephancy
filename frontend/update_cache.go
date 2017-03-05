@@ -134,9 +134,9 @@ func SetupcacheNew() {
 	mj.WriteJson(tcffp, resourceFP)
 }
 
-func GenerateFingerprintedTemplate() {
-	ftmpl := resourcedir + "/" + templateCacheFile
-	ftmplFingerpr := fingerprintdir + "/" + templateCacheFileFingerprinted
+func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
+	// ftmpl := resourcedir + "/" + templateCacheFile
+	// ftmplFingerpr := fingerprintdir + "/" + templateCacheFileFingerprinted
 	tmpl := template.New(path.Base(ftmpl))
 	tmpl = tmpl.Delims("[[", "]]")
 	tmpl, err := tmpl.ParseFiles(ftmpl)
@@ -148,6 +148,7 @@ func GenerateFingerprintedTemplate() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// log.Fatal("debug")
 	f, err := os.Create(ftmplFingerpr)
 	err = tmpl.Execute(f, &cachedat)
 	if err != nil {

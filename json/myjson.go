@@ -59,7 +59,6 @@ func LoadJSONnew(filename string) (ia, error) {
 }
 
 func WriteJson(filename string, msi map[string]interface{}) {
-
 	data, err := json.Marshal(msi)
 	err = ioutil.WriteFile(filename, data, 0644)
 	if err != nil {

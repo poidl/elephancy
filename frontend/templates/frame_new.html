@@ -36,7 +36,7 @@
         <nav class="navdrawer" id="leftDrawer">
           <ul>
               {{ range $element := .Pages }}
-              <li><a class="xhr" href="{{ $element.Urlpath }}"> {{ $element.Linkname }} </a></li>
+              <li><a class="xhr" href="{{ $element.Prettyurl }}"> {{ $element.Linkname }} </a></li>
               {{ end }}
           </ul>
         </nav>
