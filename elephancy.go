@@ -204,6 +204,24 @@ func bla(r *http.Response) error {
 	return nil
 }
 
+func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ajax := r.Header.Get("myheader")
+		if ajax == "XMLHttpRequest" {
+			rp.ServeHTTP(w, r)
+		} else {
+			log.Fatal("This is broken")
+			// // fill in content
+			// println(r.URL.Path)
+			// page, err := sw.FindPageByPrettyURL(r.URL.Path)
+			// if err != nil {
+			// 	http.NotFound(w, r)
+			// }
+			// http.Redirect(w, r, page.Prettyurl, 302)
+		}
+	}
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
@@ -224,7 +242,7 @@ func main() {
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
-	http.Handle("/api/content/", frontendProxy)
+	http.HandleFunc("/api/content/", makeContentHandler(frontendProxy))
 	http.HandleFunc("/files/", filesHandler)
 	http.ListenAndServe(":8080", nil)
 
