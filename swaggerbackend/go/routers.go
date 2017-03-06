@@ -52,11 +52,12 @@ var routes = Routes{
 }
 
 func MyRouter() http.Handler {
+	sm := http.NewServeMux()
 	for _, route := range routes {
 		f := MyLogger(route.HandlerFunc, route.Name)
-		http.HandleFunc(route.Pattern, f)
+		sm.HandleFunc(route.Pattern, f)
 	}
-	return http.DefaultServeMux
+	return sm
 }
 
 // type Route struct {

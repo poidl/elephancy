@@ -162,3 +162,8 @@ func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
 	err = json.Unmarshal(b.Bytes(), &successPayload)
 	return *successPayload, err
 }
+
+// func ContentServer(w http.ResponseWriter, r *http.Request) {
+// 	// No caching policy here. Must be handled by frontend.
+// 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
+// }
