@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -114,16 +116,16 @@ func filesHandler(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 }
 
-func defaultHandler(w http.ResponseWriter, r *http.Request) {
-	// if path is "/" or "/index.html"
-	if rootPath.MatchString(r.URL.Path) {
-		r.URL.Path = "/"
-		pagesHandler(w, r)
-		return
-	}
-	http.NotFound(w, r)
-	return
-}
+// func defaultHandler(w http.ResponseWriter, r *http.Request) {
+// 	// if path is "/" or "/index.html"
+// 	if rootPath.MatchString(r.URL.Path) {
+// 		r.URL.Path = "/"
+// 		pagesHandler(w, r)
+// 		return
+// 	}
+// 	http.NotFound(w, r)
+// 	return
+// }
 
 func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r *http.Request) {
 
@@ -163,20 +165,24 @@ func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r
 	if err != nil {
 		log.Fatal(err)
 	}
+	var b bytes.Buffer
+	bw := bufio.NewWriter(&b)
+	templ.Execute(bw, &templdat)
+	bw.Flush()
 	return func(w http.ResponseWriter, r *http.Request) {
-
+		if page.Prettyurl != r.URL.Path {
+			http.NotFound(w, r)
+			return
+		}
+		println("**************** contentaddr: " + contentaddr)
 		// send not modified if both template and content are older
 		if ifNotModifiedResponse(w, r, lastmodified) {
 			return
 		}
-
-		templ.Execute(w, &templdat)
+		w.Write(b.Bytes())
 		w.Header().Add("Cache-Control", "no-cache")
 		if err != nil {
 			http.NotFound(w, r)
-			return
-		}
-		if err != nil {
 			return
 		}
 	}
@@ -188,12 +194,13 @@ func addHandleFuncs() {
 	// using the API function
 	// page, err := sw.FindPageByPrettyURL(r.URL.Path)
 	// Would be easier to handle created/deleted pages that way, since it's
-	// necessary to (un-) register handler functions.
+	// necessary to (un-) register handler functions. But slower.
 	pages, err := sw.ListPages()
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, page := range pages {
+		println("ppppppppppppppppppppP: " + page.Prettyurl)
 		http.HandleFunc(page.Prettyurl, makeHandleFunc(pages, page))
 	}
 }
@@ -210,14 +217,14 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 		if ajax == "XMLHttpRequest" {
 			rp.ServeHTTP(w, r)
 		} else {
-			log.Fatal("This is broken")
-			// // fill in content
-			// println(r.URL.Path)
-			// page, err := sw.FindPageByPrettyURL(r.URL.Path)
-			// if err != nil {
-			// 	http.NotFound(w, r)
-			// }
-			// http.Redirect(w, r, page.Prettyurl, 302)
+			// log.Fatal("This is broken")
+			// fill in content
+			println(r.URL.Path)
+			page, err := sw.FindPageByPrettyURL(r.URL.Path)
+			if err != nil {
+				http.NotFound(w, r)
+			}
+			http.Redirect(w, r, page.Prettyurl, 302)
 		}
 	}
 }
