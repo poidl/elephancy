@@ -37,18 +37,36 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-	pcoll, err := mj.LoadJSONnew(filename)
+	pages, err := mj.LoadPages(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	v := r.URL.Query()
-	page, err := pcoll.PrettyURLToPage(v.Get("prettyurl"))
+	// page, err := pages.PrettyURLToPage(v.Get("prettyurl"))
+	page, err := pages.GetPageByPrettyURL(v.Get("prettyurl"))
 	if err != nil {
 		// println("notfound*****************************")
 		http.NotFound(w, r)
 	}
 	json.NewEncoder(w).Encode(page)
 }
+
+// func FindPageByLink(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	pcoll, err := mj.LoadJSONnew(filename)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	v := r.URL.Query()
+// 	println("********************Hello")
+// 	page, err := pcoll.FindPageByKeyValue("Prettyurl", v.Get("prettyurl"))
+// 	if err != nil {
+// 		// println("notfound*****************************")
+// 		http.NotFound(w, r)
+// 	}
+// 	json.NewEncoder(w).Encode(page)
+// }
 
 func ContentServer(w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.

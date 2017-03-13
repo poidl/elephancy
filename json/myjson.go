@@ -12,7 +12,7 @@ import (
 )
 
 type msi map[string]interface{}
-type ia []Page
+type Pages []Page
 type page map[string]interface{}
 type errorString struct {
 	s string
@@ -40,7 +40,7 @@ func LoadJSONmsi(filename string) (msi, error) {
 	return m, nil
 }
 
-func LoadJSONnew(filename string) (ia, error) {
+func LoadPages(filename string) (Pages, error) {
 
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -111,7 +111,7 @@ func (pcoll *msi) ContentURLToPage(contenturl string) (page, error) {
 	return nil, &errorString{"Page not found"}
 }
 
-func (pcoll *ia) PrettyURLToPage(prettyURL string) (Page, error) {
+func (pcoll *Pages) PrettyURLToPage(prettyURL string) (Page, error) {
 	// TODO: return error in case it doesn't find anything
 	for _, page := range *pcoll {
 		if prettyURL == page.Prettyurl {
@@ -120,6 +120,39 @@ func (pcoll *ia) PrettyURLToPage(prettyURL string) (Page, error) {
 	}
 	return Page{}, &errorString{"Page not found"}
 }
+func (pages *Pages) GetPageByPrettyURL(prettyURL string) (Page, error) {
+	// TODO: return error in case it doesn't find anything
+	for _, page := range *pages {
+		if prettyURL == page.Prettyurl {
+			return page, nil
+		}
+	}
+	return Page{}, &errorString{"Page not found"}
+}
+
+// func (pages *Pages) FindPageByKeyValue(key string, value string) (Page, error) {
+// 	// TODO: return error in case it doesn't find anything
+// 	for _, page := range *pages {
+// 		v := reflect.ValueOf(page)
+// 		st := reflect.TypeOf(page)
+
+// 		keys := make([]interface{}, v.NumField())
+// 		values := make([]interface{}, v.NumField())
+
+// 		for i := 0; i < v.NumField(); i++ {
+// 			field := v.Field(i)
+// 			values[i] = field.Interface()
+// 			field = st.Field(i)
+// 			println(field.Tag.Get(key))
+// 		}
+
+// 		fmt.Println(values)
+// 		// if prettyURL == page.Prettyurl {
+// 		// 	return page, nil
+// 		// }
+// 	}
+// 	return Page{}, &errorString{"Page not found"}
+// }
 
 func ContentURLToUrlpath(contenturl string) (string, error) {
 	filename := "./json/pages.json"

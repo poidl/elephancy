@@ -163,6 +163,32 @@ func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
 	return *successPayload, err
 }
 
+func FindPageByLink(link string) (mj.Page, error) {
+	var httpMethod = "GET"
+	// create path and map variables
+	path := basepath + "/pages/FindPageByPrettyURL"
+
+	var successPayload = new(mj.Page)
+	v := url.Values{}
+	v.Set("prettyurl", link)
+	httpResponse, err := callAPI(path, httpMethod, v)
+	if err != nil {
+		return *successPayload, err
+	}
+	defer httpResponse.Body.Close()
+	if httpResponse.StatusCode == 404 {
+		return *successPayload, fmt.Errorf("Page not found")
+	}
+	var b bytes.Buffer
+	_, err = b.ReadFrom(httpResponse.Body)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	err = json.Unmarshal(b.Bytes(), &successPayload)
+	return *successPayload, err
+}
+
 // func ContentServer(w http.ResponseWriter, r *http.Request) {
 // 	// No caching policy here. Must be handled by frontend.
 // 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)

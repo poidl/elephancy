@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"html/template"
 	"io/ioutil"
 	"log"
 	fe "mystuff/elephancy/frontend"
-	mj "mystuff/elephancy/json"
 	sw "mystuff/elephancy/swagger"
 	swBackend "mystuff/elephancy/swaggerbackend/go"
 	"net/http"
@@ -47,44 +44,6 @@ var contentPath = regexp.MustCompile("^/content/([a-zA-Z0-9]+).html$")
 var ftempl = "./frontend/templates/frame_new.html"
 var ftemplFingerpr = "./frontend/templates/frame.html"
 
-func pagesHandler(w http.ResponseWriter, r *http.Request) {
-	templdat, modtime, err := mj.GetTemplateData(r.URL.Path)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	f, err := os.Open(ftemplFingerpr)
-	defer f.Close()
-
-	// check if  frame as been modified
-	fi, err := f.Stat()
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	modtimeTemplate := fi.ModTime()
-	if modtimeTemplate.After(modtime) {
-		modtime = modtimeTemplate
-	}
-
-	if ifNotModifiedResponse(w, r, modtime) {
-		return
-	}
-	templ, err := template.ParseFiles(ftemplFingerpr)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	templ.Execute(w, &templdat)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	if err != nil {
-		return
-	}
-}
-
 func staticcacheHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: catch direct requests to e.g. /staticcache/../
 	// fmt.Println("Handler: static")
@@ -116,28 +75,7 @@ func filesHandler(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 }
 
-// func defaultHandler(w http.ResponseWriter, r *http.Request) {
-// 	// if path is "/" or "/index.html"
-// 	if rootPath.MatchString(r.URL.Path) {
-// 		r.URL.Path = "/"
-// 		pagesHandler(w, r)
-// 		return
-// 	}
-// 	http.NotFound(w, r)
-// 	return
-// }
-
-func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r *http.Request) {
-
-	// get the content
-	contentaddr := backendIpPort + page.Links.Self
-	resp, err := http.Get(contentaddr)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// check when content was last modified
-	lastmodified, _ := http.ParseTime(resp.Header.Get("Last-Modified"))
+func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 
 	// check when template was last modified
 	f, err := os.Open(ftemplFingerpr)
@@ -148,38 +86,51 @@ func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r
 	}
 	modtimeTemplate := fi.ModTime()
 
-	// check if template is newer than content
-	if modtimeTemplate.After(lastmodified) {
-		lastmodified = modtimeTemplate
-	}
-	// read content
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	templdat := make(map[string]interface{})
-	templdat["Pages"] = pages
-	templdat["Content"] = template.HTML(string(body))
-	templdat["Metatitle"] = page.Metatitle
-
-	// fill template
-	templ, err := template.ParseFiles(ftemplFingerpr)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var b bytes.Buffer
-	bw := bufio.NewWriter(&b)
-	templ.Execute(bw, &templdat)
-	bw.Flush()
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		page, err := sw.FindPageByPrettyURL(r.URL.Path)
+		// TODO: necessary?
 		if page.Prettyurl != r.URL.Path {
 			http.NotFound(w, r)
 			return
 		}
-		println("**************** contentaddr: " + contentaddr)
+
+		pages, err := sw.ListPages()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// get the content
+		contentaddr := backendIpPort + page.Links.Self
+		resp, err := http.Get(contentaddr)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// check when content was last modified
+		lastmodified, _ := http.ParseTime(resp.Header.Get("Last-Modified"))
+
+		// check if template is newer than content
+		if modtimeTemplate.After(lastmodified) {
+			lastmodified = modtimeTemplate
+		}
 		// send not modified if both template and content are older
 		if ifNotModifiedResponse(w, r, lastmodified) {
 			return
 		}
-		w.Write(b.Bytes())
+
+		// read content
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		templdat := make(map[string]interface{})
+		templdat["Pages"] = pages
+		templdat["Content"] = template.HTML(string(body))
+		templdat["Metatitle"] = page.Metatitle
+
+		// fill template
+		templ, err := template.ParseFiles(ftemplFingerpr)
+
+		templ.Execute(w, &templdat)
 		w.Header().Add("Cache-Control", "no-cache")
 		if err != nil {
 			http.NotFound(w, r)
@@ -188,28 +139,11 @@ func makeHandleFunc(pages []mj.Page, page mj.Page) func(w http.ResponseWriter, r
 	}
 }
 
-func addHandleFuncs() {
-	// Is it good to set up routing for Prettyurls? Perhaps better to
-	// make a single handler and translate the Prettyurl to a page by
-	// using the API function
-	// page, err := sw.FindPageByPrettyURL(r.URL.Path)
-	// Would be easier to handle created/deleted pages that way, since it's
-	// necessary to (un-) register handler functions. But slower.
-	pages, err := sw.ListPages()
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, page := range pages {
-		println("ppppppppppppppppppppP: " + page.Prettyurl)
-		http.HandleFunc(page.Prettyurl, makeHandleFunc(pages, page))
-	}
-}
-
-func bla(r *http.Response) error {
-	// Client must ask every time if there is a modified version.
-	r.Header.Add("Cache-Control", "no-cache")
-	return nil
-}
+// func bla(r *http.Response) error {
+// 	// Client must ask every time if there is a modified version.
+// 	r.Header.Add("Cache-Control", "no-cache")
+// 	return nil
+// }
 
 func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -220,9 +154,10 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 			// log.Fatal("This is broken")
 			// fill in content
 			println(r.URL.Path)
-			page, err := sw.FindPageByPrettyURL(r.URL.Path)
+			page, err := sw.FindPageByLink(r.URL.Path)
 			if err != nil {
 				http.NotFound(w, r)
+				return
 			}
 			http.Redirect(w, r, page.Prettyurl, 302)
 		}
@@ -236,16 +171,12 @@ func main() {
 	go http.ListenAndServe(backendIpPort[len("http://"):], swBackend.MyRouter())
 	time.Sleep(300 * time.Millisecond)
 
-	// rpURL, err := url.Parse(backendServer.URL)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 	frontendProxy := httputil.NewSingleHostReverseProxy(backendURL)
 	// frontendProxy.ModifyResponse = bla
 	fe.SetupcacheNew()
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
-	addHandleFuncs()
-	// http.HandleFunc("/", pagesHandlerNew)
+	// addHandleFuncs()
+	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
