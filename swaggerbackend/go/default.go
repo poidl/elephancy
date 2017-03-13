@@ -34,22 +34,38 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./json/pages.json")
 }
 
-func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-	pages, err := mj.LoadPages(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	v := r.URL.Query()
-	// page, err := pages.PrettyURLToPage(v.Get("prettyurl"))
-	page, err := pages.GetPageByPrettyURL(v.Get("prettyurl"))
-	if err != nil {
-		// println("notfound*****************************")
-		http.NotFound(w, r)
-	}
-	json.NewEncoder(w).Encode(page)
-}
+// func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	pages, err := mj.LoadPages(filename)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	v := r.URL.Query()
+// 	// page, err := pages.PrettyURLToPage(v.Get("prettyurl"))
+// 	page, err := pages.GetPageByPrettyURL(v.Get("prettyurl"))
+// 	if err != nil {
+// 		// println("notfound*****************************")
+// 		http.NotFound(w, r)
+// 	}
+// 	json.NewEncoder(w).Encode(page)
+// }
+
+// func FindPageByLinksSelf(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	pages, err := mj.LoadPages(filename)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	page, err := pages.GetPageByLinksSelf(r.URL.Path)
+// 	println(page.Links.Self)
+// 	if err != nil {
+// 		// println("notfound*****************************")
+// 		http.NotFound(w, r)
+// 	}
+// 	json.NewEncoder(w).Encode(page)
+// }
 
 func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -72,27 +88,8 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 		}
 	}
-	println("****HELLO")
 	println(page.Links.Self)
 	if err != nil {
-		// println("notfound*****************************")
-		http.NotFound(w, r)
-	}
-	json.NewEncoder(w).Encode(page)
-}
-
-func FindPageByLinksSelf(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-	pages, err := mj.LoadPages(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	page, err := pages.GetPageByLinksSelf(r.URL.Path)
-	println("****HELLO")
-	println(page.Links.Self)
-	if err != nil {
-		// println("notfound*****************************")
 		http.NotFound(w, r)
 	}
 	json.NewEncoder(w).Encode(page)

@@ -61,51 +61,6 @@ func LoadPages(filename string) (Pages, error) {
 	// return m, nil
 }
 
-// // map2array orders page data into an array according linkweights. It takes a map[string]interface{}, which maps pagenames to pages. A page is a json object containing page data as unordered list of key:value pairs. It returns an array of these objects, which is sorted corresponding to the "Linkweight" keys of the page objects.
-// func (pcoll *msi) toArray() (arr []map[string]interface{}) {
-// 	// we need an array for iteration order. see http://blog.golang.org/go-maps-in-action
-// 	g := make(map[int]string)
-// 	for pname, page := range *pcoll {
-// 		pag := page.(map[string]interface{})
-// 		g[int(pag["Linkweight"].(float64))] = pname
-// 	}
-
-// 	var keys []int
-// 	for k := range g {
-// 		keys = append(keys, k)
-// 	}
-// 	sort.Ints(keys)
-
-// 	for _, k := range keys {
-// 		arr = append(arr, (*pcoll)[g[k]].(map[string]interface{}))
-// 	}
-// 	return arr
-// }
-
-// TODO: urlPathToPagename and contentURLToPagename almost same
-
-func (pcoll *msi) urlPathToPage(urlpath string) (page, error) {
-	// TODO: return error in case it doesn't find anything
-	for _, page := range *pcoll {
-		pag := page.(map[string]interface{})
-		if urlpath == pag["Urlpath"].(string) {
-			return pag, nil
-		}
-	}
-	return nil, &errorString{"Page not found"}
-}
-
-// func (pcoll *msi) ContentURLToPage(contenturl string) (page, error) {
-// 	// TODO: return error in case it doesn't find anything
-// 	for _, page := range *pcoll {
-// 		pag := page.(map[string]interface{})
-// 		if contenturl == pag["ContentUrl"].(string) {
-// 			return pag, nil
-// 		}
-// 	}
-// 	return nil, &errorString{"Page not found"}
-// }
-
 func (pages *Pages) GetPageByPrettyURL(prettyURL string) (Page, error) {
 	for _, page := range *pages {
 		if prettyURL == page.Prettyurl {

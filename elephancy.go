@@ -140,12 +140,6 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// func bla(r *http.Response) error {
-// 	// Client must ask every time if there is a modified version.
-// 	r.Header.Add("Cache-Control", "no-cache")
-// 	return nil
-// }
-
 func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ajax := r.Header.Get("myheader")
@@ -185,16 +179,4 @@ func main() {
 	http.HandleFunc("/files/", filesHandler)
 	http.ListenAndServe(":8080", nil)
 
-	///////////////////////////////////////////
-	// getCacheResources()
-	// setupcacheNew()
-	// // setupcache()
-	// generateFingerprintedTemplate()
-	// http.HandleFunc("/favicon.ico", faviconHandler)
-	// http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
-	// http.HandleFunc("/", pagesHandler)
-	// http.HandleFunc("/json/", jsonHandler)
-	// http.HandleFunc("/content/", contentHandler)
-	// http.HandleFunc("/files/", filesHandler)
-	// http.ListenAndServe(":8080", nil)
 }

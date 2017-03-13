@@ -136,58 +136,59 @@ func ListPages() ([]mj.Page, error) {
 	return *successPayload, err
 }
 
-// FindPageByPrettyURL returns page ID
-func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
-	var httpMethod = "GET"
-	// create path and map variables
-	path := basepath + "/pages/FindPageByPrettyURL"
+// // FindPageByPrettyURL returns page ID
+// func FindPageByPrettyURL(prettyurl string) (mj.Page, error) {
+// 	var httpMethod = "GET"
+// 	// create path and map variables
+// 	path := basepath + "/pages/FindPageByPrettyURL"
 
-	var successPayload = new(mj.Page)
-	v := url.Values{}
-	v.Set("prettyurl", prettyurl)
-	httpResponse, err := callAPI(path, httpMethod, v)
-	if err != nil {
-		return *successPayload, err
-	}
-	defer httpResponse.Body.Close()
-	if httpResponse.StatusCode == 404 {
-		return *successPayload, fmt.Errorf("Page not found")
-	}
-	var b bytes.Buffer
-	_, err = b.ReadFrom(httpResponse.Body)
-	if err != nil {
-		log.Fatal(err)
+// 	var successPayload = new(mj.Page)
+// 	v := url.Values{}
+// 	v.Set("prettyurl", prettyurl)
+// 	httpResponse, err := callAPI(path, httpMethod, v)
+// 	if err != nil {
+// 		return *successPayload, err
+// 	}
+// 	defer httpResponse.Body.Close()
+// 	if httpResponse.StatusCode == 404 {
+// 		return *successPayload, fmt.Errorf("Page not found")
+// 	}
+// 	var b bytes.Buffer
+// 	_, err = b.ReadFrom(httpResponse.Body)
+// 	if err != nil {
+// 		log.Fatal(err)
 
-	}
-	err = json.Unmarshal(b.Bytes(), &successPayload)
-	return *successPayload, err
-}
+// 	}
+// 	err = json.Unmarshal(b.Bytes(), &successPayload)
+// 	return *successPayload, err
+// }
 
-func FindPageByLinksSelf(link string) (mj.Page, error) {
-	var httpMethod = "GET"
-	// create path and map variables
-	path := basepath + "/pages/FindPageByLinksSelf"
-	println("****BELLO")
-	var successPayload = new(mj.Page)
-	v := url.Values{}
-	v.Set("prettyurl", link)
-	httpResponse, err := callAPI(path, httpMethod, v)
-	if err != nil {
-		return *successPayload, err
-	}
-	defer httpResponse.Body.Close()
-	if httpResponse.StatusCode == 404 {
-		return *successPayload, fmt.Errorf("Page not found")
-	}
-	var b bytes.Buffer
-	_, err = b.ReadFrom(httpResponse.Body)
-	if err != nil {
-		log.Fatal(err)
+// func FindPageByLinksSelf(link string) (mj.Page, error) {
+// 	var httpMethod = "GET"
+// 	// create path and map variables
+// 	path := basepath + "/pages/FindPageByLinksSelf"
+// 	println("****BELLO")
+// 	var successPayload = new(mj.Page)
+// 	v := url.Values{}
+// 	v.Set("prettyurl", link)
+// 	httpResponse, err := callAPI(path, httpMethod, v)
+// 	if err != nil {
+// 		return *successPayload, err
+// 	}
+// 	defer httpResponse.Body.Close()
+// 	if httpResponse.StatusCode == 404 {
+// 		return *successPayload, fmt.Errorf("Page not found")
+// 	}
+// 	var b bytes.Buffer
+// 	_, err = b.ReadFrom(httpResponse.Body)
+// 	if err != nil {
+// 		log.Fatal(err)
 
-	}
-	err = json.Unmarshal(b.Bytes(), &successPayload)
-	return *successPayload, err
-}
+// 	}
+// 	err = json.Unmarshal(b.Bytes(), &successPayload)
+// 	return *successPayload, err
+// }
+
 func FindPageByKeyValue(key string, value string) (mj.Page, error) {
 	var httpMethod = "GET"
 	// create path and map variables

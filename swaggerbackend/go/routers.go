@@ -38,23 +38,23 @@ var routes = Routes{
 		ListPages,
 	},
 	Route{
-		"FindPageByPrettyURL",
-		"GET",
-		"/api/pages/FindPageByPrettyURL",
-		FindPageByPrettyURL,
-	},
-	Route{
 		"ContentServer",
 		"GET",
 		"/api/content/",
 		ContentServer,
 	},
-	Route{
-		"FindPageByLinksSelf",
-		"GET",
-		"/api/pages/FindPageByLinksSelf",
-		FindPageByLinksSelf,
-	},
+	// Route{
+	// Route{
+	// 	"FindPageByPrettyURL",
+	// 	"GET",
+	// 	"/api/pages/FindPageByPrettyURL",
+	// 	FindPageByPrettyURL,
+	// },
+	// 	"FindPageByLinksSelf",
+	// 	"GET",
+	// 	"/api/pages/FindPageByLinksSelf",
+	// 	FindPageByLinksSelf,
+	// },
 	Route{
 		"FindPageByKeyValue",
 		"GET",
