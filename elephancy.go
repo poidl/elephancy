@@ -88,7 +88,8 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		page, err := sw.FindPageByPrettyURL(r.URL.Path)
+		// page, err := sw.FindPageByPrettyURL(r.URL.Path)
+		page, err := sw.FindPageByKeyValue("prettyurl", r.URL.Path)
 		// TODO: necessary?
 		if page.Prettyurl != r.URL.Path {
 			http.NotFound(w, r)
@@ -151,10 +152,10 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 		if ajax == "XMLHttpRequest" {
 			rp.ServeHTTP(w, r)
 		} else {
-			// log.Fatal("This is broken")
 			// fill in content
 			println(r.URL.Path)
-			page, err := sw.FindPageByLink(r.URL.Path)
+			page, err := sw.FindPageByKeyValue("linksself", r.URL.Path)
+			println(page.Links.Self)
 			if err != nil {
 				http.NotFound(w, r)
 				return

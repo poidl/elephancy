@@ -49,12 +49,18 @@ var routes = Routes{
 		"/api/content/",
 		ContentServer,
 	},
-	// Route{
-	// 	"FindPageByLink",
-	// 	"GET",
-	// 	"/api/pages/FindPageByLink",
-	// 	FindPageByLink,
-	// },
+	Route{
+		"FindPageByLinksSelf",
+		"GET",
+		"/api/pages/FindPageByLinksSelf",
+		FindPageByLinksSelf,
+	},
+	Route{
+		"FindPageByKeyValue",
+		"GET",
+		"/api/pages/FindPageByKeyValue",
+		FindPageByKeyValue,
+	},
 }
 
 func MyRouter() http.Handler {

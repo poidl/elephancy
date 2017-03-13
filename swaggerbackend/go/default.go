@@ -51,22 +51,52 @@ func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(page)
 }
 
-// func FindPageByLink(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-// 	pcoll, err := mj.LoadJSONnew(filename)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	v := r.URL.Query()
-// 	println("********************Hello")
-// 	page, err := pcoll.FindPageByKeyValue("Prettyurl", v.Get("prettyurl"))
-// 	if err != nil {
-// 		// println("notfound*****************************")
-// 		http.NotFound(w, r)
-// 	}
-// 	json.NewEncoder(w).Encode(page)
-// }
+func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+	pages, err := mj.LoadPages(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	vals := r.URL.Query()
+	var page mj.Page
+	for k, v := range vals {
+		if k == "prettyurl" {
+			page, err = pages.GetPageByPrettyURL(v[0])
+		} else if k == "linksself" {
+			page, err = pages.GetPageByLinksSelf(v[0])
+		} else {
+			http.NotFound(w, r)
+		}
+		if err != nil {
+			http.NotFound(w, r)
+		}
+	}
+	println("****HELLO")
+	println(page.Links.Self)
+	if err != nil {
+		// println("notfound*****************************")
+		http.NotFound(w, r)
+	}
+	json.NewEncoder(w).Encode(page)
+}
+
+func FindPageByLinksSelf(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+	pages, err := mj.LoadPages(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	page, err := pages.GetPageByLinksSelf(r.URL.Path)
+	println("****HELLO")
+	println(page.Links.Self)
+	if err != nil {
+		// println("notfound*****************************")
+		http.NotFound(w, r)
+	}
+	json.NewEncoder(w).Encode(page)
+}
 
 func ContentServer(w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.
