@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html id="frame">
+<head>
+<title id="metatitle"> Metatitle for Page1 </title>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="./frontend/staticcache/fingerprinted/mystyle_20170313_f9d2cff.css">
+</head>
+  <body>
+    <header class="app-bar">
+      
+      <span id="bartitlelink" class="bartitle">
+        <a href="/" class="xhr" style="color:black;  text-decoration:none">
+           Title1
+        </a>
+      </span>
+        <button class="menu">
+<img src="./frontend/staticcache/fingerprinted/pics/menu_20170313_1ce7531.png"></img>
+        </button>
+      </div>
+    </header>
+ 
+    <header class="title">
+      
+      <div class="bla">
+        <canvas id="canvasOne" width="250" height="100" style="vertical-align:middle">
+          Your browser does not support HTML5 Canvas.
+        </canvas>
+          <h1  id="titlelink">
+            <a href="/" class="xhr" style="color:black;  text-decoration:none">
+              Title2
+            </a>
+          </h1>
+      </div>
+    </header>
+    <div class="container" role="main">
+        <nav class="navdrawer" id="leftDrawer">
+          <ul>
+              
+              <li><a class="xhr" href="/"> Linkname1 </a></li>
+              
+              <li><a class="xhr" href="/urlpath2"> Linkname2 </a></li>
+              
+              <li><a class="xhr" href="/urlpath3"> Linkname3 </a></li>
+              
+          </ul>
+        </nav>
+        <div class="mainwindow" id="mainPanel">
+          <p> Content1 </p>
+
+        </div>
+    </div>
+  </body>
+<script src="./frontend/staticcache/fingerprinted/script_20170313_300c65f.js"></script>
+</html>
+
+
+

@@ -144,12 +144,18 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 	return func(w http.ResponseWriter, r *http.Request) {
 		ajax := r.Header.Get("myheader")
 		if ajax == "XMLHttpRequest" {
+			// why does adding the header here work? Could this be
+			// overwritten by backend? If yes, use
+			// frontendProxy.ModifyResponse = modrep
+			// in the main function and
+			// func modrep(r *http.Response) error {
+			// 	r.Header.Add("Cache-Control", "no-cache")
+			// 	return nil
+			// }
+			w.Header().Add("Cache-Control", "no-cache")
 			rp.ServeHTTP(w, r)
 		} else {
-			// fill in content
-			println(r.URL.Path)
 			page, err := sw.FindPageByKeyValue("linksself", r.URL.Path)
-			println(page.Links.Self)
 			if err != nil {
 				http.NotFound(w, r)
 				return
@@ -167,10 +173,9 @@ func main() {
 	time.Sleep(300 * time.Millisecond)
 
 	frontendProxy := httputil.NewSingleHostReverseProxy(backendURL)
-	// frontendProxy.ModifyResponse = bla
+
 	fe.SetupcacheNew()
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
-	// addHandleFuncs()
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
