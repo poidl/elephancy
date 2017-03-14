@@ -1,11 +1,32 @@
 [
     {
-      "Id": 123121,
-      "Resource": "content/test1.html",
+      "Id": 1,
+      "links": {
+        "self": "/api/content/test1.html"
+      },
       "Prettyurl": "/",
       "Linkname": "Linkname1",
       "Linkweight": "1",
       "Metatitle": "Metatitle for Page1"
+    },
+    {
+      "Id": 2,
+      "links": {
+        "self": "/api/content/test2.html"
+      },
+      "Prettyurl": "/urlpath2",
+      "Linkname": "Linkname2",
+      "Linkweight": "2",
+      "Metatitle": "Metatitle for Page2"
+    },
+    {
+      "Id": 3,
+      "links": {
+        "self": "/api/content/test3.html"
+      },
+      "Prettyurl": "/urlpath3",
+      "Linkname": "Linkname3",
+      "Linkweight": "3",
+      "Metatitle": "Metatitle for Page3"
     }
 ]
-

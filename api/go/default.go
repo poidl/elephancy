@@ -20,6 +20,8 @@ import (
 	"net/http"
 )
 
+var filename = "/home/stefan/programs/go/src/mystuff/elephancy/api/json/pages.json"
+
 type Default struct {
 }
 
@@ -31,7 +33,7 @@ func FindPageById(w http.ResponseWriter, r *http.Request) {
 
 func ListPages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	http.ServeFile(w, r, "./json/pages.json")
+	http.ServeFile(w, r, filename)
 }
 
 // func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +71,7 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 
 func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+
 	pages, err := mj.LoadPages(filename)
 	if err != nil {
 		log.Fatal(err)
