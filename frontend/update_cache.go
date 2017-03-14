@@ -49,31 +49,31 @@ func fingerprintFile(fname string) string {
 	return fout
 }
 
-type TemplateMap struct {
+type TemplateData struct {
 	Buttonpic  string
 	Script     string
 	Stylesheet string
 }
 
-// loadJsonStruct opens a json file and returns the contents as a struct
+// loadTemplateData opens a json file and returns the contents as a struct
 // TODO: handle errors
-func loadJSONStruct(filename string) (TemplateMap, error) {
+func loadTemplateData(filename string) (TemplateData, error) {
 
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return TemplateMap{}, err
+		return TemplateData{}, err
 	}
-	var m TemplateMap
+	var m TemplateData
 	err = json.Unmarshal(bytearr, &m)
 	if err != nil {
-		return TemplateMap{}, err
+		return TemplateData{}, err
 	}
 	return m, nil
 }
 
-func writeJSONStruct(templatemap TemplateMap, filename string) {
+func writeTemplateData(TemplateData TemplateData, filename string) {
 
-	data, err := json.Marshal(templatemap)
+	data, err := json.Marshal(TemplateData)
 	err = ioutil.WriteFile(filename, data, 0644)
 	if err != nil {
 		log.Fatal("Writing " + filename + " failed.")
@@ -118,7 +118,7 @@ func SetupcacheNew() {
 	cp(tcf, tcffp)
 
 	// load the resource data
-	resource, err := loadJSONStruct(tcf)
+	resource, err := loadTemplateData(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +127,7 @@ func SetupcacheNew() {
 	resource.Script = createFingerprintedResource(resource.Script)
 	resource.Stylesheet = createFingerprintedResource(resource.Stylesheet)
 	// write to file holding fingerprinted resources
-	writeJSONStruct(resource, tcffp)
+	writeTemplateData(resource, tcffp)
 }
 
 func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
@@ -138,7 +138,7 @@ func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
 		log.Fatal(err)
 	}
 	tcffp := fingerprintdir + "/" + templateCacheFileFingerprinted
-	cachedat, err := loadJSONStruct(tcffp)
+	cachedat, err := loadTemplateData(tcffp)
 	if err != nil {
 		log.Fatal(err)
 	}
