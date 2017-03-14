@@ -11,7 +11,7 @@
  * modified by S. Riha (2017)
  */
 
-package swaggerbe
+package api
 
 import (
 	"encoding/json"
@@ -97,5 +97,5 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 
 func ContentServer(w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.
-	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
+	http.StripPrefix("/api/content/", http.FileServer(http.Dir("./api/content"))).ServeHTTP(w, r)
 }

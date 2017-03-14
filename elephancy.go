@@ -4,9 +4,9 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
+	api "mystuff/elephancy/api/go"
 	fe "mystuff/elephancy/frontend"
 	sw "mystuff/elephancy/swagger"
-	swBackend "mystuff/elephancy/swaggerbackend/go"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -169,7 +169,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	backendURL, _ := url.Parse(backendIpPort)
-	go http.ListenAndServe(backendIpPort[len("http://"):], swBackend.MyRouter())
+	go http.ListenAndServe(backendIpPort[len("http://"):], api.MyRouter())
 	time.Sleep(300 * time.Millisecond)
 
 	frontendProxy := httputil.NewSingleHostReverseProxy(backendURL)

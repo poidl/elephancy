@@ -17,7 +17,7 @@
 *modified by S. Riha (2017)
 */
 
-package swaggerbe
+package api
 
 import "net/http"
 
