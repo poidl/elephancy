@@ -6,7 +6,6 @@ import (
 	"log"
 	api "mystuff/elephancy/api/go"
 	fe "mystuff/elephancy/frontend"
-	sw "mystuff/elephancy/swagger"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -15,7 +14,7 @@ import (
 	"time"
 )
 
-var pathFavicon = "staticcache/favicon.ico"
+var pathFavicon = "frontend/staticcache/resources/favicon.ico"
 var backendIpPort = "http://127.0.0.1:8088"
 
 // this is modified from package http
@@ -88,15 +87,15 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// page, err := sw.FindPageByPrettyURL(r.URL.Path)
-		page, err := sw.FindPageByKeyValue("prettyurl", r.URL.Path)
+		// page, err := fe.FindPageByPrettyURL(r.URL.Path)
+		page, err := fe.FindPageByKeyValue("prettyurl", r.URL.Path)
 		// TODO: necessary?
 		if page.Prettyurl != r.URL.Path {
 			http.NotFound(w, r)
 			return
 		}
 
-		pages, err := sw.ListPages()
+		pages, err := fe.ListPages()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -155,7 +154,7 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 			w.Header().Add("Cache-Control", "no-cache")
 			rp.ServeHTTP(w, r)
 		} else {
-			page, err := sw.FindPageByKeyValue("linksself", r.URL.Path)
+			page, err := fe.FindPageByKeyValue("linksself", r.URL.Path)
 			if err != nil {
 				http.NotFound(w, r)
 				return
