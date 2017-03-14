@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"io/ioutil"
 	"log"
-	mj "mystuff/elephancy/json"
 	"os"
 	"os/exec"
 	"path"
@@ -37,7 +36,7 @@ func mv(src string, dest string) {
 	}
 }
 
-func fingerprint(fname string) string {
+func fingerprintFile(fname string) string {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	cmd := "./scripts/fingerprint.sh"
 	args := []string{fname}
@@ -72,13 +71,35 @@ func loadJSONStruct(filename string) (TemplateMap, error) {
 	return m, nil
 }
 
-// func GetCacheResources(fname string) TemplateMap {
-// 	m, err := loadJSONStruct(templateCacheFile)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	return m
-// }
+func writeJSONStruct(templatemap TemplateMap, filename string) {
+
+	data, err := json.Marshal(templatemap)
+	err = ioutil.WriteFile(filename, data, 0644)
+	if err != nil {
+		log.Fatal("Writing " + filename + " failed.")
+	}
+}
+
+func createFingerprintedResource(name string) string {
+	// fingerprint resource
+	fpf := fingerprintFile(name)
+	fpffd, err := os.Stat(fpf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Copy to fingerprint directory
+	fpfBasename := fpffd.Name()
+	src := fpf
+	relpath := fpf[len(resourcedir) : len(fpf)-len(fpfBasename)]
+	err = os.MkdirAll(fingerprintdir+relpath, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+	dest := fingerprintdir + relpath + fpfBasename
+	mv(src, dest)
+	return dest
+}
 
 func SetupcacheNew() {
 	// check if file defining cache resources exists
@@ -97,46 +118,19 @@ func SetupcacheNew() {
 	cp(tcf, tcffp)
 
 	// load the resource data
-	resource, err := mj.LoadJSONmsi(tcf)
+	resource, err := loadJSONStruct(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// load the fingerprinted data
-	resourceFP, err := mj.LoadJSONmsi(tcffp)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for k, v := range resource {
-
-		// fingerprint resource
-		fpf := fingerprint(v.(string))
-		fpffd, err := os.Stat(fpf)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// Copy to fingerprint directory
-		fpfBasename := fpffd.Name()
-		src := fpf
-		relpath := fpf[len(resourcedir) : len(fpf)-len(fpfBasename)]
-		err = os.MkdirAll(fingerprintdir+relpath, 0755)
-		if err != nil {
-			log.Fatal(err)
-		}
-		dest := fingerprintdir + relpath + fpfBasename
-		mv(src, dest)
-		// update map
-		resourceFP[k] = dest
-	}
+	resource.Buttonpic = createFingerprintedResource(resource.Buttonpic)
+	resource.Script = createFingerprintedResource(resource.Script)
+	resource.Stylesheet = createFingerprintedResource(resource.Stylesheet)
 	// write to file holding fingerprinted resources
-	mj.WriteJson(tcffp, resourceFP)
+	writeJSONStruct(resource, tcffp)
 }
 
 func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
-	// ftmpl := resourcedir + "/" + templateCacheFile
-	// ftmplFingerpr := fingerprintdir + "/" + templateCacheFileFingerprinted
 	tmpl := template.New(path.Base(ftmpl))
 	tmpl = tmpl.Delims("[[", "]]")
 	tmpl, err := tmpl.ParseFiles(ftmpl)
