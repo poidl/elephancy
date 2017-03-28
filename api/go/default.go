@@ -80,22 +80,27 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	}
 	vals := r.URL.Query()
 	var page mj.Page
-	for k, v := range vals {
-		if k == "prettyurl" {
-			page, err = pages.GetPageByPrettyURL(v[0])
-		} else if k == "linksself" {
-			page, err = pages.GetPageByLinksSelf(v[0])
-		} else {
-			http.NotFound(w, r)
-		}
-		if err != nil {
-			http.NotFound(w, r)
-		}
-	}
-	println(page.Links.Self)
-	if err != nil {
+	switch vals["key"][0] {
+	case "prettyurl":
+		page, err = pages.GetPageByPrettyURL(vals["value"][0])
+	default:
 		http.NotFound(w, r)
 	}
+	// for k, v := range vals {
+	// 	if k == "prettyurl" {
+	// 		page, err = pages.GetPageByPrettyURL(v[0])
+	// 	} else if k == "linksself" {
+	// 		page, err = pages.GetPageByLinksSelf(v[0])
+	// 	} else {
+	// 		http.NotFound(w, r)
+	// 	}
+	// 	if err != nil {
+	// 		http.NotFound(w, r)
+	// 	}
+	// }
+	// if err != nil {
+	// 	http.NotFound(w, r)
+	// }
 	json.NewEncoder(w).Encode(page)
 }
 

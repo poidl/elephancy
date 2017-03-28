@@ -133,14 +133,6 @@ export class DefaultApi {
     public setApiKey(key: DefaultApiApiKeys, value: string) {
         this.authentications[DefaultApiApiKeys[key]].apiKey = value;
     }
-    // private extendObj<T1, T2>(objA: T1, objB: T2) {
-    //     for (let key in objB) {
-    //         if (objB.hasOwnProperty(key)) {
-    //             objA[key] = objB[key];
-    //         }
-    //     }
-    //     return <T1 & T2>objA;
-    // }
     private extendObj<T1, T2 extends T1>(objA: T2, objB: T2): T1 | T2 {
         for (let key in objB) {
             if (objB.hasOwnProperty(key)) {
@@ -250,27 +242,3 @@ export class DefaultApi {
         });
     }
 }
-
-let api = new DefaultApi()
-// let resp = api.listPages()
-// resp.then((r) => {
-//     //successMessage is whatever we passed in the resolve(...) function above.
-//     //It doesn't have to be a string, but if it is only a succeed message, it probably will be.
-//     console.log(r.body[0]);
-// }).catch(
-//     // Log the rejection reason
-//     (reason) => {
-//         console.log('Handle rejected promise (' + reason + ') here.');
-//     });
-
-async function list() {
-    try {
-        let r = await api.listPages()
-        console.log(r.body[0]);
-    }
-    catch(e) {
-        console.log('there was an error');
-        console.log(e); 
-    }
-}
-list()

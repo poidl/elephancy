@@ -193,10 +193,10 @@ func FindPageByKeyValue(key string, value string) (mj.Page, error) {
 	var httpMethod = "GET"
 	// create path and map variables
 	path := basepath + "/pages/FindPageByKeyValue"
-	println("****FINDPAGEBYKEYVALUE")
 	var successPayload = new(mj.Page)
 	v := url.Values{}
-	v.Set(key, value)
+	v.Set("key", key)
+	v.Add("value", value)
 	httpResponse, err := callAPI(path, httpMethod, v)
 	if err != nil {
 		return *successPayload, err

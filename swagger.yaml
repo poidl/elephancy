@@ -41,6 +41,11 @@ paths:
           description: Page property
           required: true
           type: string
+        - name: value
+          in: query
+          description: Value of page property
+          required: true
+          type: string
       responses:
         '200':
           description: return page

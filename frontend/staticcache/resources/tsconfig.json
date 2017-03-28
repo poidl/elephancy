@@ -3,7 +3,8 @@
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "target": "es5",
-        "lib": ["dom", "es2015.promise", "es5"]
+        "lib": ["dom", "es2015.promise", "es5"],
+        "outDir": "./jsbuild"
     },
     "include": [
         "./*"
