@@ -25,13 +25,14 @@ var filename = "/home/stefan/programs/go/src/mystuff/elephancy/api/json/pages.js
 type Default struct {
 }
 
-func FindPageById(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	// println("*************** Finding page by ID *****************")
-	w.WriteHeader(http.StatusOK)
-}
+// func FindPageById(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+// 	// println("*************** Finding page by ID *****************")
+// 	w.WriteHeader(http.StatusOK)
+// }
 
 func ListPages(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Cache-Control", "no-cache")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	http.ServeFile(w, r, filename)
 }
@@ -69,6 +70,7 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 // 	json.NewEncoder(w).Encode(page)
 // }
 
+// FindPageByKeyValue finds pages based on a single key-value pair of its properties
 func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -97,7 +99,8 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(page)
 }
 
-func ContentServer(w http.ResponseWriter, r *http.Request) {
+// FileServer serves files WITHOUT caching policy
+func FileServer(w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.
-	http.StripPrefix("/api/content/", http.FileServer(http.Dir("./api/content"))).ServeHTTP(w, r)
+	http.StripPrefix("/fileserver/", http.FileServer(http.Dir("./fileserver"))).ServeHTTP(w, r)
 }

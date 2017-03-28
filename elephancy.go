@@ -15,7 +15,7 @@ import (
 )
 
 var pathFavicon = "frontend/staticcache/resources/favicon.ico"
-var backendIpPort = "http://127.0.0.1:8088"
+var apiIPPort = "127.0.0.1:8088"
 
 // this is modified from package http
 func ifNotModifiedResponse(w http.ResponseWriter, r *http.Request, modtime time.Time) bool {
@@ -101,7 +101,7 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// get the content
-		contentaddr := backendIpPort + page.Links.Self
+		contentaddr := "http://" + apiIPPort + page.Links.Self
 		resp, err := http.Get(contentaddr)
 		if err != nil {
 			log.Fatal(err)
@@ -139,19 +139,10 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
+func makeFileServerHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ajax := r.Header.Get("myheader")
 		if ajax == "XMLHttpRequest" {
-			// why does adding the header here work? Could this be
-			// overwritten by backend? If yes, use
-			// frontendProxy.ModifyResponse = modrep
-			// in the main function and
-			// func modrep(r *http.Response) error {
-			// 	r.Header.Add("Cache-Control", "no-cache")
-			// 	return nil
-			// }
-			w.Header().Add("Cache-Control", "no-cache")
 			rp.ServeHTTP(w, r)
 		} else {
 			page, err := fe.FindPageByKeyValue("linksself", r.URL.Path)
@@ -164,22 +155,34 @@ func makeContentHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r
 	}
 }
 
+func makeAPIHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		rp.ServeHTTP(w, r)
+	}
+}
+
+func backendCacheDefault(r *http.Response) error {
+	r.Header.Add("Cache-Control", "no-cache")
+	return nil
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	backendURL, _ := url.Parse(backendIpPort)
-	go http.ListenAndServe(backendIpPort[len("http://"):], api.MyRouter())
+	backendURL, _ := url.Parse("http://" + apiIPPort)
+	go http.ListenAndServe(apiIPPort, api.MyRouter())
 	time.Sleep(300 * time.Millisecond)
 
 	frontendProxy := httputil.NewSingleHostReverseProxy(backendURL)
-
+	frontendProxy.ModifyResponse = backendCacheDefault
 	fe.SetupcacheNew()
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
-	http.HandleFunc("/api/content/", makeContentHandler(frontendProxy))
+	http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
+	http.HandleFunc("/api/", makeAPIHandler(frontendProxy))
 	http.HandleFunc("/files/", filesHandler)
 	http.ListenAndServe(":8080", nil)
 

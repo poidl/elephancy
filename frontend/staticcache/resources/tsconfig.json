@@ -1,6 +1,10 @@
 {
     "compilerOptions": {
-        "outDir": "./builtjs"
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "outDir": "./jsbuild",
+        "target": "ES6"
     },
     "include": [
         "./*"

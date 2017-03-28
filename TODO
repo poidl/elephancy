@@ -1,7 +1,11 @@
+Backend:
+*) /api/content/ shouldn't be part of the API, that's just a file server with resources
+
 Tests:
 *) non-existing path must return 404
 
 Bugs:
+*) /staticcache shouldn't be readable! only fingerprinted
 *) mobile: close menu when clicking on background
 *) requesting /robots.txt results in weirdness (only in chromium?) 
 *) Caching: If test1.html is updated and deployed, the old page gets loaded

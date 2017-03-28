@@ -38,10 +38,10 @@ var routes = Routes{
 		ListPages,
 	},
 	Route{
-		"ContentServer",
+		"FileServer",
 		"GET",
-		"/api/content/",
-		ContentServer,
+		"/fileserver/",
+		FileServer,
 	},
 	// Route{
 	// Route{
