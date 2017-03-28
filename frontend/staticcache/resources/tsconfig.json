@@ -1,10 +1,9 @@
 {
     "compilerOptions": {
-        "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
-        "outDir": "./jsbuild",
-        "target": "ES6"
+        "target": "es5",
+        "lib": ["dom", "es2015.promise", "es5"]
     },
     "include": [
         "./*"
