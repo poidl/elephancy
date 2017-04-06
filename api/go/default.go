@@ -75,6 +75,8 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	pages, err := mj.LoadPages(filename)
+	// println(pages[0].Prettyurl + "****************************")
+	// println(pages[0].Links[0].Rel)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,6 +103,7 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	// if err != nil {
 	// 	http.NotFound(w, r)
 	// }
+	// json.NewEncoder(os.Stdout).Encode(page)
 	json.NewEncoder(w).Encode(page)
 }
 

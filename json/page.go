@@ -22,9 +22,14 @@
 
 package myjson
 
-type Links struct {
-	Self string
+// type Link map[string]string
+
+type Link struct {
+	Rel  string `json:"rel,omitempty"`
+	Href string `json:"href,omitempty"`
 }
+
+type Links []Link
 
 type Page struct {
 	Id int64 `json:"id,omitempty"`

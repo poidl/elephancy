@@ -1,32 +1,35 @@
 [
     {
-      "Id": 1,
-      "links": {
-        "self": "/fileserver/test1.html"
-      },
-      "Prettyurl": "/",
-      "Linkname": "Linkname1",
-      "Linkweight": "1",
-      "Metatitle": "Metatitle for Page1"
+      "id": 1,
+      "links": [{
+        "rel": "self",
+        "href": "/fileserver/test1.html"
+      }],
+      "prettyurl": "/",
+      "linkname": "Linkname1",
+      "linkweight": "1",
+      "metatitle": "Metatitle for Page1"
     },
     {
-      "Id": 2,
-      "links": {
-        "self": "/fileserver/test2.html"
-      },
-      "Prettyurl": "/urlpath2",
-      "Linkname": "Linkname2",
-      "Linkweight": "2",
-      "Metatitle": "Metatitle for Page2"
+      "id": 2,
+      "links": [{
+        "rel": "self",
+        "href": "/fileserver/test2.html"
+      }],
+      "prettyurl": "/urlpath2",
+      "linkname": "Linkname2",
+      "linkweight": "2",
+      "metatitle": "Metatitle for Page2"
     },
     {
-      "Id": 3,
-      "links": {
-        "self": "/fileserver/test3.html"
-      },
-      "Prettyurl": "/urlpath3",
-      "Linkname": "Linkname3",
-      "Linkweight": "3",
-      "Metatitle": "Metatitle for Page3"
+      "id": 3,
+      "links": [{
+        "rel": "self",
+        "href": "/fileserver/test3.html"
+      }],
+      "prettyurl": "/urlpath3",
+      "linkname": "Linkname3",
+      "linkweight": "3",
+      "metatitle": "Metatitle for Page3"
     }
 ]

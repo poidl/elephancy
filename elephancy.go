@@ -101,7 +101,11 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// get the content
-		contentaddr := "http://" + apiIPPort + page.Links.Self
+		hrefSelf, err := page.GetLinkByRel("self")
+		if err != nil {
+			log.Fatal(err)
+		}
+		contentaddr := "http://" + apiIPPort + hrefSelf
 		resp, err := http.Get(contentaddr)
 		if err != nil {
 			log.Fatal(err)

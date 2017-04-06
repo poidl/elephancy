@@ -3,7 +3,7 @@ info:
   version: '0.1.0'
   title: Elephancy backend (Simple)
   description: Elephancy backend (Simple)
-host: example.com
+host: 127.0.0.1:8080
 basePath: /api
 schemes:
   - http
@@ -82,12 +82,19 @@ definitions:
       metatitle:
         type: string
   links:
+    type: array
+    items:
+      $ref: '#/definitions/link'
+  link:
     type: object
     required:
-      - self
+     - rel
+     - href
     properties:
-      self:
-        type: string 
+      rel:
+        type: string
+      href:
+        type: string
   errorModel:
     type: object
     required:
@@ -99,3 +106,4 @@ definitions:
         format: int32
       message:
         type: string
+        
