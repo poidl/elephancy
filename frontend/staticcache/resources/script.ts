@@ -1,7 +1,5 @@
-import request = require('request');
-import http = require('http');
-import { DefaultApi } from "./api";
-import { Page } from "./api";
+import { Api } from "./api";
+// import { Page } from "./api";
 import { Link } from "./api";
 
 
@@ -38,18 +36,21 @@ import { Link } from "./api";
 
 
 
-let api = new DefaultApi()
+let api = new Api()
 
 async function list() {
     try {
-        let r = await api.listPages()
-        let pages = r.body
+        let pages = await api.listPages()
+        console.log(pages)
+        console.log(pages[0].getLinkByRel('self'))
     }
     catch (e) {
         console.log('there was error an calling listPages');
         console.log(e);
     }
 }
+
+list()
 
 
 
@@ -127,75 +128,34 @@ async function list() {
 
 
 
-function getLinkByRel(page: Page, rel: string): string {
-    for (let l of page.links) {
-        if (l.rel === rel) {
-            return l.href
-        }
-    }
-    // throw new TypeError("Link not found: rel: self ");
-    return ''
-}
 
-interface bla extends Page {
-    getLinkByRel(rel: string): string;
-}
+// async function test() {
+//     try {
+//         let resp = await api.findPageByKeyValue("prettyurl", "/")
+//         let selflink = (<bla>resp.body).getLinkByRel('self')
 
+//         // let page2 = new Page2(resp.body)
+//         // let selflink = page2.getLinkByRel("self")
 
-// function applyMixins(p2: Page2, p: Page) {
-//     Object.getOwnPropertyNames(p).forEach(key => {
-//         p2[key] = p[key]
-//     })
-// }
+//         // let selflink = page.links.filter(bla("self"))[0].href
 
+//         console.log(selflink)
 
-// interface Page2 {
-//     getLinkByRel(rel: string): string;
-// }
-
-// class Page2 {
-//     constructor(page: Page) {
-//         applyMixins(this, page)
 //     }
-// }
-
-// Page2.prototype.getLinkByRel = function (this: Page, rel: string): string {
-//     for (let l of this.links) {
-//         if (l.rel === rel) {
-//             return l.href
-//         }
+//     catch (e) {
+//         console.log('there was error an calling ajax()');
+//         console.log(e);
 //     }
-//     // throw new TypeError("Link not found: rel: self ");
-//     return ''
+//     //     // metatitle = mapmap(pagesmap,["Urlpath",e.target.href],"Metatitle")
+//     //     // if (e.target.href != location.href) {
+//     //     //   swapMainwindow(contenturl);
+//     //     //   swapTitle(metatitle);
+//     //     //   history.pushState(null, null, e.target.href);
+//     //     // }
+//     // }
 // }
 
+// test()
 
-async function test() {
-    try {
-        let resp = await api.findPageByKeyValue("prettyurl", "/")
-        let selflink = (<bla>resp.body).getLinkByRel('self')
-
-        // let page2 = new Page2(resp.body)
-        // let selflink = page2.getLinkByRel("self")
-
-        // let selflink = page.links.filter(bla("self"))[0].href
-
-        console.log(selflink)
-
-    }
-    catch (e) {
-        console.log('there was error an calling ajax()');
-        console.log(e);
-    }
-    //     // metatitle = mapmap(pagesmap,["Urlpath",e.target.href],"Metatitle")
-    //     // if (e.target.href != location.href) {
-    //     //   swapMainwindow(contenturl);
-    //     //   swapTitle(metatitle);
-    //     //   history.pushState(null, null, e.target.href);
-    //     // }
-    // }
-}
-
-test()
 
 
