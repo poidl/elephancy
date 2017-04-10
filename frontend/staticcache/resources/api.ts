@@ -1,3 +1,6 @@
+import request = require('request');
+import http = require('http');
+
 let basepath = 'http://127.0.0.1:8080/api';
 
 export class Link {
@@ -61,34 +64,54 @@ export class Api {
      * Returns all pages
      */
     public listPages(): Promise<Array<Page>> {
-        return new Promise(function (resolve, reject) {
-            // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
-            let req = new XMLHttpRequest();
-            req.open('GET', basepath + '/pages');
-
-            req.onload = function () {
-                // This is called even on 404 etc
-                // so check the status
-                if (req.status == 200) {
-                    // Resolve the promise with the response text
-                    let obj = JSON.parse(req.response)
-                    resolve(obj.map(toPageArray))
+        return new Promise<Array<Page>>((resolve, reject) => {
+            request(basepath + '/pages', (error, response, body) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    if (response.statusCode >= 200 && response.statusCode <= 299) {
+                        let obj = JSON.parse(body)
+                        resolve(obj.map(toPageArray))
+                        // resolve(body);
+                    } else {
+                        reject({ response: response, body: body });
+                    }
                 }
-                else {
-                    // Otherwise reject with the status text
-                    // which will hopefully be a meaningful error
-                    reject(Error(req.statusText));
-                }
-            };
-
-            // Handle network errors
-            req.onerror = function () {
-                reject(Error("Network Error"));
-            };
-
-            // Make the request
-            req.send();
+            });
         });
+        // return new Promise(function (resolve, reject) {
+        //     // https://developers.google.com/web/fundamentals/getting-started/primers/promises#promisifying_xmlhttprequest
+            
+
+        //     request(basepath + '/pages', function(error, response, body) {
+        //         console.log(body);
+        //         });
+        //     let req = new XMLHttpRequest();
+        //     req.open('GET', basepath + '/pages');
+
+        //     req.onload = function () {
+        //         // This is called even on 404 etc
+        //         // so check the status
+        //         if (req.status == 200) {
+        //             // Resolve the promise with the response text
+        //             let obj = JSON.parse(req.response)
+        //             resolve(obj.map(toPageArray))
+        //         }
+        //         else {
+        //             // Otherwise reject with the status text
+        //             // which will hopefully be a meaningful error
+        //             reject(Error(req.statusText));
+        //         }
+        //     };
+
+        //     // Handle network errors
+        //     req.onerror = function () {
+        //         reject(Error("Network Error"));
+        //     };
+
+        //     // Make the request
+        //     req.send();
+        // });
 
     }
 }

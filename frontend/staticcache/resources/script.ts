@@ -3,45 +3,11 @@ import { Api } from "./api";
 import { Link } from "./api";
 
 
-// declare module "./api" {
-//     export interface Page {
-//         getLinkByRel(rel: string): string;
-//     }
-// }
-// Page.prototype.getLinkByRel = function(this: Page, rel: string): string {
-//     for (let l of this.links) {
-//         if (l.rel === 'self') {
-//             return l.href
-//         }
-//     }
-//     // throw new TypeError("Link not found: rel: self ");
-//     return ''
-// }
-
-// interface linkUtils {
-//     getLinkByRel(this: Page, rel: string): string;
-// }
-
-// class Page2 extends Page {
-//     getLinkByRel(this: this, rel: string): string {
-//         for (let l of this.links) {
-//             if (l.rel === 'self') {
-//                 return l.href
-//             }
-//         }
-//         // throw new TypeError("Link not found: rel: self ");
-//         return ''
-//     }
-// }
-
-
-
 let api = new Api()
 
 async function list() {
     try {
         let pages = await api.listPages()
-        console.log(pages)
         console.log(pages[0].getLinkByRel('self'))
     }
     catch (e) {
