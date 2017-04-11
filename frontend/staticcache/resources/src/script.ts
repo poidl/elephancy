@@ -1,22 +1,25 @@
-import { Api } from "./api";
-// import { Page } from "./api";
-import { Link } from "./api";
+// import { Api } from "./api";
+// // import { Page } from "./api";
+// import { Link } from "./api";
 
 
-let api = new Api()
+// let api = new Api()
 
-async function list() {
-    try {
-        let pages = await api.listPages()
-        console.log(pages[0].getLinkByRel('self'))
-    }
-    catch (e) {
-        console.log('there was error an calling listPages');
-        console.log(e);
-    }
-}
+// // async function list() {
+// //     try {
+// //         let pages = await api.listPages()
+// //         console.log(pages[0].getLinkByRel('self'))
+// //     }
+// //     catch (e) {
+// //         console.log('there was error an calling listPages');
+// //         console.log(e);
+// //     }
+// // }
 
-list()
+// // list()
+
+// api.test()
+
 
 
 
@@ -123,5 +126,27 @@ list()
 
 // test()
 
+
+import { Api } from "./api";
+// import { Page } from "./api";
+import { Link } from "./api";
+
+
+let api = new Api()
+
+// async function list() {
+//     try {
+//         let pages = await api.listPages()
+//         console.log(pages[0].getLinkByRel('self'))
+//     }
+//     catch (e) {
+//         console.log('there was error an calling listPages');
+//         console.log(e);
+//     }
+// }
+
+// list()
+
+api.test()
 
 

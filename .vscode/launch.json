@@ -8,8 +8,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${file}",
-            "outFiles": []
+            "program": "${workspaceRoot}/frontend/staticcache/resources/src/script.ts",
+            "outFiles": ["${workspaceRoot}/frontend/staticcache/resources/jsbuild/**/*.js"]
         },
         {
             "type": "node",

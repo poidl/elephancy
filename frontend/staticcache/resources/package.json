@@ -1,0 +1,17 @@
+{
+  "name": "resources",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scriptold.js",
+  "dependencies": {
+    "awesome-typescript-loader": "^3.1.2",
+    "source-map-loader": "^0.2.1",
+    "typescript": "^2.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
