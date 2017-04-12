@@ -5,6 +5,8 @@ Tests:
 *) non-existing path must return 404
 
 Bugs:
+*) If the file to be fingerprinted is not present, the following error message occurs: "update_cache.go:46: Error executing fingerprint in bash"
+    Find better error message
 *) /staticcache shouldn't be readable! only fingerprinted
 *) mobile: close menu when clicking on background
 *) requesting /robots.txt results in weirdness (only in chromium?) 

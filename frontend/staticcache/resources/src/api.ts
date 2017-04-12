@@ -80,25 +80,69 @@ export class Api {
     //     });
 
     // }
-    public test(): void {
-        let myoptions = {
+    public listPages(): Promise<Array<Page>> {
+        let options = {
             protocol: 'http:',
             hostname: host,
             port: port,
             path: basepath + '/pages',
         };
-        function cb(message: http.IncomingMessage) {
-            let body: string = ''
-            message.on('data', function (chunk) {
-                body += chunk;
-            });
-            message.on('end', function () {
-                let obj = JSON.parse(body)
-                let pa = obj.map(toPageArray)
-                console.log(pa)
-            });
-        }
 
-        http.request(myoptions, cb).end()
+
+        return make_request(options)
+            .then(get_code_body)
+            .then(parse, handle_servererr)
+        // .catch((err: Error) => {
+        //     console.log(err)
+        // })
     }
+}
+
+function make_request(options: any): Promise<http.IncomingMessage> {
+    let req = http.request(options)
+    req.end()
+    return new Promise<http.IncomingMessage>((resolve, reject) => {
+        req.on('response', function (message: http.IncomingMessage) {
+            resolve(message)
+        })
+        req.on('error', function (err: Error) {
+            reject(err)
+        })
+    })
+}
+
+function get_code_body(message: http.IncomingMessage): Promise<{ code: number, body: string }> {
+    let body: string = ''
+    let err: Error
+    message.on('error', function (err: Error) {
+        err = err
+    });
+    message.on('data', function (chunk) {
+        body += chunk;
+    });
+    let code = message.statusCode
+    return new Promise<{ code: number, body: string }>((resolve, reject) => {
+        if (err) {
+            reject(err)
+        }
+        message.on('end', function () {
+            if (code >= 200 && code <= 299) {
+                resolve({ code: code, body: body })
+            } else {
+                reject({ code: code, body: body })
+            }
+        });
+    })
+}
+
+function parse(obj: { code: number, body: string }): Promise<Array<Page>> {
+    return new Promise((resolve, reject) => {
+        let pages = JSON.parse(obj.body)
+        resolve(pages.map(toPageArray))
+    })
+}
+
+function handle_servererr(obj: { code: number, body: string }) {
+    let err = new Error('Server responded: ' + JSON.stringify(obj))
+    throw err
 }
