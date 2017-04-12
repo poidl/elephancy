@@ -85,13 +85,13 @@ export class Api {
             protocol: 'http:',
             hostname: host,
             port: port,
-            path: basepath + '/pages',
+            path: basepath + '/pag',
         };
 
 
         return make_request(options)
             .then(get_code_body)
-            .then(parse, handle_servererr)
+            .then(parse)
         // .catch((err: Error) => {
         //     console.log(err)
         // })
@@ -105,8 +105,10 @@ function make_request(options: any): Promise<http.IncomingMessage> {
         req.on('response', function (message: http.IncomingMessage) {
             resolve(message)
         })
+        // an error is thrown here if e.g. connection is refused (e.g. wrong port number)
         req.on('error', function (err: Error) {
-            reject(err)
+            console.log(err)
+            throw err
         })
     })
 }
@@ -123,13 +125,15 @@ function get_code_body(message: http.IncomingMessage): Promise<{ code: number, b
     let code = message.statusCode
     return new Promise<{ code: number, body: string }>((resolve, reject) => {
         if (err) {
-            reject(err)
+            console.log(err)
+            throw (err)
         }
         message.on('end', function () {
             if (code >= 200 && code <= 299) {
                 resolve({ code: code, body: body })
             } else {
-                reject({ code: code, body: body })
+                // shutdown
+                handle_nosuccess({ code: code, body: body })
             }
         });
     })
@@ -142,7 +146,7 @@ function parse(obj: { code: number, body: string }): Promise<Array<Page>> {
     })
 }
 
-function handle_servererr(obj: { code: number, body: string }) {
+function handle_nosuccess(obj: { code: number, body: string }) {
     let err = new Error('Server responded: ' + JSON.stringify(obj))
     throw err
 }
