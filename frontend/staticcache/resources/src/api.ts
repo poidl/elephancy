@@ -1,6 +1,4 @@
-// import request = require('request');
-import http = require('http')
-// import url = require('url')
+import * as req from "./myrequest";
 
 let host = '127.0.0.1';
 let port = 8080;
@@ -13,6 +11,9 @@ export class Link {
 }
 
 export class Links extends Array<Link> {
+}
+
+export class Pages extends Array<Page> {
 }
 
 interface PageRaw {
@@ -54,16 +55,36 @@ export class Page {
     [key: string]: any;
 }
 
+export class PagesContainer {
+    pages: Pages
+    // Array cannot be a super class
+    // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    constructor(pages: Pages) {
+        this.pages = pages
+    }
+    findPageByKeyValue = function(this: PagesContainer, key: string, value: any): Page {
+        let p = this.pages.filter(function(p: Page) {
+            return p[key] === value
+        })
+        return p[0]
+    }
+}
+
 function toPageArray(val: PageRaw): Page {
     return new Page(val)
 }
 
-
+function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
+    return new Promise((resolve, reject) => {
+        let pages = JSON.parse(obj.body)
+        resolve(pages.map(toPageArray))
+    })
+}
 
 export class Api {
 
-    // public listPages(): Promise<Array<Page>> {
-    //     return new Promise<Array<Page>>((resolve, reject) => {
+    // public listPages(): Promise<Pages> {
+    //     return new Promise<Pages>((resolve, reject) => {
     //         request(basepath + '/pages', (error, response, body) => {
     //             if (error) {
     //                 reject(error);
@@ -80,73 +101,21 @@ export class Api {
     //     });
 
     // }
-    public listPages(): Promise<Array<Page>> {
+    public listPages(): Promise<Pages> {
         let options = {
             protocol: 'http:',
             hostname: host,
             port: port,
-            path: basepath + '/pag',
+            path: basepath + '/pages',
         };
 
 
-        return make_request(options)
-            .then(get_code_body)
-            .then(parse)
+        return req.make_request(options)
+            .then(req.get_code_body)
+            .then(parse_pages)
         // .catch((err: Error) => {
         //     console.log(err)
         // })
     }
 }
 
-function make_request(options: any): Promise<http.IncomingMessage> {
-    let req = http.request(options)
-    req.end()
-    return new Promise<http.IncomingMessage>((resolve, reject) => {
-        req.on('response', function (message: http.IncomingMessage) {
-            resolve(message)
-        })
-        // an error is thrown here if e.g. connection is refused (e.g. wrong port number)
-        req.on('error', function (err: Error) {
-            console.log(err)
-            throw err
-        })
-    })
-}
-
-function get_code_body(message: http.IncomingMessage): Promise<{ code: number, body: string }> {
-    let body: string = ''
-    let err: Error
-    message.on('error', function (err: Error) {
-        err = err
-    });
-    message.on('data', function (chunk) {
-        body += chunk;
-    });
-    let code = message.statusCode
-    return new Promise<{ code: number, body: string }>((resolve, reject) => {
-        if (err) {
-            console.log(err)
-            throw (err)
-        }
-        message.on('end', function () {
-            if (code >= 200 && code <= 299) {
-                resolve({ code: code, body: body })
-            } else {
-                // shutdown
-                handle_nosuccess({ code: code, body: body })
-            }
-        });
-    })
-}
-
-function parse(obj: { code: number, body: string }): Promise<Array<Page>> {
-    return new Promise((resolve, reject) => {
-        let pages = JSON.parse(obj.body)
-        resolve(pages.map(toPageArray))
-    })
-}
-
-function handle_nosuccess(obj: { code: number, body: string }) {
-    let err = new Error('Server responded: ' + JSON.stringify(obj))
-    throw err
-}

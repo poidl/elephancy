@@ -1,128 +1,96 @@
-// import { Api } from "./api";
-// // import { Page } from "./api";
-// import { Link } from "./api";
-
-// var container = document.getElementById('leftDrawer');
-// container.addEventListener('click', navlink_clicked, false);
-
-
-// async function get_content(link: string) : Promise<{ response: http.ClientResponse; body: string;  }>{
-
-//     let requestOptions: request.Options = {
-//             method: 'GET',
-//             qs: '',
-//             headers: [{key: 'myheader', value: 'XMLHttpRequest'}],
-//             uri: link,
-//             useQuerystring: false,
-//             json: false,
-//         };
-//         return new Promise<{ response: http.ClientResponse; body: string;  }>((resolve, reject) => {
-//         request(requestOptions, (error, response, body) => {
-//             if (error) {
-//                 reject(error);
-//             } else {
-//                 if (response.statusCode >= 200 && response.statusCode <= 299) {
-//                     resolve({ response: response, body: body });
-//                 } else {
-//                     reject({ response: response, body: body });
-//                 }
-//             }
-//         });
-//     });
-// }
-
-
-
-
-
-
-
-
-// async function ajax(e) {
-//     console.log(e.target.pathname)
-//     // if ((e.target != e.currentTarget) && (e.target.className === "xhr")) {
-//         try {
-//             e.preventDefault();
-//             e.stopPropagation();
-//             let resp = await api.findPageByKeyValue("prettyurl", e.target.pathname)
-//             let selflink = resp.body.getLinkByRel('self')
-
-//             // let r = await get_content(link)
-//             // let body = r.body
-//             // console.log(body)
-
-//         }
-//         catch (e) {
-//             console.log('there was error an calling ajax()');
-//             console.log(e);
-//         }
-//     //     // metatitle = mapmap(pagesmap,["Urlpath",e.target.href],"Metatitle")
-//     //     // if (e.target.href != location.href) {
-//     //     //   swapMainwindow(contenturl);
-//     //     //   swapTitle(metatitle);
-//     //     //   history.pushState(null, null, e.target.href);
-//     //     // }
-//     // }
-// }
-
-// function navlink_clicked(e) {
-//     console.log('navlink_clicked')
-//     ajax(e);
-//     //   na vdrawer_toggle(); // close navdrawer after click, in case it is open
-// }
-
-
-
-
-// async function test() {
-//     try {
-//         let resp = await api.findPageByKeyValue("prettyurl", "/")
-//         let selflink = (<bla>resp.body).getLinkByRel('self')
-
-//         // let page2 = new Page2(resp.body)
-//         // let selflink = page2.getLinkByRel("self")
-
-//         // let selflink = page.links.filter(bla("self"))[0].href
-
-//         console.log(selflink)
-
-//     }
-//     catch (e) {
-//         console.log('there was error an calling ajax()');
-//         console.log(e);
-//     }
-//     //     // metatitle = mapmap(pagesmap,["Urlpath",e.target.href],"Metatitle")
-//     //     // if (e.target.href != location.href) {
-//     //     //   swapMainwindow(contenturl);
-//     //     //   swapTitle(metatitle);
-//     //     //   history.pushState(null, null, e.target.href);
-//     //     // }
-//     // }
-// }
-
-// test()
-
-
 import { Api } from "./api";
-// import { Page } from "./api";
+import { Page } from "./api";
+import { Pages } from "./api";
 import { Link } from "./api";
+import { PagesContainer } from "./api";
 
+import * as req from "./myrequest";
+
+let host = '127.0.0.1';
+let port = 8080;
+let basepath = '/api';
 
 let api = new Api()
 
-async function list() {
+let pages: Pages
+
+// attach listener to the entire drawer
+var container = document.getElementById('leftDrawer');
+
+async function attach_handlers() {
     try {
-        let pages = await api.listPages()
-        console.log(pages[0].getLinkByRel('self'))
+        pages = await api.listPages()
+        container.addEventListener('click', navlink_clicked, false);
     }
     catch (e) {
-        console.log('there was error an calling listPages');
+        console.log('there was error attaching the handlers to left drawer');
         console.log(e);
     }
 }
 
-list()
+attach_handlers()
 
-// api.test()
+
+function navlink_clicked(e: MouseEvent) {
+    console.log('navlink_clicked')
+    ajax(e);
+    //   na vdrawer_toggle(); // close navdrawer after click, in case it is open
+}
+
+async function ajax(e: MouseEvent) {
+    let a = (<HTMLAnchorElement>e.target)
+    if (a.className === 'xhr') {
+        e.preventDefault();
+        let p = new PagesContainer(pages)
+        let page = p.findPageByKeyValue('prettyurl', a.pathname)
+
+        // get page content
+        let link = page.getLinkByRel('self')
+        let options = {
+            protocol: 'http:',
+            hostname: host,
+            port: port,
+            path: link,
+            headers: { myheader: 'XMLHttpRequest' }
+        };
+        // No need to try/catch here since these throw errors if they fail.
+        // TODO: make sense?
+        let incoming = await req.make_request(options)
+        let obj = await req.get_code_body(incoming)
+
+        document.getElementById("mainPanel").innerHTML = obj.body
+        document.getElementById("metatitle").innerHTML = page.metatitle;
+        history.pushState(null, null, a.href);
+        // TODO: what does the next line do?
+        e.stopPropagation();
+    }
+}
+
+function navdrawer_close() {
+  appbarElement.classList.remove('open');
+  navdrawerContainer.classList.remove('open');
+}
+
+let navdrawerContainer = document.querySelector('.navdrawer');
+let appbarElement = document.querySelector('.app-bar');
+
+function navdrawer_toggle() {
+    console.log('toggeling')
+  let isOpen = navdrawerContainer.classList.contains('open');
+  if(isOpen) {
+    navdrawer_close();
+  } else {
+    appbarElement.classList.add('open');
+    navdrawerContainer.classList.add('open');
+  }
+}
+
+let menuBtn = document.querySelector('.menu');
+menuBtn.addEventListener('click', function() {
+  navdrawer_toggle();
+}, true);
+
+
+
 
 

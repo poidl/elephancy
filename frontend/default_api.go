@@ -116,7 +116,7 @@ import (
 var basepath = "http://127.0.0.1:8088/api"
 
 // ListPages lists pages
-func ListPages() ([]mj.Page, error) {
+func ListPages() (mj.Pages, error) {
 	var httpMethod = "GET"
 	// create path and map variables
 	path := basepath + "/pages"

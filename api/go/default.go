@@ -85,6 +85,7 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	switch vals["key"][0] {
 	case "prettyurl":
 		page, err = pages.GetPageByPrettyURL(vals["value"][0])
+
 	default:
 		http.NotFound(w, r)
 	}

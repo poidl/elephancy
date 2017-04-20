@@ -149,7 +149,11 @@ func makeFileServerHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter
 		if ajax == "XMLHttpRequest" {
 			rp.ServeHTTP(w, r)
 		} else {
-			page, err := fe.FindPageByKeyValue("linksself", r.URL.Path)
+			pages, err := fe.ListPages()
+			if err != nil {
+				log.Fatal(err)
+			}
+			page, err := pages.GetPageByLinksSelf(r.URL.Path)
 			if err != nil {
 				http.NotFound(w, r)
 				return
