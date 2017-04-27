@@ -7,7 +7,7 @@ to learn something about
 
 * http
 * server-side programming (currently Go)
-* client-side programming (Typescript/Javascript)
+* client-side programming (Typescript/Javascript/CSS/HTML)
 * possibly data bases in the future
 
 ### Instructions
