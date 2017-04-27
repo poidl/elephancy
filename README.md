@@ -1,14 +1,14 @@
 # elephancy
 
-A beginner's excercise in Go.
+A beginner's excercise in full-stack development.
 
-Elephancy is a tiny content display system. Currently, notable features are:
+Elephancy is a tiny content display system. The objective of this project is
+to learn something about
 
-* reinvents the wheel
-* ugly hack
-* needs restructuring
-
-It can only get better:)
+* http
+* server-side programming (currently Go)
+* client-side programming (Typescript/Javascript)
+* possibly data bases in the future
 
 ### Instructions
 
