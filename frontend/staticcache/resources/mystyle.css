@@ -22,7 +22,7 @@ body {
 }
 
 /* color if navbar is open */
-.app-bar.open {
+.app-bar[open=""] {
   background-color: #E0E0E0;
 }
 
@@ -64,12 +64,12 @@ body {
 }
 
 /* The outermost div is of class "container". "display: block" is default in chrome, don't know what this is good for.*/
-.container {
+.maincontainer {
   display: block;
   padding-top: 70px; /*must be equal to app-bar height PLUS padding!*/
 }
 
-.navdrawer {
+.linkcontainer {
   /*position: absolute;*//*positioned absolute, relative to the nearest positioned ancestor, which is, I guess, the document body?*//*Tried "width: 250px" instead of min/max, but then it gets squeezed if @media min-width is exceeded only slightly*/
   position: fixed;
   top: 70px;/*must be equal to app-bar height PLUS padding!*/
@@ -89,18 +89,18 @@ body {
   overflow-y: auto;/*For long link lists. If overflow is clipped, a scroll-bar should be added to see the rest of the content*/
 }
 
-.navdrawer.open {
+.linkcontainer[open=""] {
   /*transform: translate(0px,0);*/
   display: block;
 }
 
-.navdrawer ul {
+.linkcontainer ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-.navdrawer ul li a {
+.linkcontainer ul li a {
   display: block; /*always a column...don't know if necessary?*/
   height: 60px;
   padding: 0 20px; /*shorthand for: top and bottom: 0; left and right: 20px*/
@@ -143,24 +143,17 @@ h2, h3 {
 }
 
 
-
-
-
-    /*.mobile-hidden {
-      display: none;
-    }*/
-
   @media (min-width: 950px) {
     /* If the screen is wider then 500px, use Flexbox */
     .app-bar {
       display: none
     }
-    .container {
+    .maincontainer {
       display: flex;
       flex-flow: row nowrap;
       padding-top: 0; /* app-bar was removed */
     }
-    .navdrawer {
+    .linkcontainer {
       position: relative;
       top: 0;
       /* transition: none 0s ease-out; */
@@ -178,7 +171,7 @@ h2, h3 {
     }
 
     .mainwindow :first-child {
-      margin-top: 0; /* vertically align first line with upper edge of navdrawer box */
+      margin-top: 0; /* vertically align first line with upper edge of linkcontainer box */
     }
 
     .title {

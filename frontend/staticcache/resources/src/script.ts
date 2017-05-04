@@ -14,13 +14,15 @@ let api = new Api()
 
 let pages: Pages
 
-// attach listener to the entire drawer
-var container = document.getElementById('leftDrawer');
+var linkcontainer = document.querySelector('.linkcontainer');
 
-async function attach_handlers() {
+async function attach_ajax_handlers() {
     try {
         pages = await api.listPages()
-        container.addEventListener('click', navlink_clicked, false);
+        // Clicking on the links *before* data has arrived should reload the
+        // entire page. *After* data has arrived, attach the AJAX 'click' 
+        // event handler
+        linkcontainer.addEventListener('click', fetch_content, false);
     }
     catch (e) {
         console.log('there was error attaching the handlers to left drawer');
@@ -28,13 +30,12 @@ async function attach_handlers() {
     }
 }
 
-attach_handlers()
+attach_ajax_handlers()
 
 
-function navlink_clicked(e: MouseEvent) {
-    console.log('navlink_clicked')
+function fetch_content(e: MouseEvent) {
     ajax(e);
-    //   na vdrawer_toggle(); // close navdrawer after click, in case it is open
+    //   na vdrawer_toggle(); // close linkcontainer after click, in case it is open
 }
 
 async function ajax(e: MouseEvent) {
@@ -66,31 +67,50 @@ async function ajax(e: MouseEvent) {
     }
 }
 
-function navdrawer_close() {
-  appbarElement.classList.remove('open');
-  navdrawerContainer.classList.remove('open');
+class AppDrawer  {
+    private element: Element;
+    constructor(id: string) {
+        this.element = document.querySelector(id);
+
+        // listener on element?
+        // this.element.addEventListener('click', e => {
+        //     do something
+        // });
+    }
+    // accessors
+    get open() {
+        return this.element.hasAttribute('open');
+    }
+
+    set open(open: Boolean) {
+        // Reflect the value of the open property as an HTML attribute.
+        if (open) {
+            this.element.setAttribute('open', '');
+        } else {
+            this.element.removeAttribute('open');
+        }
+    }
+    toggleDrawer() {
+        if (this.open) {
+            this.open = false
+        } else {
+            this.open = true
+        }
+    }
 }
 
-let navdrawerContainer = document.querySelector('.navdrawer');
-let appbarElement = document.querySelector('.app-bar');
-
-function navdrawer_toggle() {
-    console.log('toggeling')
-  let isOpen = navdrawerContainer.classList.contains('open');
-  if(isOpen) {
-    navdrawer_close();
-  } else {
-    appbarElement.classList.add('open');
-    navdrawerContainer.classList.add('open');
-  }
-}
+let appdrawer = new AppDrawer('.linkcontainer')
+let appbar = new AppDrawer('.app-bar');
 
 let menuBtn = document.querySelector('.menu');
-menuBtn.addEventListener('click', function() {
-  navdrawer_toggle();
+menuBtn.addEventListener('click', function () {
+    appdrawer.toggleDrawer();
+    appbar.toggleDrawer();
 }, true);
 
+linkcontainer.addEventListener('click', close, false)
 
-
-
-
+function close(): void {
+    appdrawer.open = false
+    appbar.open = false
+}

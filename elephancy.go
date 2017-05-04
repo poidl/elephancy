@@ -174,6 +174,12 @@ func backendCacheDefault(r *http.Response) error {
 	return nil
 }
 
+// FileServerNew serves files
+func FileServerNew(w http.ResponseWriter, r *http.Request) {
+	println("bafbadfbadba")
+	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
@@ -187,11 +193,11 @@ func main() {
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/frontend/staticcache/", staticcacheHandler)
+	http.HandleFunc("/frontend/staticcache/fingerprinted/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
 	http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
+	http.HandleFunc("/gr/", FileServerNew)
 	http.HandleFunc("/api/", makeAPIHandler(frontendProxy))
-	http.HandleFunc("/files/", filesHandler)
 	http.ListenAndServe(":8080", nil)
 
 }
