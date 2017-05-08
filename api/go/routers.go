@@ -61,6 +61,12 @@ var routes = Routes{
 		"/api/pages/FindPageByKeyValue",
 		FindPageByKeyValue,
 	},
+	Route{
+		"GetPageContent",
+		"GET",
+		"/api/content",
+		GetPageContent,
+	},
 }
 
 func MyRouter() http.Handler {
