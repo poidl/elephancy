@@ -18,6 +18,7 @@ import (
 	"log"
 	mj "mystuff/elephancy/json"
 	"net/http"
+	"strconv"
 )
 
 var filename = "/home/stefan/programs/go/src/mystuff/elephancy/api/json/pages.json"
@@ -106,6 +107,32 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	// }
 	// json.NewEncoder(os.Stdout).Encode(page)
 	json.NewEncoder(w).Encode(page)
+}
+
+// Should be used by client-side only
+func GetPageContent(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+
+	pages, err := mj.LoadPages(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ids := r.URL.Path[len("/api/content/"):]
+	id, err := strconv.ParseInt(ids, 0, 64)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+	page, err := pages.GetPageById(id)
+	if err != nil {
+		http.NotFound(w, r)
+	}
+
+	// get the content
+	hrefSelf, err := page.GetLinkByRel("self")
+	if err != nil {
+		log.Fatal(err)
+	}
+	http.ServeFile(w, r, hrefSelf)
 }
 
 // FileServer serves files WITHOUT caching policy
