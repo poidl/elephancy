@@ -43,6 +43,15 @@ func (pages *Pages) GetPageByPrettyURL(prettyURL string) (Page, error) {
 	return Page{}, &errorString{"Page not found"}
 }
 
+func (pages *Pages) GetPageById(id int64) (Page, error) {
+	for _, page := range *pages {
+		if id == page.Id {
+			return page, nil
+		}
+	}
+	return Page{}, &errorString{"Page not found"}
+}
+
 func (pages *Pages) GetPageByLinksSelf(linksSelf string) (Page, error) {
 	for _, page := range *pages {
 		link, _ := page.GetLinkByRel("self")
