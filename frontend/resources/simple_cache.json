@@ -1,0 +1,5 @@
+{
+    "Stylesheet": "./frontend/resources/mystyle.css",
+    "Buttonpic": "./frontend/resources/pics/menu.png",
+    "Script": "./frontend/resources/jsbuild/bundle.js"
+}

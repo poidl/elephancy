@@ -13,8 +13,8 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
-var resourcedir = "./frontend/staticcache/resources"
-var fingerprintdir = "./frontend/staticcache/fingerprinted"
+var resourcedir = "./frontend/resources"
+var fingerprintdir = "./frontend/resources_fingerprinted"
 var templateCacheFile = "simple_cache.json"
 var templateCacheFileFingerprinted = "simple_cache_fingerprinted.json"
 

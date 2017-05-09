@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	api "mystuff/elephancy/api/go"
-	fe "mystuff/elephancy/frontend"
+	fe "mystuff/elephancy/frontend/go"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var pathFavicon = "frontend/staticcache/resources/favicon.ico"
+var pathFavicon = "frontend/resources/favicon.ico"
 var apiIPPort = "127.0.0.1:8088"
 
 // this is modified from package http
@@ -193,7 +193,7 @@ func main() {
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
-	http.HandleFunc("/frontend/staticcache/fingerprinted/", staticcacheHandler)
+	http.HandleFunc("/frontend/resources_fingerprinted/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
 	// http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
 	// http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))

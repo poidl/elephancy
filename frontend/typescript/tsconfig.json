@@ -10,7 +10,7 @@
             "dom",
             "es6"
         ],
-        "outDir": "./jsbuild"
+        "outDir": "../resources/jsbuild"
     },
     "include": [
         "./src/**/*"
