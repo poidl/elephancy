@@ -109,30 +109,38 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(page)
 }
 
-// Should be used by client-side only
+// Should be used by client-side only?
 func GetPageContent(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+	ajax := r.Header.Get("myheader")
+	if ajax == "XMLHttpRequest" {
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 
-	pages, err := mj.LoadPages(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	ids := r.URL.Path[len("/api/content/"):]
-	id, err := strconv.ParseInt(ids, 0, 64)
-	if err != nil {
-		http.NotFound(w, r)
-	}
-	page, err := pages.GetPageById(id)
-	if err != nil {
-		http.NotFound(w, r)
+		pages, err := mj.LoadPages(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ids := r.URL.Path[len("/api/content/"):]
+		id, err := strconv.ParseInt(ids, 0, 64)
+		if err != nil || (id == 0) {
+			http.NotFound(w, r)
+			return
+		}
+		page, err := pages.GetPageById(id)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+
+		// get the content
+		hrefSelf, err := page.GetLinkByRel("self")
+		if err != nil {
+			log.Fatal(err)
+		}
+		http.ServeFile(w, r, "."+hrefSelf)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("400 - Request is not an XMLHttpRequest."))
 	}
 
-	// get the content
-	hrefSelf, err := page.GetLinkByRel("self")
-	if err != nil {
-		log.Fatal(err)
-	}
-	http.ServeFile(w, r, hrefSelf)
 }
 
 // FileServer serves files WITHOUT caching policy

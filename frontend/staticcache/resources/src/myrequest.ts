@@ -34,8 +34,7 @@ export function get_code_body(message: http.IncomingMessage): Promise<{ code: nu
             if (code >= 200 && code <= 299) {
                 resolve({ code: code, body: body })
             } else {
-                // shutdown
-                handle_nosuccess({ code: code, body: body })
+                reject({ code: code, body: body });
             }
         });
     })
@@ -43,8 +42,4 @@ export function get_code_body(message: http.IncomingMessage): Promise<{ code: nu
 
 
 
-export function handle_nosuccess(obj: { code: number, body: string }) {
-    let err = new Error('Server responded: ' + JSON.stringify(obj))
-    throw err
-}
 

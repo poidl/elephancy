@@ -143,25 +143,25 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func makeFileServerHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ajax := r.Header.Get("myheader")
-		if ajax == "XMLHttpRequest" {
-			rp.ServeHTTP(w, r)
-		} else {
-			pages, err := fe.ListPages()
-			if err != nil {
-				log.Fatal(err)
-			}
-			page, err := pages.GetPageByLinksSelf(r.URL.Path)
-			if err != nil {
-				http.NotFound(w, r)
-				return
-			}
-			http.Redirect(w, r, page.Prettyurl, 302)
-		}
-	}
-}
+// func makeFileServerHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		ajax := r.Header.Get("myheader")
+// 		if ajax == "XMLHttpRequest" {
+// 			rp.ServeHTTP(w, r)
+// 		} else {
+// 			pages, err := fe.ListPages()
+// 			if err != nil {
+// 				log.Fatal(err)
+// 			}
+// 			page, err := pages.GetPageByLinksSelf(r.URL.Path)
+// 			if err != nil {
+// 				http.NotFound(w, r)
+// 				return
+// 			}
+// 			http.Redirect(w, r, page.Prettyurl, 302)
+// 		}
+// 	}
+// }
 
 func makeAPIHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -195,7 +195,8 @@ func main() {
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/frontend/staticcache/fingerprinted/", staticcacheHandler)
 	http.HandleFunc("/json/", jsonHandler)
-	http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
+	// http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
+	// http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
 	http.HandleFunc("/gr/", FileServerNew)
 	http.HandleFunc("/api/", makeAPIHandler(frontendProxy))
 	http.ListenAndServe(":8080", nil)

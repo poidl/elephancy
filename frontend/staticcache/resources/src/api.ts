@@ -43,15 +43,16 @@ export class Page {
     constructor(p: PageRaw) {
         applyMixins(p, this)
     };
-    getLinkByRel(this: Page, rel: string): string {
-        for (let l of this.links) {
-            if (l.rel === 'self') {
-                return l.href
-            }
-        }
-        // throw new TypeError("Link not found: rel: self ");
-        return ''
-    }
+    // currently unused
+    // getLinkByRel(this: Page, rel: string): string {
+    //     for (let l of this.links) {
+    //         if (l.rel === 'self') {
+    //             return l.href
+    //         }
+    //     }
+    //     // throw new TypeError("Link not found: rel: self ");
+    //     return ''
+    // }
     [key: string]: any;
 }
 
@@ -62,8 +63,8 @@ export class PagesContainer {
     constructor(pages: Pages) {
         this.pages = pages
     }
-    findPageByKeyValue = function(this: PagesContainer, key: string, value: any): Page {
-        let p = this.pages.filter(function(p: Page) {
+    findPageByKeyValue = function (this: PagesContainer, key: string, value: any): Page {
+        let p = this.pages.filter(function (p: Page) {
             return p[key] === value
         })
         return p[0]
@@ -76,9 +77,20 @@ function toPageArray(val: PageRaw): Page {
 
 function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
     return new Promise((resolve, reject) => {
-        let pages = JSON.parse(obj.body)
-        resolve(pages.map(toPageArray))
+        if (!(obj.code >= 200 && obj.code <= 299)) {
+            // If this happens, something is wrong with the app (independent
+            // of the user's request). Shutdown.
+            shutdown({ code: obj.code, body: obj.body })
+        } else {
+            let pages = JSON.parse(obj.body)
+            resolve(pages.map(toPageArray))
+        }
     })
+}
+
+export function shutdown(obj: { code: number, body: string }) {
+    let err = new Error('Server responded: ' + JSON.stringify(obj))
+    throw err
 }
 
 export class Api {
@@ -113,6 +125,22 @@ export class Api {
         return req.make_request(options)
             .then(req.get_code_body)
             .then(parse_pages)
+        // .catch((err: Error) => {
+        //     console.log(err)
+        // })
+    }
+    public getPageContent(id: number): Promise<{ code: number, body: string }> {
+        let options = {
+            protocol: 'http:',
+            hostname: host,
+            port: port,
+            path: basepath + '/content/' + id,
+            headers: { myheader: 'XMLHttpRequest' }
+        };
+
+
+        return req.make_request(options)
+            .then(req.get_code_body)
         // .catch((err: Error) => {
         //     console.log(err)
         // })

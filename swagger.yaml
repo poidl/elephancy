@@ -70,9 +70,16 @@ paths:
           required: true
           type: integer
           format: int64
+        - name: myheader
+          in: header
+          description: Expose content only if header myheader=XMLHttpRequest
+          required: true
+          type: string
       responses:
         '200':
           description: successful operation
+        '400':
+          description: bad request, no header provided
         '404':
           description: page doesn't exist
 definitions:
