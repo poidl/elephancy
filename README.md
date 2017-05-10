@@ -1,6 +1,6 @@
 # elephancy
 
-A beginner's excercise in full-stack development.
+A beginner's exercise in full-stack development.
 
 Elephancy is a tiny content display system. The objective of this project is
 to learn something about
@@ -21,10 +21,10 @@ The Client-side frontend is written in Typescript. To compile this into javascri
 - awesome-typescript-loader
 - source-map-loader
 
-To install these, go to `frontend/typescript` and run
+To install these, go to the directory `frontend/typescript` and run
 
 ```
-npm install -g webpack
+npm install -g webpack  
 npm install --save-dev typescript awesome-typescript-loader source-map-loader
 ```
 
@@ -32,6 +32,12 @@ Furthermore, Typescript needs to know about the standard node.js modules:
 
 ```
 npm install --save @types/node
+```
+
+Then run `webpack` to generate the Javascript code
+
+```
+./webpack
 ```
 
 ##### Backend and server-side frontend
@@ -44,4 +50,10 @@ go build
 ```
 
 Open http://localhost:8080/ in a browser.
+
+### Note
+
+Currently the Go program runs a bash script `scripts/fingerprint.sh` which
+generates unique file names for statically cached resources. This should be
+re-written in Go to work cross-platform, but until then you'll need bash.
 
