@@ -1,13 +1,17 @@
 package frontend
 
 import (
+	"crypto/md5"
 	"encoding/json"
+	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -36,17 +40,37 @@ func mv(src string, dest string) {
 	}
 }
 
-func fingerprintFile(fname string) string {
+func FingerprintFile(fname string) string {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	cmd := "./scripts/fingerprint.sh"
-	args := []string{fname}
-	var bout []byte
-	var err error
-	if bout, err = exec.Command(cmd, args...).Output(); err != nil {
-		log.Fatal("Error executing fingerprint in bash")
+	// check if the resource file exists
+	fp, err := os.Stat(fname)
+	if os.IsNotExist(err) {
+		log.Fatal(err)
 	}
-	fout := strings.TrimSpace(string(bout))
-	return fout
+	// get the basename
+	basename := fp.Name()
+	// check if the name already contains the tag
+	tag := "hashstart"
+	if strings.Contains(basename, tag) {
+		log.Fatal("Resource name contains the tag \"" + tag + "\"")
+	}
+	f, err := os.Open(fname)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	h := md5.New()
+	if _, err := io.Copy(h, f); err != nil {
+		log.Fatal(err)
+	}
+
+	hash := fmt.Sprintf("%x", h.Sum(nil))[:15]
+	suffix := filepath.Ext(basename)
+	basename_nosuffix := basename[0 : len(basename)-len(suffix)]
+	basename_new := basename_nosuffix + "_" + tag + hash + suffix
+	fname_new := fname[0:len(fname)-len(basename)] + basename_new
+	cp(fname, fname_new)
+	return fname_new
 }
 
 type TemplateData struct {
@@ -82,7 +106,7 @@ func writeTemplateData(TemplateData TemplateData, filename string) {
 
 func createFingerprintedResource(name string) string {
 	// fingerprint resource
-	fpf := fingerprintFile(name)
+	fpf := FingerprintFile(name)
 	fpffd, err := os.Stat(fpf)
 	if err != nil {
 		log.Fatal(err)
