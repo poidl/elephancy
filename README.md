@@ -50,10 +50,3 @@ go build
 ```
 
 Open http://localhost:8080/ in a browser.
-
-### Note
-
-Currently the Go program runs a bash script `scripts/fingerprint.sh` which
-generates unique file names for statically cached resources. This should be
-re-written in Go to work cross-platform, but until then you'll need bash.
-
