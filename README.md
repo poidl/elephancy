@@ -1,6 +1,6 @@
 # elephancy
 
-A beginner's exercise in full-stack development.
+A beginner's exercise in full-stack web development.
 
 Elephancy is a tiny content display system. The objective of this project is
 to learn something about
