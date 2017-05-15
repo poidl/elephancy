@@ -40,7 +40,7 @@ var routes = Routes{
 	Route{
 		"FileServer",
 		"GET",
-		"/fileserver/",
+		"/resources/",
 		FileServer,
 	},
 	// Route{

@@ -3,7 +3,7 @@
       "id": 1,
       "links": [{
         "rel": "self",
-        "href": "/fileserver/test1.html"
+        "href": "/resources/test1.html"
       }],
       "prettyurl": "/",
       "linkname": "Linkname1",
@@ -14,7 +14,7 @@
       "id": 2,
       "links": [{
         "rel": "self",
-        "href": "/fileserver/test2.html"
+        "href": "/resources/test2.html"
       }],
       "prettyurl": "/urlpath2",
       "linkname": "Linkname2",
@@ -25,7 +25,7 @@
       "id": 3,
       "links": [{
         "rel": "self",
-        "href": "/fileserver/test3.html"
+        "href": "/resources/test3.html"
       }],
       "prettyurl": "/urlpath3",
       "linkname": "Linkname3",

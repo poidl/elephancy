@@ -22,6 +22,7 @@ import (
 )
 
 var filename = "../restapi/json/pages.json"
+var apiRoot = "../restapi"
 
 type Default struct {
 }
@@ -135,7 +136,7 @@ func GetPageContent(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.ServeFile(w, r, "."+hrefSelf)
+		http.ServeFile(w, r, apiRoot+hrefSelf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("400 - Request is not an XMLHttpRequest."))
@@ -143,8 +144,8 @@ func GetPageContent(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// FileServer serves files WITHOUT caching policy
+// FileServer serves files WITHOUT caching policy to server-side frontend
 func FileServer(w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.
-	http.StripPrefix("/fileserver/", http.FileServer(http.Dir("./fileserver"))).ServeHTTP(w, r)
+	http.StripPrefix("/resources/", http.FileServer(http.Dir(apiRoot+"/resources"))).ServeHTTP(w, r)
 }
