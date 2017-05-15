@@ -21,7 +21,7 @@ import (
 	"strconv"
 )
 
-var filename = "/home/stefan/programs/go/src/mystuff/elephancy/api/json/pages.json"
+var filename = "../restapi/json/pages.json"
 
 type Default struct {
 }

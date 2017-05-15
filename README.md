@@ -12,6 +12,11 @@ to learn something about
 
 ### Installation
 
+Note that the dependencies listed below are *only* necessary on your local 
+machine. Once everything is compiled on the local machine, a sinlge Go 
+binary and all the resources can be uploaded to the server. No further 
+dependencies need to be installed on the server.
+
 ##### Client-side frontend
 
 The Client-side frontend is written in Typescript. To compile this into javascript that runs in a web-browser, you will need:
@@ -42,11 +47,12 @@ Then run `webpack` to generate the Javascript code
 
 ##### Backend and server-side frontend
 
-Both are written in Go. In the project root, run
+Both are written in Go. In the folder `/binary`, run
 
 ```
+cd binary
 go build
-./elephancy
+./binary
 ```
 
 Open http://localhost:8080/ in a browser.

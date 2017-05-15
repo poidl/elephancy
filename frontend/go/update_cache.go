@@ -17,8 +17,8 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
-var resourcedir = "./frontend/resources"
-var fingerprintdir = "./frontend/resources_fingerprinted"
+var resourcedir = "../frontend/resources"
+var fingerprintdir = "../frontend/resources_fingerprinted"
 var templateCacheFile = "simple_cache.json"
 var templateCacheFileFingerprinted = "simple_cache_fingerprinted.json"
 
@@ -106,7 +106,8 @@ func writeTemplateData(TemplateData TemplateData, filename string) {
 
 func createFingerprintedResource(name string) string {
 	// fingerprint resource
-	fpf := FingerprintFile(name)
+	fullname := resourcedir + name
+	fpf := FingerprintFile(fullname)
 	fpffd, err := os.Stat(fpf)
 	if err != nil {
 		log.Fatal(err)
@@ -122,7 +123,7 @@ func createFingerprintedResource(name string) string {
 	}
 	dest := fingerprintdir + relpath + fpfBasename
 	mv(src, dest)
-	return dest
+	return "/staticcache" + relpath + fpfBasename
 }
 
 func SetupcacheNew() {
