@@ -3,7 +3,7 @@
 A beginner's exercise in full-stack web development.
 
 Elephancy is a tiny content display system. The objective of this project is
-to learn something about
+to learn
 
 * http
 * server-side programming (currently Go)
@@ -50,7 +50,6 @@ Then run `webpack` to generate the Javascript code
 Both are written in Go. In the folder `/binary`, run
 
 ```
-cd binary
 go build
 ./binary
 ```
