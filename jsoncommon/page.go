@@ -20,7 +20,7 @@
  * limitations under the License.
  */
 
-package myjson
+package jsoncommon
 
 // type Link map[string]string
 

@@ -16,33 +16,24 @@ package api
 import (
 	"encoding/json"
 	"log"
-	mj "mystuff/elephancy/json"
+	jc "mystuff/elephancy/jsoncommon"
 	"net/http"
 	"strconv"
 )
 
-var filename = "../restapi/json/pages.json"
+var datafile = "../restapi/data/pages.json"
 var apiRoot = "../restapi"
-
-type Default struct {
-}
-
-// func FindPageById(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	// println("*************** Finding page by ID *****************")
-// 	w.WriteHeader(http.StatusOK)
-// }
 
 func ListPages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "no-cache")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	http.ServeFile(w, r, filename)
+	http.ServeFile(w, r, datafile)
 }
 
 // func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 // 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-// 	pages, err := mj.LoadPages(filename)
+// 	datafile := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	pages, err := jc.LoadPages(datafile)
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
@@ -58,8 +49,8 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 
 // func FindPageByLinksSelf(w http.ResponseWriter, r *http.Request) {
 // 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	filename := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
-// 	pages, err := mj.LoadPages(filename)
+// 	datafile := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	pages, err := jc.LoadPages(datafile)
 // 	if err != nil {
 // 		log.Fatal(err)
 // 	}
@@ -76,14 +67,14 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	pages, err := mj.LoadPages(filename)
+	pages, err := jc.LoadPages(datafile)
 	// println(pages[0].Prettyurl + "****************************")
 	// println(pages[0].Links[0].Rel)
 	if err != nil {
 		log.Fatal(err)
 	}
 	vals := r.URL.Query()
-	var page mj.Page
+	var page jc.Page
 	switch vals["key"][0] {
 	case "prettyurl":
 		page, err = pages.GetPageByPrettyURL(vals["value"][0])
@@ -91,22 +82,6 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.NotFound(w, r)
 	}
-	// for k, v := range vals {
-	// 	if k == "prettyurl" {
-	// 		page, err = pages.GetPageByPrettyURL(v[0])
-	// 	} else if k == "linksself" {
-	// 		page, err = pages.GetPageByLinksSelf(v[0])
-	// 	} else {
-	// 		http.NotFound(w, r)
-	// 	}
-	// 	if err != nil {
-	// 		http.NotFound(w, r)
-	// 	}
-	// }
-	// if err != nil {
-	// 	http.NotFound(w, r)
-	// }
-	// json.NewEncoder(os.Stdout).Encode(page)
 	json.NewEncoder(w).Encode(page)
 }
 
@@ -116,7 +91,7 @@ func GetPageContent(w http.ResponseWriter, r *http.Request) {
 	if ajax == "XMLHttpRequest" {
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 
-		pages, err := mj.LoadPages(filename)
+		pages, err := jc.LoadPages(datafile)
 		if err != nil {
 			log.Fatal(err)
 		}

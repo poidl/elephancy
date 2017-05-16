@@ -1,11 +1,10 @@
-package myjson
+package jsoncommon
 
 import (
 	"encoding/json"
 	"io/ioutil"
 )
 
-type msi map[string]interface{}
 type Pages []Page
 type page map[string]interface{}
 type errorString struct {

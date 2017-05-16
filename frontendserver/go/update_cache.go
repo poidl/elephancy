@@ -1,4 +1,4 @@
-package frontend
+package frontendserver
 
 import (
 	"crypto/md5"
@@ -17,8 +17,8 @@ import (
 
 // update and fingerprint each file in the staticcache. TODO: make it optional
 // which files to update
-var resourcedir = "../frontend/resources"
-var fingerprintdir = "../frontend/resources_fingerprinted"
+var resourcedir = "../frontendclient/resources"
+var fingerprintdir = "../frontendclient/resources_fingerprinted"
 var templateCacheFile = "simple_cache.json"
 var templateCacheFileFingerprinted = "simple_cache_fingerprinted.json"
 
