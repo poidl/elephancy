@@ -15,19 +15,39 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	jc "mystuff/elephancy/jsoncommon"
 	"net/http"
 	"strconv"
 )
 
+type Configuration struct {
+	ApiDataFile    string
+	ApiResourceDir string
+}
+
 var datafile = "../restapi/data/pages.json"
 var apiRoot = "../restapi"
 
-func ListPages(w http.ResponseWriter, r *http.Request) {
+func LoadConfig(filename string) Configuration {
+	bytearr, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var c Configuration
+	err = json.Unmarshal(bytearr, &c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return c
+}
+
+func ListPages(c Configuration, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "no-cache")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	http.ServeFile(w, r, datafile)
+	http.ServeFile(w, r, c.ApiDataFile)
 }
 
 // func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
@@ -64,10 +84,10 @@ func ListPages(w http.ResponseWriter, r *http.Request) {
 // }
 
 // FindPageByKeyValue finds pages based on a single key-value pair of its properties
-func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
+func FindPageByKeyValue(c Configuration, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	pages, err := jc.LoadPages(datafile)
+	pages, err := jc.LoadPages(c.ApiDataFile)
 	// println(pages[0].Prettyurl + "****************************")
 	// println(pages[0].Links[0].Rel)
 	if err != nil {
@@ -86,12 +106,12 @@ func FindPageByKeyValue(w http.ResponseWriter, r *http.Request) {
 }
 
 // Should be used by client-side only?
-func GetPageContent(w http.ResponseWriter, r *http.Request) {
+func GetPageContent(c Configuration, w http.ResponseWriter, r *http.Request) {
 	ajax := r.Header.Get("myheader")
 	if ajax == "XMLHttpRequest" {
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 
-		pages, err := jc.LoadPages(datafile)
+		pages, err := jc.LoadPages(c.ApiDataFile)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -111,7 +131,7 @@ func GetPageContent(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.ServeFile(w, r, apiRoot+hrefSelf)
+		http.ServeFile(w, r, c.ApiResourceDir+hrefSelf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("400 - Request is not an XMLHttpRequest."))
@@ -120,7 +140,7 @@ func GetPageContent(w http.ResponseWriter, r *http.Request) {
 }
 
 // FileServer serves files WITHOUT caching policy to server-side frontend
-func FileServer(w http.ResponseWriter, r *http.Request) {
+func FileServer(c Configuration, w http.ResponseWriter, r *http.Request) {
 	// No caching policy here. Must be handled by frontend.
-	http.StripPrefix("/resources/", http.FileServer(http.Dir(apiRoot+"/resources"))).ServeHTTP(w, r)
+	http.StripPrefix("/resources/", http.FileServer(http.Dir(c.ApiResourceDir))).ServeHTTP(w, r)
 }

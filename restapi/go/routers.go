@@ -21,11 +21,13 @@ package api
 
 import "net/http"
 
+type Cfh func(c Configuration, w http.ResponseWriter, r *http.Request)
+
 type Route struct {
 	Name        string
 	Method      string
 	Pattern     string
-	HandlerFunc http.HandlerFunc
+	HandlerFunc Cfh
 }
 
 type Routes []Route
@@ -69,13 +71,19 @@ var routes = Routes{
 	},
 }
 
-func MyRouter() http.Handler {
+func MyRouter(c Configuration) http.Handler {
 	sm := http.NewServeMux()
 	for _, route := range routes {
-		f := MyLogger(route.HandlerFunc, route.Name)
+		f := MyLogger(configureHandler(c, route.HandlerFunc), route.Name)
 		sm.HandleFunc(route.Pattern, f)
 	}
 	return sm
+}
+
+func configureHandler(c Configuration, handlerfunc Cfh) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handlerfunc(c, w, r)
+	}
 }
 
 // type Route struct {
