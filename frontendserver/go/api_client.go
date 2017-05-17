@@ -32,12 +32,19 @@ import (
 
 func callAPI(path string,
 	method string,
+	headerParams map[string]string,
 	queryParams url.Values) (*http.Response, error) {
 	switch strings.ToUpper(method) {
 	case "GET":
 		req, err := http.NewRequest("GET", path, nil)
 		if err != nil {
 			log.Fatal(err)
+		}
+		// add header parameter, if any
+		if len(headerParams) > 0 {
+			for key, value := range headerParams {
+				req.Header.Add(key, value)
+			}
 		}
 		req.URL.RawQuery = queryParams.Encode()
 		// println(req.URL.String())

@@ -88,8 +88,6 @@ func FindPageByKeyValue(c Configuration, w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	pages, err := jc.LoadPages(c.ApiDataFile)
-	// println(pages[0].Prettyurl + "****************************")
-	// println(pages[0].Links[0].Rel)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,8 +137,8 @@ func GetPageContent(c Configuration, w http.ResponseWriter, r *http.Request) {
 
 }
 
-// FileServer serves files WITHOUT caching policy to server-side frontend
-func FileServer(c Configuration, w http.ResponseWriter, r *http.Request) {
-	// No caching policy here. Must be handled by frontend.
-	http.StripPrefix("/resources/", http.FileServer(http.Dir(c.ApiResourceDir))).ServeHTTP(w, r)
-}
+// // FileServer serves files WITHOUT caching policy to server-side frontend
+// func FileServer(c Configuration, w http.ResponseWriter, r *http.Request) {
+// 	// No caching policy here. Must be handled by frontend.
+// 	http.StripPrefix("/resources/", http.FileServer(http.Dir(c.ApiResourceDir))).ServeHTTP(w, r)
+// }

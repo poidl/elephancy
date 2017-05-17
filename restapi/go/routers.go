@@ -39,12 +39,12 @@ var routes = Routes{
 		"/api/pages",
 		ListPages,
 	},
-	Route{
-		"FileServer",
-		"GET",
-		"/resources/",
-		FileServer,
-	},
+	// Route{
+	// 	"FileServer",
+	// 	"GET",
+	// 	"/resources/",
+	// 	FileServer,
+	// },
 	// Route{
 	// Route{
 	// 	"FindPageByPrettyURL",

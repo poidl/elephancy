@@ -28,7 +28,10 @@ import (
 	"fmt"
 	"log"
 	jc "mystuff/elephancy/jsoncommon"
+	"net/http"
 	"net/url"
+	"strconv"
+	"time"
 )
 
 /**
@@ -46,7 +49,8 @@ func ListPages() (jc.Pages, error) {
 	// create path and map variables
 	path := basepath + "/pages"
 	var successPayload = new([]jc.Page)
-	httpResponse, err := callAPI(path, httpMethod, url.Values{})
+	headerParams := make(map[string]string)
+	httpResponse, err := callAPI(path, httpMethod, headerParams, url.Values{})
 	if err != nil {
 		return *successPayload, err
 	}
@@ -68,9 +72,9 @@ func ListPages() (jc.Pages, error) {
 // 	path := basepath + "/pages/FindPageByPrettyURL"
 
 // 	var successPayload = new(jc.Page)
-// 	v := url.Values{}
-// 	v.Set("prettyurl", prettyurl)
-// 	httpResponse, err := callAPI(path, httpMethod, v)
+// 	queryParams := url.Values{}
+// 	queryParams.Set("prettyurl", prettyurl)
+// 	httpResponse, err := callAPI(path, httpMethod, queryParams)
 // 	if err != nil {
 // 		return *successPayload, err
 // 	}
@@ -94,9 +98,9 @@ func ListPages() (jc.Pages, error) {
 // 	path := basepath + "/pages/FindPageByLinksSelf"
 // 	println("****BELLO")
 // 	var successPayload = new(jc.Page)
-// 	v := url.Values{}
-// 	v.Set("prettyurl", link)
-// 	httpResponse, err := callAPI(path, httpMethod, v)
+// 	queryParams := url.Values{}
+// 	queryParams.Set("prettyurl", link)
+// 	httpResponse, err := callAPI(path, httpMethod, queryParams)
 // 	if err != nil {
 // 		return *successPayload, err
 // 	}
@@ -119,10 +123,11 @@ func FindPageByKeyValue(key string, value string) (jc.Page, error) {
 	// create path and map variables
 	path := basepath + "/pages/FindPageByKeyValue"
 	var successPayload = new(jc.Page)
-	v := url.Values{}
-	v.Set("key", key)
-	v.Add("value", value)
-	httpResponse, err := callAPI(path, httpMethod, v)
+	queryParams := url.Values{}
+	queryParams.Set("key", key)
+	queryParams.Add("value", value)
+	headerParams := make(map[string]string)
+	httpResponse, err := callAPI(path, httpMethod, headerParams, queryParams)
 	if err != nil {
 		return *successPayload, err
 	}
@@ -144,3 +149,30 @@ func FindPageByKeyValue(key string, value string) (jc.Page, error) {
 // 	// No caching policy here. Must be handled by frontend.
 // 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
 // }
+
+func GetPageContent(id int64) (string, time.Time, error) {
+	var httpMethod = "GET"
+	// create path and map variables
+	path := basepath + "/content/" + strconv.FormatInt(id, 10)
+	var successPayload = new(string)
+	queryParams := url.Values{}
+	headerParams := make(map[string]string)
+	headerParams["myheader"] = "XMLHttpRequest"
+	httpResponse, err := callAPI(path, httpMethod, headerParams, queryParams)
+	if err != nil {
+		return *successPayload, time.Time{}, err
+	}
+	defer httpResponse.Body.Close()
+	if httpResponse.StatusCode == 404 {
+		return *successPayload, time.Time{}, fmt.Errorf("Page not found")
+	}
+	var b bytes.Buffer
+	_, err = b.ReadFrom(httpResponse.Body)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	// check when content was last modified
+	lastmodified, _ := http.ParseTime(httpResponse.Header.Get("Last-Modified"))
+	return b.String(), lastmodified, nil
+}
