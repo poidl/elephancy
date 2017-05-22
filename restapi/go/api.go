@@ -23,6 +23,7 @@ import (
 )
 
 type Configuration struct {
+	ApiAddress     string
 	ApiDataFile    string
 	ApiResourceDir string
 }

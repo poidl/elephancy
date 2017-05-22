@@ -2,7 +2,7 @@ module.exports = {
     entry: "./src/script.ts",
     output: {
         filename: "bundle.js",
-        path: __dirname + "./../resources/jsbuild"
+        path: __dirname + "./../resources/javascript"
     },
 
     // Enable sourcemaps for debugging webpack's output.

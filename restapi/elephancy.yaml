@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
   version: '0.1.0'
-  title: Elephancy backend (Simple)
-  description: Elephancy backend (Simple)
+  title: Elephancy backend
+  description: Elephancy backend
 host: 127.0.0.1:8080
 basePath: /api
 schemes:

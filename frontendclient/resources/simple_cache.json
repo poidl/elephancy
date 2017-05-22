@@ -1,5 +1,5 @@
 {
     "Stylesheet": "/mystyle.css",
     "Buttonpic": "/pics/menu.png",
-    "Script": "/jsbuild/bundle.js"
+    "Script": "/javascript/bundle.js"
 }

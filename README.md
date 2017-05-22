@@ -5,10 +5,10 @@ A beginner's exercise in full-stack web development.
 Elephancy is a tiny content display system. The objective of this project is
 to learn
 
-* http
-* server-side programming (currently Go)
-* client-side programming (Typescript/Javascript/CSS/HTML)
-* possibly data bases in the future, currently it's "flat-file" only
+* Http
+* Server-side programming (currently Go)
+* Client-side programming (Typescript/Javascript/CSS/HTML)
+* Possibly data bases in the future, currently it's "flat-file" only.
 
 ### Installation
 
@@ -55,3 +55,4 @@ go build
 ```
 
 Open http://localhost:8080/ in a browser.
+

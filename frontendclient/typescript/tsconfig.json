@@ -10,12 +10,9 @@
             "dom",
             "es6"
         ],
-        "outDir": "../resources/jsbuild"
+        "outDir": "../resources/javascript"
     },
     "include": [
         "./src/**/*"
-    ],
-    "exclude": [
-        "../../swagger_build/*"
     ]
 }
