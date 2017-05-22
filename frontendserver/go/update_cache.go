@@ -19,8 +19,8 @@ import (
 // which files to update
 var resourcedir = "../frontendclient/resources"
 var fingerprintdir = "../frontendclient/resources_fingerprinted"
-var templateCacheFile = "simple_cache.json"
-var templateCacheFileFingerprinted = "simple_cache_fingerprinted.json"
+var templateCacheFile = resourcedir + "/static_cache.json"
+var templateCacheFileFingerprinted = fingerprintdir + "/static_cache_fingerprinted.json"
 
 func cp(src string, dest string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -128,7 +128,7 @@ func createFingerprintedResource(name string) string {
 
 func SetupcacheNew() {
 	// check if file defining cache resources exists
-	tcf := resourcedir + "/" + templateCacheFile
+	tcf := templateCacheFile
 	_, err := os.Stat(tcf)
 	if err != nil {
 		log.Fatal(err)
@@ -139,7 +139,7 @@ func SetupcacheNew() {
 		log.Fatal(err)
 	}
 	// create file holding fingerprinted resources, overwriting it if it exists
-	tcffp := fingerprintdir + "/" + templateCacheFileFingerprinted
+	tcffp := templateCacheFileFingerprinted
 	cp(tcf, tcffp)
 
 	// load the resource data
@@ -162,13 +162,16 @@ func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tcffp := fingerprintdir + "/" + templateCacheFileFingerprinted
+	tcffp := templateCacheFileFingerprinted
 	cachedat, err := loadTemplateData(tcffp)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// log.Fatal("debug")
 	f, err := os.Create(ftmplFingerpr)
+	if err != nil {
+		log.Fatal(err)
+	}
 	err = tmpl.Execute(f, &cachedat)
 	if err != nil {
 		log.Fatal(err)
