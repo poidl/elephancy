@@ -3,7 +3,7 @@ package main
 import (
 	"html/template"
 	"log"
-	fe "mystuff/elephancy/frontendserver/go"
+	fe "mystuff/elephancy/frontendserver"
 	api "mystuff/elephancy/restapi/go"
 	"net/http"
 	"net/http/httputil"
