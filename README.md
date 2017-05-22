@@ -26,7 +26,7 @@ The Client-side frontend is written in Typescript. To compile this into javascri
 - awesome-typescript-loader
 - source-map-loader
 
-To install these, go to the directory `frontend/typescript` and run
+To install these, go to the directory `frontendclient/typescript` and run
 
 ```
 npm install -g webpack  
