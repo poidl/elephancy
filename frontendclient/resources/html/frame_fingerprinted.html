@@ -3,25 +3,26 @@
 
 <head>
   <title id="metatitle"> {{ .Metatitle }} </title>
-  <meta name=viewport content="width=device-width, initial-scale=1"> [[template "stylesheet" .]]
+  <meta name=viewport content="width=device-width, initial-scale=1"> 
+<link rel="stylesheet" type="text/css" href="/staticcache/mystyle_hashstart6f2b6e833142a89.css">
 </head>
 
 <body>
   <header class="app-bar">
-    <!-- clickabel bartitle -> back to home -->
+    
     <span id="bartitlelink" class="bartitle">
         <a href="/" class="xhr" style="color:black;  text-decoration:none">
            Title2
         </a>
       </span>
     <button class="menu">
-          [[template "buttonpic" .]]
+          <img src="/staticcache/pics/menu_hashstart1ce75314f05d0d7.png"></img>
         </button>
     </div>
   </header>
-  <!-- style="outline-style: solid; outline-width: 1px;" -->
+  
   <header class="title">
-    <!-- clickabel bartitle -> back to home -->
+    
     <div class="bla">
       <canvas id="canvasOne" width="250" height="100" style="vertical-align:middle">
         Your browser does not support HTML5 Canvas.
@@ -37,7 +38,7 @@
     <nav class="linkcontainer">
       <ul id="linklist">
         {{ range $element := .Pages }}
-        <!--The following should work without javascript. In that case it's not an ajax call and the enitre page is refreshed (templating happens on the server)-->
+        
         <li><a class="xhr" href="{{ $element.Prettyurl }}"> {{ $element.Linkname }} </a></li>
         {{ end }}
       </ul>
@@ -47,9 +48,8 @@
     </div>
   </div>
 </body>
-[[template "script" .]]
+
+<script src="/staticcache/javascript/bundle_hashstartb6b688e42fc9e61.js"></script>
 
 </html>
-[[define "stylesheet"]]
-<link rel="stylesheet" type="text/css" href="[[.Stylesheet]]">[[end]] [[define "script"]]
-<script src="[[.Script]]"></script>[[end]] [[define "buttonpic"]]<img src="[[.Buttonpic]]"></img>[[end]]
+  
