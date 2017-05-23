@@ -19,6 +19,8 @@ body {
   z-index: 2;/*Stay above the container *and* navbar. May be superfluous?*/
   background-color: #FFFFFF;
   border-bottom: thin solid;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 /* color if navbar is open */
@@ -41,12 +43,14 @@ body {
 }
 
 .app-bar .bartitle {
-  display: inline-block;
+  /*display: inline-block;*/
   /*vertical-align: middle*/
   line-height: 40px;
   font-size: 40px;
   margin: 0;
-  padding-left: 50px; /*left padding should align with mainwindow*/
+  text-align: center;
+  flex-grow: 1;
+  /*padding-left: 50px; left padding should align with mainwindow*/
   /*min-width: 273px;*/
 }
 
