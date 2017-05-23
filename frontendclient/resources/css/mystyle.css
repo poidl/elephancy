@@ -57,12 +57,6 @@ body {
   display: none;
 }
 
-.bla {
-  /*background-color: blue;*/
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
 /* The outermost div is of class "container". "display: block" is default in chrome, don't know what this is good for.*/
 .maincontainer {
   display: block;
@@ -111,12 +105,21 @@ body {
   /*transition: background-color 0.2s ease-out;*/
 }
 
+.bla {
+  /*background-color: blue;*/
+  padding-top: 20px;
+  padding-bottom: 20px;
+  height: 100px;
+  display: flex;
+}
+
 h1 {
   font-size: 2.5em; /* 48px/16=3 */
   font-weight: 100;
   vertical-align: middle;
-  padding-left: 3em;
-  display: inline
+  text-align: center;
+  flex-grow: 1;
+  margin: auto;
 }
 
 h2, h3 {
