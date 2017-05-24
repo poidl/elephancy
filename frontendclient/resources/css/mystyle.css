@@ -5,14 +5,13 @@
 body {
   font-size: 100%;
   max-width: 1300px;
-  /*height: 100%;*/
   margin: auto; /*Use margin: auto;, to horizontally center an element within its container.*/
 }
 
-.app-bar {
-  /*height: 70px;*/
+.top-bar-mobile {
+  /* Top bar of mobile view, containing a button and a title.*/
   width: 100%;
-  /*padding: 20px 0 10px 0;if instead margin is set, backgr. color doesn't apply*/
+  /* Height is determined by children.*/
   position: fixed;
   top: 0;
   left: 0;
@@ -20,16 +19,17 @@ body {
   background-color: #FFFFFF;
   border-bottom: thin solid;
   display: flex;
+  /* row-reverse: button floats right, title takes up remaining space. */
   flex-direction: row-reverse;
 }
 
 /* color if navbar is open */
-.app-bar[open=""] {
+.top-bar-mobile[open=""] {
   background-color: #E0E0E0;
 }
 
-.app-bar button {
-  height: 20px;/* 3/5 of app-bar height */
+.top-bar-mobile button {
+  height: 20px;
   float: right;
   background-image: none;
   background-color: transparent;
@@ -38,19 +38,20 @@ body {
   margin: 20px 20px;
 }
 
-.app-bar button img {
-  height: 20px; /* from app-bar */
+.top-bar-mobile button img {
+  height: 20px;
 }
 
-.app-bar .bartitle {
+.top-bar-mobile .bartitle {
   margin: 0;
-  text-align: center;
+  /* Button floats right, let the title take up the remaining space and center it. */
   flex-grow: 1;
+  text-align: center;
 }
 
 .bartitle a{
   font-size: 2em;
-  line-height: 60px; /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+padding of the button.*/
+  line-height: 60px; /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+margin of the button.*/
 }
 
 .title {
@@ -60,13 +61,13 @@ body {
 /* The outermost div is of class "container". "display: block" is default in chrome, don't know what this is good for.*/
 .maincontainer {
   display: block;
-  padding-top: 70px; /*must be equal to app-bar height PLUS padding!*/
+  padding-top: 70px; /*must be equal to top-bar-mobile height PLUS padding!*/
 }
 
 .linkcontainer {
   /*position: absolute;*//*positioned absolute, relative to the nearest positioned ancestor, which is, I guess, the document body?*//*Tried "width: 250px" instead of min/max, but then it gets squeezed if @media min-width is exceeded only slightly*/
   position: fixed;
-  top: 60px;/*must be equal to app-bar height PLUS padding!*/
+  top: 60px;/*must be equal to top-bar-mobile height PLUS padding!*/
   left: 0;
   /*min-width: 250px;*/
   /*max-width: 250px;*/
@@ -136,7 +137,7 @@ h2, h3 {
   font-size: 1.2em;
   /*padding: 0 50px;*/
   margin: 0 12px;
-  /*set overflow to scroll, so the app-bar button doesn't disappear on the right-hand side if mainwindow is overflowing*/
+  /*set overflow to scroll, so the top-bar-mobile button doesn't disappear on the right-hand side if mainwindow is overflowing*/
   /*overflow-x: scroll;*/
 }
 
@@ -148,13 +149,13 @@ h2, h3 {
 
   @media (min-width: 950px) {
     /* If the screen is wider then 500px, use Flexbox */
-    .app-bar {
+    .top-bar-mobile {
       display: none
     }
     .maincontainer {
       display: flex;
       flex-flow: row nowrap;
-      padding-top: 0; /* app-bar was removed */
+      padding-top: 0; /* top-bar-mobile was removed */
     }
     .linkcontainer {
       position: relative;
