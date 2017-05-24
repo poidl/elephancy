@@ -4,7 +4,7 @@
 
 body {
   font-size: 100%;
-  max-width: 1300px;
+  max-width: 1100px;
   margin: auto; /*Use margin: auto;, to horizontally center an element within its container.*/
 }
 
@@ -115,13 +115,18 @@ body {
   display: flex;
 }
 
-h1 {
+.title-desktop {
   font-size: 2.5em; /* 48px/16=3 */
   font-weight: 100;
   vertical-align: middle;
   text-align: center;
   flex-grow: 1;
   margin: auto;
+}
+
+.title-desktop a{
+  color:black;
+  text-decoration: none;
 }
 
 h2, h3 {
@@ -170,7 +175,7 @@ h2, h3 {
     }
 
     .mainwindow {
-      width: 60%;
+      /*width: 60%;*/
       font-size: 1em;
       margin: 0  50px;
     }
