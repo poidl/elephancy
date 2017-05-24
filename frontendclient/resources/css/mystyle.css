@@ -34,7 +34,7 @@ body {
   background-color: transparent;
   border: none;
   padding: 0;
-  margin: 20px 20px;
+  margin: 20px 20px 20px 0px;
 }
 
 .top-bar-mobile button img {
