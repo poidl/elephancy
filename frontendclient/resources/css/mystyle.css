@@ -43,15 +43,9 @@ body {
 }
 
 .app-bar .bartitle {
-  /*display: inline-block;*/
-  /*vertical-align: middle*/
-  /*line-height: 40px;
-  font-size: 40px;*/
   margin: 0;
   text-align: center;
   flex-grow: 1;
-  /*padding-left: 50px; left padding should align with mainwindow*/
-  /*min-width: 273px;*/
 }
 
 .bartitle a{
@@ -60,9 +54,6 @@ body {
 }
 
 .title {
-  /*background-color: blue;*/
-  /*padding-top: 20px;
-  padding-bottom: 20px;*/
   display: none;
 }
 
@@ -75,7 +66,7 @@ body {
 .linkcontainer {
   /*position: absolute;*//*positioned absolute, relative to the nearest positioned ancestor, which is, I guess, the document body?*//*Tried "width: 250px" instead of min/max, but then it gets squeezed if @media min-width is exceeded only slightly*/
   position: fixed;
-  top: 70px;/*must be equal to app-bar height PLUS padding!*/
+  top: 60px;/*must be equal to app-bar height PLUS padding!*/
   left: 0;
   /*min-width: 250px;*/
   /*max-width: 250px;*/
