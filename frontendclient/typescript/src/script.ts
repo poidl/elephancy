@@ -124,9 +124,9 @@ class AppDrawer {
 }
 
 let appdrawer = new AppDrawer('.linkcontainer')
-let appbar = new AppDrawer('.app-bar');
+let appbar = new AppDrawer('.top-bar-mobile');
 
-let menuBtn = document.querySelector('.menu');
+let menuBtn = document.querySelector('.menubutton');
 menuBtn.addEventListener('click', function () {
     appdrawer.toggleDrawer();
     appbar.toggleDrawer();

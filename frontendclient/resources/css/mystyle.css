@@ -17,7 +17,6 @@ body {
   left: 0;
   z-index: 2;/*Stay above the container *and* navbar. May be superfluous?*/
   background-color: #FFFFFF;
-  border-bottom: thin solid;
   display: flex;
   /* row-reverse: button floats right, title takes up remaining space. */
   flex-direction: row-reverse;
@@ -42,26 +41,28 @@ body {
   height: 20px;
 }
 
-.top-bar-mobile .bartitle {
+.top-bar-mobile .title-mobile {
   margin: 0;
   /* Button floats right, let the title take up the remaining space and center it. */
   flex-grow: 1;
   text-align: center;
 }
 
-.bartitle a{
+.title-mobile a{
+  color:black;
+  text-decoration: none;
   font-size: 2em;
   line-height: 60px; /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+margin of the button.*/
 }
 
-.title {
+.top-bar-desktop {
   display: none;
 }
 
-/* The outermost div is of class "container". "display: block" is default in chrome, don't know what this is good for.*/
+/* "display: block" is default in chrome, don't know what this is good for.*/
 .maincontainer {
   display: block;
-  padding-top: 70px; /*must be equal to top-bar-mobile height PLUS padding!*/
+  padding-top: 60px; /*must be equal to top-bar-mobile height plus padding! Actual content must start below top-bar-mobile. */
 }
 
 .linkcontainer {
@@ -178,7 +179,7 @@ h2, h3 {
       margin-top: 0; /* vertically align first line with upper edge of linkcontainer box */
     }
 
-    .title {
+    .top-bar-desktop {
       display: inline;
     }
 

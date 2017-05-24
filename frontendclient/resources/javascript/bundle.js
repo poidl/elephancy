@@ -5157,8 +5157,8 @@ var AppDrawer = (function () {
     return AppDrawer;
 }());
 var appdrawer = new AppDrawer('.linkcontainer');
-var appbar = new AppDrawer('.app-bar');
-var menuBtn = document.querySelector('.menu');
+var appbar = new AppDrawer('.top-bar-mobile');
+var menuBtn = document.querySelector('.menubutton');
 menuBtn.addEventListener('click', function () {
     appdrawer.toggleDrawer();
     appbar.toggleDrawer();
