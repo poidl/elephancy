@@ -27,7 +27,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="98.342115"
+     inkscape:cx="89.250742"
      inkscape:cy="78.480108"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -123,7 +123,9 @@
        width="140.625"
        height="140.625"
        x="161.33435"
-       y="627.92188" />
+       y="627.92188"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <use
        x="0"
        y="0"
