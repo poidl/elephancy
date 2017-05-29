@@ -5,7 +5,8 @@
 body {
   font-size: 100%;
   max-width: 1300px;
-  margin: auto; /*Use margin: auto;, to horizontally center an element within its container.*/
+  /*Use margin: auto;, to horizontally center an element within its container.*/
+  margin: auto;
 }
 
 .top-bar-mobile {
@@ -15,7 +16,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;/*Stay above the container *and* navbar. May be superfluous?*/
+  /*Stay above the container *and* navbar. May be superfluous?*/
+  z-index: 2;
   background-color: #FFFFFF;
   display: flex;
   /* row-reverse: button floats right, title takes up remaining space. */
@@ -54,7 +56,8 @@ body {
   color:black;
   text-decoration: none;
   font-size: 1.7em;
-  line-height: 60px;  /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+margin of the button. */
+  /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+margin of the button. */
+  line-height: 60px;
 }
 
 .top-bar-desktop {
@@ -62,7 +65,6 @@ body {
 }
 
 .top-bar-desktop .flexcontainer {
-  /*background-color: blue;*/
   padding-top: 20px;
   padding-bottom: 20px;
   height: 100px;
@@ -76,7 +78,7 @@ body {
 }
 
 .top-bar-desktop .title-desktop {
-  font-size: 2.5em; /* 48px/16=3 */
+  font-size: 2.5em;
   font-weight: 100;
   vertical-align: middle;
   text-align: center;
@@ -86,27 +88,29 @@ body {
 .title-desktop a{
   color:black;
   text-decoration: none;
-  line-height: 140px;  /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+padding of the canvas. */
+  /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+padding of the canvas. */
+  line-height: 140px;
 }
 
-/* "display: block" is default in chrome, don't know what this is good for.*/
 .maincontainer {
+  /* "display: block" is default in chrome, don't know what this is good for.*/
   display: block;
-  padding-top: 60px; /*must be equal to top-bar-mobile height plus padding! Actual content must start below top-bar-mobile. */
+  /*must be equal to top-bar-mobile height plus padding! Actual content must start below top-bar-mobile. */
+  padding-top: 60px;
 }
 
 .linkcontainer {
   position: fixed;
-  top: 60px;/*must be equal to top-bar-mobile height PLUS padding!*/
+  /*must be equal to top-bar-mobile height PLUS padding!*/
+  top: 60px;
   left: 0;
   width: 100%;
   max-height: 75vh;
   display: none;
   z-index: 1;
   background-color: #E0E0E0;
-  /*transition: transform 0.4s ease-out;*/
-  /*transform: translate(-250px,0);*/
-  overflow-y: auto;/*For long link lists. If overflow is clipped, a scroll-bar should be added to see the rest of the content*/
+  /*For long link lists. If overflow is clipped, a scroll-bar should be added to see the rest of the content*/
+  overflow-y: auto;
 }
 
 .linkcontainer[open=""] {
@@ -121,9 +125,11 @@ body {
 }
 
 .linkcontainer ul li a {
-  display: block; /*always a column...don't know if necessary?*/
+  /*always a column...don't know if necessary?*/
+  display: block;
   height: 60px;
-  padding: 0 20px; /*shorthand for: top and bottom: 0; left and right: 20px*/
+  /*shorthand for: top and bottom: 0; left and right: 20px*/
+  padding: 0 20px;
   line-height: 60px;
   text-decoration: none;
   color: black;
@@ -144,40 +150,39 @@ body {
 }
 
 .mainwindow :first-child {
-      margin-top: 0; /* vertically align first line with upper edge of linkcontainer box */
+      /* vertically align first line with upper edge of linkcontainer box */
+      margin-top: 0;
 }
 
 
-  @media (min-width: 950px) {
-    /* If the screen is wider then 500px, use Flexbox */
-    .top-bar-mobile {
-      display: none
-    }
-    .maincontainer {
-      display: flex;
-      flex-flow: row nowrap;
-      padding-top: 0; /* top-bar-mobile was removed */
-    }
-    .linkcontainer {
-      position: relative;
-      top: 0;
-      /* transition: none 0s ease-out; */
-      /*transform: translate(0,0);*/
-      display: block;
-      min-width: 250px;
-      max-width: 250px;
-      max-height: none;
-    }
-
-    .mainwindow {
-      /*width: 60%;*/
-      font-size: 1em;
-      margin: 0  50px;
-    }
-
-    .top-bar-desktop {
-      /* canvas floats left, title takes up remaining space. */
-      display: flex;
-    }
-
+@media (min-width: 950px) {
+  /* If the screen is wider then 500px, use Flexbox */
+  .top-bar-mobile {
+    display: none
   }
+  .maincontainer {
+    display: flex;
+    flex-flow: row nowrap;
+    /* top-bar-mobile was removed */
+    padding-top: 0; 
+  }
+  .linkcontainer {
+    position: relative;
+    top: 0;
+    display: block;
+    min-width: 250px;
+    max-width: 250px;
+    max-height: none;
+  }
+
+  .mainwindow {
+    font-size: 1em;
+    margin: 0  50px;
+  }
+
+  .top-bar-desktop {
+    /* canvas floats left, title takes up remaining space. */
+    display: flex;
+  }
+
+}
