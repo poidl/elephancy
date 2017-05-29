@@ -10,12 +10,12 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="39.648335mm"
-   height="31.737156mm"
-   viewBox="0 0 140.48622 112.45449"
+   width="39.6875mm"
+   height="39.6875mm"
+   viewBox="0 0 140.625 140.625"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.92.1 r"
    sodipodi:docname="menu.svg">
   <defs
      id="defs4" />
@@ -27,8 +27,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="3.6855775"
-     inkscape:cy="44.609854"
+     inkscape:cx="98.342115"
+     inkscape:cy="78.480108"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,14 +39,15 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1920"
-     inkscape:window-height="987"
+     inkscape:window-height="973"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1">
     <sodipodi:guide
-       position="-7.7911621,86.153056"
+       position="-7.7911623,86.405585"
        orientation="0,1"
-       id="guide3336" />
+       id="guide3336"
+       inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -56,7 +57,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -64,10 +65,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-161.33435,-655.83986)">
+     transform="translate(-161.33435,-627.92187)">
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:9.39999962;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 184.85792,682.14129 94.44926,0"
+       d="m 184.89374,660.42404 h 94.59307"
        id="path3338"
        inkscape:connector-curvature="0"
        inkscape:export-xdpi="90"
@@ -75,13 +76,13 @@
     <path
        inkscape:connector-curvature="0"
        id="path4140"
-       d="m 184.85792,712.14129 94.44926,0"
+       d="m 184.89374,697.96426 h 94.59307"
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:9.39999962;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:9.39999962;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 184.85792,742.14129 94.44926,0"
+       d="m 184.89374,735.50448 h 94.59307"
        id="path4144"
        inkscape:connector-curvature="0"
        inkscape:export-xdpi="90"
@@ -92,76 +93,106 @@
        xlink:href="#path3338"
        id="use4149"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#path4140"
        id="use4151"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#path4144"
        id="use4153"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <rect
        style="fill:none;stroke:#a2a1a0;stroke-width:0;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect4155"
-       width="140.41121"
-       height="112.37947"
+       width="140.625"
+       height="140.625"
        x="161.33435"
-       y="656.16742" />
+       y="627.92188" />
     <use
        x="0"
        y="0"
        xlink:href="#path3338"
        id="use4157"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#path4140"
        id="use4159"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#path4144"
        id="use4161"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#use4149"
        id="use4163"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#use4151"
        id="use4165"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#use4153"
        id="use4167"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
     <use
        x="0"
        y="0"
        xlink:href="#rect4155"
        id="use4169"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90" />
+       inkscape:export-ydpi="90"
+       style="stroke-width:0.89326817"
+       width="100%"
+       height="100%" />
   </g>
 </svg>

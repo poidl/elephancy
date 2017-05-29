@@ -28,17 +28,20 @@ body {
 }
 
 .top-bar-mobile button {
-  height: 20px;
+  height: 60px;
+  line-height: 60px;
+  outline: none;
   float: right;
   background-image: none;
   background-color: transparent;
   border: none;
   padding: 0;
-  margin: 20px 20px 20px 0px;
+  margin: 0px 20px 0px 0px;
 }
 
 .top-bar-mobile button img {
   height: 20px;
+  padding: 20px 0px;
 }
 
 .top-bar-mobile .title-mobile {
@@ -145,14 +148,10 @@ h2, h3 {
 
 .mainwindow {
   font-size: 1.2em;
-  /*padding: 0 50px;*/
   margin: 0 12px;
-  /*set overflow to scroll, so the top-bar-mobile button doesn't disappear on the right-hand side if mainwindow is overflowing*/
-  /*overflow-x: scroll;*/
 }
 
 .mainwindow a {
-  /*font-size: 60px;*/
   color: black;
 }
 
