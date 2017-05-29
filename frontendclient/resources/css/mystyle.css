@@ -53,7 +53,7 @@ body {
 .title-mobile a {
   color:black;
   text-decoration: none;
-  font-size: 2em;
+  font-size: 1.7em;
   line-height: 60px;  /* To center the text vertically, line-height needs to be equal to height. Height, on the other hand, needs to be equal to the height+margin of the button. */
 }
 
@@ -127,23 +127,11 @@ body {
   line-height: 60px;
   text-decoration: none;
   color: black;
-  /*-webkit-transition: background-color 0.2s ease-out;*/
-  /*transition: background-color 0.2s ease-out;*/
 }
 
 .leftbar {
   min-width: 100px;
   max-width: 100px;
-}
-
-h2, h3 {
-  font-weight: 100;
-} 
-
-.toy {
-  margin:20px;
-  padding:20px;
-  border: thin solid;
 }
 
 .mainwindow {
@@ -153,6 +141,10 @@ h2, h3 {
 
 .mainwindow a {
   color: black;
+}
+
+.mainwindow :first-child {
+      margin-top: 0; /* vertically align first line with upper edge of linkcontainer box */
 }
 
 
@@ -181,10 +173,6 @@ h2, h3 {
       /*width: 60%;*/
       font-size: 1em;
       margin: 0  50px;
-    }
-
-    .mainwindow :first-child {
-      margin-top: 0; /* vertically align first line with upper edge of linkcontainer box */
     }
 
     .top-bar-desktop {
