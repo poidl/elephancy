@@ -4,7 +4,7 @@
 
 body {
   font-size: 100%;
-  max-width: 1100px;
+  max-width: 1300px;
   margin: auto; /*Use margin: auto;, to horizontally center an element within its container.*/
 }
 
@@ -47,7 +47,7 @@ body {
   text-align: center;
 }
 
-.title-mobile a{
+.title-mobile a {
   color:black;
   text-decoration: none;
   font-size: 2em;
@@ -93,18 +93,12 @@ body {
 }
 
 .linkcontainer {
-  /*position: absolute;*//*positioned absolute, relative to the nearest positioned ancestor, which is, I guess, the document body?*//*Tried "width: 250px" instead of min/max, but then it gets squeezed if @media min-width is exceeded only slightly*/
   position: fixed;
   top: 60px;/*must be equal to top-bar-mobile height PLUS padding!*/
   left: 0;
-  /*min-width: 250px;*/
-  /*max-width: 250px;*/
   width: 100%;
   max-height: 75vh;
   display: none;
-  /*height: 100%;*/
-  /*backface-visibility: hidden;*/
-  /*transition: transform 0.4s ease-out;*/
   z-index: 1;
   background-color: #E0E0E0;
   /*transition: transform 0.4s ease-out;*/
@@ -132,6 +126,11 @@ body {
   color: black;
   /*-webkit-transition: background-color 0.2s ease-out;*/
   /*transition: background-color 0.2s ease-out;*/
+}
+
+.leftbar {
+  min-width: 100px;
+  max-width: 100px;
 }
 
 h2, h3 {
@@ -190,7 +189,7 @@ h2, h3 {
     }
 
     .top-bar-desktop {
-      /* canvas floats right, title takes up remaining space. */
+      /* canvas floats left, title takes up remaining space. */
       display: flex;
     }
 

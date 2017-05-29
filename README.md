@@ -47,11 +47,11 @@ Then run `webpack` to generate the Javascript code
 
 ##### Backend and server-side frontend
 
-Both are written in Go. In the folder `/binary`, run
+Both are written in Go. In the folder `/elephancy`, run
 
 ```
 go build
-./binary
+./elephancy
 ```
 
 Open http://localhost:8080/ in a browser.
