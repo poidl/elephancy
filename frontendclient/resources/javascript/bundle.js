@@ -5042,6 +5042,8 @@ var api = new api_1.Api();
 var pages;
 var pagescontainer;
 var linkcontainer = document.querySelector('.linkcontainer');
+var titledesktop = document.querySelector('.title-desktop');
+var titlemobile = document.querySelector('.title-mobile');
 function attach_ajax_handlers() {
     return __awaiter(this, void 0, void 0, function () {
         var e_1;
@@ -5057,6 +5059,8 @@ function attach_ajax_handlers() {
                     // entire page. *After* data has arrived, attach the AJAX 'click' 
                     // event handler
                     linkcontainer.addEventListener('click', fetch_content, false);
+                    titledesktop.addEventListener('click', fetch_content, false);
+                    titlemobile.addEventListener('click', fetch_content, false);
                     return [3 /*break*/, 3];
                 case 2:
                     e_1 = _a.sent();

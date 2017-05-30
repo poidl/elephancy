@@ -16,6 +16,8 @@ let pages: Pages
 let pagescontainer: PagesContainer
 
 var linkcontainer = document.querySelector('.linkcontainer');
+var titledesktop = document.querySelector('.title-desktop');
+var titlemobile = document.querySelector('.title-mobile');
 
 async function attach_ajax_handlers() {
     try {
@@ -25,6 +27,8 @@ async function attach_ajax_handlers() {
         // entire page. *After* data has arrived, attach the AJAX 'click' 
         // event handler
         linkcontainer.addEventListener('click', fetch_content, false);
+        titledesktop.addEventListener('click', fetch_content, false);
+        titlemobile.addEventListener('click', fetch_content, false);
     }
     catch (e) {
         console.log('there was error attaching the handlers to left drawer');
