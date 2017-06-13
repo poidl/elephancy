@@ -37,10 +37,10 @@
   <div class="maincontainer" role="main">
     <nav class="linkcontainer">
       <ul id="linklist">
-        {{ range $element := .Pages }}
+        <!--{{ range $element := .Pages }}-->
         <!--The following should work without javascript. In that case it's not an ajax call and the enitre page is refreshed (templating happens on the server)-->
-        <li><a class="xhr" href="{{ $element.Prettyurl }}"> {{ $element.Linkname }} </a></li>
-        {{ end }}
+        <!--<li><a class="xhr" href="{{ $element.Prettyurl }}"> {{ $element.Linkname }} </a></li>
+        {{ end }}-->
       </ul>
     </nav>
     <div class="mainwindow" id="mainPanel">

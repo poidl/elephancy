@@ -22,8 +22,8 @@ var titlemobile = document.querySelector('.title-mobile');
 
 
 export class Myobserver {
-    constructor(public e: HTMLElement){}
-    next(s: string) {};
+    constructor(public e: any){}
+    next(property: any) {};
 }
 
 export class Myinput extends Myobserver {
@@ -42,6 +42,22 @@ export class Myp extends Myobserver {
     next(s: string) {
         this.e.innerHTML = s
     }
+}
+
+export class Mylinklist extends Myobserver {
+    constructor(public e: HTMLElement) {
+        super(e)
+    }
+    next(pages: Pages) {
+        this.e.innerHTML = template(pages)
+    }
+}
+
+function template(pages: Pages): string {
+    return pages.map(
+            (page) => 
+            `<li><a class="xhr" href="${page.prettyurl}"> ${page.linkname}</a></li>`
+        ).join('')
 }
 
 export class Observable {
@@ -93,6 +109,27 @@ export class ObservableEventData extends Observable {
     notify(s: string) {
         for (let e of this.elements) {
             e.next(s)
+        }
+    }
+}
+
+export class ObservablePages extends Observable {
+    constructor(
+        private pages: Pages,
+        private observers: Array<Myobserver> = []
+    ) { 
+        super()
+     }
+    subscribe(observer: Myobserver) {
+        this.observers.push(observer)
+    }
+    update = (pages: Pages) => {
+        this.pages = pages
+        this.notify(pages)
+    }
+    notify(pages: Pages) {
+        for (let o of this.observers) {
+            o.next(pages)
         }
     }
 }

@@ -10,7 +10,8 @@
             "dom",
             "es6"
         ],
-        "outDir": "../resources/javascript"
+        "outDir": "../resources/javascript",
+        "jsx":"preserve"
     },
     "include": [
         "./src/**/*"

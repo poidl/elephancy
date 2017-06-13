@@ -6,7 +6,9 @@ import { Link } from "./apinew";
 import { Observable } from "./scriptnew";
 import { ObservableString } from "./scriptnew";
 import { ObservableEventData } from "./scriptnew";
+import { ObservablePages } from "./scriptnew";
 import { Myobserver } from "./scriptnew";
+import { Mylinklist } from "./scriptnew";
 import { Myinput } from "./scriptnew";
 import { Myp } from "./scriptnew";
 
@@ -24,7 +26,7 @@ export interface IPageVM
 //   fetchPage(id: number): void;
 //   getPage(): Page;
 //   setPage(page: Page): void;
-//   getPages(): Pages;
+//   setPages();
 }
 
 export class PageVM implements IPageVM 
@@ -35,6 +37,7 @@ export class PageVM implements IPageVM
         public string: string = '66',
         public observablestring = new ObservableString(),
         public observableeventdata: ObservableEventData = null,
+        public observablepages: ObservablePages = null,
         ){
             let input = <HTMLInputElement>document.getElementById("fooinput")
             let paragr = document.getElementById("foop")
@@ -46,26 +49,24 @@ export class PageVM implements IPageVM
             this.observableeventdata = new ObservableEventData(input,"change")
             this.observableeventdata.subscribe(new Myp(paragr))
 
+            this.observablepages = new ObservablePages(this.pages)
+            let linklist = new Mylinklist(document.getElementById("linklist"))
+            this.observablepages.subscribe(linklist)
+            this.fetchAllPages()
         }
     async fetchAllPages() { 
-        let pages = await api.listPages()
-        this.pages = pages
+        this.setPages = await api.listPages()
     };
-    // set setPages(pages: Pages) {
-    //     this.pages = pages
-    // }
-    get getPages(): Pages {
-        return this.pages
+    set setPages(pages: Pages) {
+        this.observablepages.update(pages)
     }
-    set setstring(s: string) {
-        this.string = s
-        this.observablestring.update(this.string)
-    }
+
     // fetchPage(id: number) { };
     // getPage() { };
-    // setPage(page: Page) { };
     // getPages() { };
+    // setPage(page: Page) { 
 }
+
 
 let vm = new PageVM()
 
