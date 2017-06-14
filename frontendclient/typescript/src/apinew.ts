@@ -33,9 +33,23 @@ export class Page {
     'linkname': string;
     'linkweight': string;
     'metatitle': string;
+    [key: string]: any;
 }
 
-
+export class PagesContainer {
+    pages: Pages
+    // Array cannot be a super class
+    // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    constructor(pages: Pages) {
+        this.pages = pages
+    }
+    findPageByKeyValue = function (this: PagesContainer, key: string, value: any): Page {
+        let p = this.pages.filter(function (p: Page) {
+            return p[key] === value
+        })
+        return p[0]
+    }
+}
 
 
 function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
@@ -46,7 +60,6 @@ function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
             shutdown({ code: obj.code, body: obj.body })
         } else {
             let pages = <Pages>JSON.parse(obj.body)
-            console.log(pages)
             resolve(pages)
         }
     })
