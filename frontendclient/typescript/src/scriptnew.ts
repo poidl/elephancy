@@ -17,47 +17,44 @@ let pages: Pages
 // let pagescontainer: PagesContainer
 
 
-
-
-export class Myobserver {
-    constructor(public e: any){}
-    next(property: any) {};
+export interface ObserverConstructor {
+    new (e: any): ObserverInterface
 }
 
-export class Myinput extends Myobserver {
-    constructor(public e: HTMLInputElement) {
-        super(e)
-    }
+export interface ObserverInterface {
+    next(property: any): void
+}
+
+// function createObserver(ctor: ObserverConstructor, e: any): ObserverInterface {
+//     return new ctor(e);
+// }
+
+export class Myinput implements ObserverInterface {
+    constructor(public e: HTMLInputElement) { }
     next(s: string) {
         this.e.value = s
     }
 }
 
-export class Myp extends Myobserver {
-    constructor(public e: HTMLElement) {
-        super(e)
-    }
+export class Myp implements ObserverInterface {
+    constructor(public e: HTMLElement) { }
     next(s: string) {
         this.e.innerHTML = s
     }
 }
 
-export class Mylinklist extends Myobserver {
-    constructor(public e: HTMLElement) {
-        super(e)
-    }
+export class Mylinklist implements ObserverInterface {
+    constructor(public e: HTMLElement) { }
     next(pages: Pages) {
         this.e.innerHTML = template(pages)
     }
 }
 
-export class Mypageview extends Myobserver {
+export class Mypageview implements ObserverInterface {
     constructor(
         public content: HTMLElement, 
         public metatitle: HTMLElement
-        ) {
-        super(content)
-    }
+        ) { }
     async next(page: Page) {
         let obj = await api.getPageContent(page.id)
         this.content.innerHTML = obj.body
@@ -81,9 +78,9 @@ export class Observable {
 export class ObservableString extends Observable {
     constructor(
         private s: string = null,
-        private elements: Array<Myobserver> = []
+        private elements: Array<ObserverInterface> = []
     ) { super() }
-    subscribe(element: Myobserver) {
+    subscribe(element: ObserverInterface) {
         this.elements.push(element)
     }
     update = (s: string) => {
@@ -101,12 +98,12 @@ export class ObservableEventData extends Observable {
     constructor(
         private eventtarget: EventTarget = null,
         private eventtype: string = null,
-        private elements: Array<Myobserver> = []
+        private elements: Array<ObserverInterface> = []
     ) { 
         super()
         this.eventtarget.addEventListener(this.eventtype, this.update, false)
      }
-    subscribe(element: Myobserver) {
+    subscribe(element: ObserverInterface) {
         this.elements.push(element)
     }
     update = (ev: Event) => {
@@ -128,11 +125,11 @@ export class ObservableEventData extends Observable {
 export class ObservablePages extends Observable {
     constructor(
         public pages: Pages,
-        private observers: Array<Myobserver> = []
+        private observers: Array<ObserverInterface> = []
     ) { 
         super()
      }
-    subscribe(observer: Myobserver) {
+    subscribe(observer: ObserverInterface) {
         this.observers.push(observer)
     }
     update = (pages: Pages) => {
@@ -149,11 +146,11 @@ export class ObservablePages extends Observable {
 export class ObservablePage extends Observable {
     constructor(
         public page: Page,
-        private observers: Array<Myobserver> = []
+        private observers: Array<ObserverInterface> = []
     ) { 
         super()
      }
-    subscribe(observer: Myobserver) {
+    subscribe(observer: ObserverInterface) {
         this.observers.push(observer)
     }
     update = (page: Page) => {
