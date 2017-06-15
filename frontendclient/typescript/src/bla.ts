@@ -5,10 +5,11 @@ import { PagesContainer } from "./apinew";
 import { Link } from "./apinew";
 
 import { Observable } from "./scriptnew";
-import { ObservableString } from "./scriptnew";
+// import { ObservableString } from "./scriptnew";
+import { Observablegen } from "./scriptnew";
 import { ObservableEventData } from "./scriptnew";
-import { ObservablePages } from "./scriptnew";
-import { ObservablePage } from "./scriptnew";
+// import { ObservablePages } from "./scriptnew";
+// import { ObservablePage } from "./scriptnew";
 // import { Myobserver } from "./scriptnew";
 import { Mylinklist } from "./scriptnew";
 import { Mypageview } from "./scriptnew";
@@ -57,15 +58,16 @@ let me: Myelements = {
 export class PageVM implements IPageVM 
 {
     constructor(
-        public string = new ObservableString(),
+        public string = new Observablegen<string>(),
         public eventdata: ObservableEventData = null,
-        public pages: ObservablePages = new ObservablePages([]),
-        public page: ObservablePage = new ObservablePage(null),
+        public pages = new Observablegen<Pages>(),
+        public page = new Observablegen<Page>(),
         private elements = me,
         ){
 
             this.string.subscribe(new Myinput(elements.input))
             this.string.subscribe(new Myp(elements.paragr))
+            this.string.update('55')
 
             this.eventdata = new ObservableEventData(elements.input,"change")
             this.eventdata.subscribe(new Myp(elements.paragr))
@@ -91,11 +93,11 @@ export class PageVM implements IPageVM
         this.pages.update(pages)
     };
     get getPages(): Pages {
-        let pages = this.pages.pages
+        let pages = this.pages.item
         if (pages.length === 0) {
             return null
         } 
-        return this.pages.pages;
+        return this.pages.item;
     }
     attach_ajax_handlers() {
         if (this.getPages) {
@@ -110,7 +112,7 @@ export class PageVM implements IPageVM
         let a = (<HTMLAnchorElement>e.target)
         if (a.className === 'xhr') {
             e.preventDefault();
-            let p = new PagesContainer(this.pages.pages)
+            let p = new PagesContainer(this.pages.item)
             let page = p.findPageByKeyValue('prettyurl', a.pathname)
 
             this.setPage = page
@@ -136,3 +138,17 @@ let vm = new PageVM()
 // let obj = new Binder(document.getElementById("foo"), vm.getPages);
 // vm.fetchAllPages()
 
+
+window.onload = function () {
+    window.addEventListener("popstate", doit, false);
+
+    function doit() {
+        let p = new PagesContainer(vm.pages.item)
+        let page = p.findPageByKeyValue('prettyurl', '/' + location.href.split('/').pop())
+        if (!page) {
+            let err = new Error('Error in popstate event handler')
+            throw err
+        }
+        vm.setPage = page
+    }
+}

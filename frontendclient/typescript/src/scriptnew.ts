@@ -75,21 +75,21 @@ export class Observable {
     // notify(element: any) { }
 }
 
-export class ObservableString extends Observable {
+export class Observablegen<T> {
     constructor(
-        private s: string = null,
+        public item: T = null,
         private elements: Array<ObserverInterface> = []
-    ) { super() }
+    ) { }
     subscribe(element: ObserverInterface) {
         this.elements.push(element)
     }
-    update = (s: string) => {
-        this.s = s
-        this.notify(s)
+    update = (item: T) => {
+        this.item = item
+        this.notify(item)
     }
-    notify(s: string) {
+    notify(item: T) {
         for (let e of this.elements) {
-            e.next(s)
+            e.next(item)
         }
     }
 }
@@ -122,47 +122,6 @@ export class ObservableEventData extends Observable {
     }
 }
 
-export class ObservablePages extends Observable {
-    constructor(
-        public pages: Pages,
-        private observers: Array<ObserverInterface> = []
-    ) { 
-        super()
-     }
-    subscribe(observer: ObserverInterface) {
-        this.observers.push(observer)
-    }
-    update = (pages: Pages) => {
-        this.pages = pages
-        this.notify(pages)
-    }
-    notify(pages: Pages) {
-        for (let o of this.observers) {
-            o.next(pages)
-        }
-    }
-}
-
-export class ObservablePage extends Observable {
-    constructor(
-        public page: Page,
-        private observers: Array<ObserverInterface> = []
-    ) { 
-        super()
-     }
-    subscribe(observer: ObserverInterface) {
-        this.observers.push(observer)
-    }
-    update = (page: Page) => {
-        this.page = page
-        this.notify(page)
-    }
-    notify(page: Page) {
-        for (let o of this.observers) {
-            o.next(page)
-        }
-    }
-}
 
 // class AppDrawer {
 //     private element: Element;
