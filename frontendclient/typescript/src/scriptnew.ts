@@ -16,7 +16,9 @@ let api = new Api()
 let pages: Pages
 // let pagescontainer: PagesContainer
 
-
+// Observables:
+// http://www.anasfirdousi.com/understanding-observable-patterns-behind-observables-rxjs-rx.html
+// https://netbasal.com/javascript-observables-under-the-hood-2423f760584
 export interface ObserverConstructor {
     new (e: any): ObserverInterface
 }

@@ -24,6 +24,9 @@ let basepath = '/api';
 
 let api = new Api()
 
+// Some of this is from there:
+// https://visualstudiomagazine.com/articles/2013/04/01/introducing-practical-javascript.aspx
+
 export interface IPageVM 
 {
   fetchAllPages(): void;
@@ -68,7 +71,6 @@ export class PageVM implements IPageVM
             this.string.subscribe(new Myinput(elements.input))
             this.string.subscribe(new Myp(elements.paragr))
             this.string.update('55')
-
             this.eventdata = new ObservableEventData(elements.input,"change")
             this.eventdata.subscribe(new Myp(elements.paragr))
 
