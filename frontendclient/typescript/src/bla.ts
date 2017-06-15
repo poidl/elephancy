@@ -9,7 +9,7 @@ import { ObservableString } from "./scriptnew";
 import { ObservableEventData } from "./scriptnew";
 import { ObservablePages } from "./scriptnew";
 import { ObservablePage } from "./scriptnew";
-import { Myobserver } from "./scriptnew";
+// import { Myobserver } from "./scriptnew";
 import { Mylinklist } from "./scriptnew";
 import { Mypageview } from "./scriptnew";
 import { Myinput } from "./scriptnew";
@@ -32,36 +32,51 @@ export interface IPageVM
 //   setPages();
 }
 
+export interface Myelements {
+    linkcontainer: HTMLElement,
+    linklist: HTMLElement,
+    titledesktop: HTMLElement,
+    titlemobile: HTMLElement,
+    mainpanel: HTMLElement,
+    metatitle: HTMLElement,
+    input: HTMLInputElement,
+    paragr: HTMLElement,
+}
+
+let me: Myelements = {
+    linkcontainer: <HTMLElement>document.querySelector('.linkcontainer'),
+    linklist: <HTMLElement>document.getElementById('linklist'),
+    titledesktop: <HTMLElement>document.querySelector('.title-desktop'),
+    titlemobile: <HTMLElement>document.querySelector('.title-mobile'),
+    mainpanel: <HTMLElement>document.getElementById("mainPanel"),
+    metatitle: <HTMLElement>document.getElementById("metatitle"),
+    input: <HTMLInputElement>document.getElementById("fooinput"),
+    paragr: document.getElementById("foop")
+}
+
 export class PageVM implements IPageVM 
 {
     constructor(
-        public string: string = '66',
-        public observablestring = new ObservableString(),
-        public observableeventdata: ObservableEventData = null,
-        public observablepages: ObservablePages = new ObservablePages([]),
-        public observablepage: ObservablePage = new ObservablePage(null),
-        private linkcontainer = <HTMLElement>document.querySelector('.linkcontainer'),
-        private linklist = <HTMLElement>document.getElementById('linklist'),
-        private titledesktop = <HTMLElement>document.querySelector('.title-desktop'),
-        private titlemobile = <HTMLElement>document.querySelector('.title-mobile'),
-        private mainpanel = <HTMLElement>document.getElementById("mainPanel"),
-        private metatitle = <HTMLElement>document.getElementById("metatitle")
+        public string = new ObservableString(),
+        public eventdata: ObservableEventData = null,
+        public pages: ObservablePages = new ObservablePages([]),
+        public page: ObservablePage = new ObservablePage(null),
+        private elements = me,
         ){
-            let input = <HTMLInputElement>document.getElementById("fooinput")
-            let paragr = document.getElementById("foop")
 
-            this.observablestring.subscribe(new Myinput(input))
-            this.observablestring.subscribe(new Myp(paragr))
-            this.observablestring.update(this.string)
+            this.string.subscribe(new Myinput(elements.input))
+            this.string.subscribe(new Myp(elements.paragr))
 
-            this.observableeventdata = new ObservableEventData(input,"change")
-            this.observableeventdata.subscribe(new Myp(paragr))
+            this.eventdata = new ObservableEventData(elements.input,"change")
+            this.eventdata.subscribe(new Myp(elements.paragr))
 
-            // this.observablepages = new ObservablePages()
-            let mylinklist = new Mylinklist(this.linklist)
-            this.observablepages.subscribe(mylinklist)
-            let mypageview = new Mypageview(this.mainpanel, this.metatitle)
-            this.observablepage.subscribe(mypageview)
+            // currently this is useless, since the links are already
+            // filled in on the server
+            let mylinklist = new Mylinklist(this.elements.linklist)
+            this.pages.subscribe(mylinklist)
+
+            let mypageview = new Mypageview(this.elements.mainpanel, this.elements.metatitle)
+            this.page.subscribe(mypageview)
 
             this.fetchAllPages()
         }
@@ -73,21 +88,20 @@ export class PageVM implements IPageVM
         this.attach_ajax_handlers()
     };
     set setPages(pages: Pages) {
-        this.observablepages.update(pages)
+        this.pages.update(pages)
     };
     get getPages(): Pages {
-        let pages = this.observablepages.pages
+        let pages = this.pages.pages
         if (pages.length === 0) {
             return null
         } 
-        return this.observablepages.pages;
+        return this.pages.pages;
     }
     attach_ajax_handlers() {
-        console.log(this.getPages)
         if (this.getPages) {
-            this.linkcontainer.addEventListener('click', this.ajax, false);
-            this.titledesktop.addEventListener('click', this.ajax, false);
-            this.titlemobile.addEventListener('click', this.ajax, false);
+            this.elements.linkcontainer.addEventListener('click', this.ajax, false);
+            this.elements.titledesktop.addEventListener('click', this.ajax, false);
+            this.elements.titlemobile.addEventListener('click', this.ajax, false);
         } else  {
             console.log('there was error attaching the handlers to left drawer: pages not initialized in view model');
         }
@@ -96,7 +110,7 @@ export class PageVM implements IPageVM
         let a = (<HTMLAnchorElement>e.target)
         if (a.className === 'xhr') {
             e.preventDefault();
-            let p = new PagesContainer(this.observablepages.pages)
+            let p = new PagesContainer(this.pages.pages)
             let page = p.findPageByKeyValue('prettyurl', a.pathname)
 
             this.setPage = page
@@ -106,7 +120,7 @@ export class PageVM implements IPageVM
         }
     }
     set setPage(page: Page) {
-        this.observablepage.update(page)
+        this.page.update(page)
     }
 
     // fetchPage(id: number) { };
