@@ -71,13 +71,7 @@ function template(pages: Pages): string {
         ).join('')
 }
 
-export class Observable {
-    subscribe(subscriber: any) {}
-    update = (element: any) => {}
-    // notify(element: any) { }
-}
-
-export class Observablegen<T> {
+export class Observable<T> {
     constructor(
         public item: T = null,
         private elements: Array<ObserverInterface> = []
@@ -96,13 +90,12 @@ export class Observablegen<T> {
     }
 }
 
-export class ObservableEventData extends Observable {
+export class ObservableEventData {
     constructor(
         private eventtarget: EventTarget = null,
         private eventtype: string = null,
         private elements: Array<ObserverInterface> = []
     ) { 
-        super()
         this.eventtarget.addEventListener(this.eventtype, this.update, false)
      }
     subscribe(element: ObserverInterface) {

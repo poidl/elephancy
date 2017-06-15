@@ -5,12 +5,7 @@ import { PagesContainer } from "./apinew";
 import { Link } from "./apinew";
 
 import { Observable } from "./scriptnew";
-// import { ObservableString } from "./scriptnew";
-import { Observablegen } from "./scriptnew";
 import { ObservableEventData } from "./scriptnew";
-// import { ObservablePages } from "./scriptnew";
-// import { ObservablePage } from "./scriptnew";
-// import { Myobserver } from "./scriptnew";
 import { Mylinklist } from "./scriptnew";
 import { Mypageview } from "./scriptnew";
 import { Myinput } from "./scriptnew";
@@ -61,10 +56,10 @@ let me: Myelements = {
 export class PageVM implements IPageVM 
 {
     constructor(
-        public string = new Observablegen<string>(),
+        public string = new Observable<string>(),
         public eventdata: ObservableEventData = null,
-        public pages = new Observablegen<Pages>(),
-        public page = new Observablegen<Page>(),
+        public pages = new Observable<Pages>(),
+        public page = new Observable<Page>(),
         private elements = me,
         ){
 
