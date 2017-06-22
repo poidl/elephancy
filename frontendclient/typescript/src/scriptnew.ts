@@ -27,9 +27,9 @@ export interface ObserverInterface {
     next(property: any): void
 }
 
-// function createObserver(ctor: ObserverConstructor, e: any): ObserverInterface {
-//     return new ctor(e);
-// }
+export interface ObserverInterfaceNew {
+    next: (property: any) => void
+}
 
 export class Myinput implements ObserverInterface {
     constructor(public e: HTMLInputElement) { }
@@ -71,10 +71,14 @@ function template(pages: Pages): string {
         ).join('')
 }
 
+// export function merge<T,S>(ot: Observable<T>, os: Observable<S>) {
+
+// }
+
 export class Observable<T> {
     constructor(
         public item: T = null,
-        private elements: Array<ObserverInterface> = []
+        public elements: Array<ObserverInterface> = []
     ) { }
     subscribe(element: ObserverInterface) {
         this.elements.push(element)
@@ -83,12 +87,73 @@ export class Observable<T> {
         this.item = item
         this.notify(item)
     }
+    // get item(): T {
+    //     return this._item
+    // }
+    // set item(item: T) {
+    //     this._item = item
+    //     this.notify(item)
+    // }
+    // next(myitem: any) {
+        
+    // }
     notify(item: T) {
         for (let e of this.elements) {
             e.next(item)
         }
     }
+
 }
+
+export class Observer implements ObserverInterface {
+    next: (property: any) => void
+    // next(s: string) {
+    //     this.e.value = s
+    // }
+}
+
+export class Subject extends Observable<Observer> {
+    constructor(
+        item: Observer = null,
+        elements: Array<ObserverInterface> = []
+    ) { super(item, elements) }
+    next(myitem: any) {
+        this.item.next(myitem)
+        this.notify(this.item)
+    }
+}
+// export class Subject {
+//     constructor(
+//         public item: Observer = null,
+//         public elements: Array<ObserverInterface> = []
+//     ) { }
+//     subscribe(element: ObserverInterface) {
+//         this.elements.push(element)
+//     }
+//     update = (item: Observer) => {
+//         this.item = item
+//         this.notify(item)
+//     }
+//     // get item(): T {
+//     //     return this._item
+//     // }
+//     // set item(item: T) {
+//     //     this._item = item
+//     //     this.notify(item)
+//     // }
+//     next(myitem: any) {
+//         this.item.next(myitem)
+//         this.notify(this.item)
+//     }
+//     notify(item: Observer) {
+//         for (let e of this.elements) {
+//             e.next(item)
+//         }
+//     }
+
+// }
+
+
 
 export class ObservableEventData {
     constructor(
@@ -102,32 +167,117 @@ export class ObservableEventData {
         this.elements.push(element)
     }
     update = (ev: Event) => {
-        switch (ev.type) {
-            case "change": {
-                let eventdata = (<HTMLInputElement>ev.target).value
-                this.notify(eventdata)
-            }
-        }
+        this.notify(ev)
+        // switch (ev.type) {
+        //     case "change": {
+        //         let eventdata = (<HTMLInputElement>ev.target).value
+        //         this.notify_string(eventdata)
+        //     }
+        //     case "click": {
+        //         this.notify()
+        //     }
+        // }
+
         
     }
-    notify(s: string) {
+    // notify_string(s: string) {
+    //     for (let e of this.elements) {
+    //         e.next(s)
+    //     }
+    // }
+    notify(ev: Event) {
         for (let e of this.elements) {
-            e.next(s)
+            e.next(this.mapf(ev))
         }
+    }
+    map = (f: (input: any) => any) =>  {
+        this.mapf = f
+        return this
+    }
+    mapf = (input: any) => input
+}
+
+// export class ObservableEventDatan extends ObservableEventData {
+//     constructor(
+//         eventtarget: EventTarget = null,
+//         eventtype: string = null,
+//         elements: Array<ObserverInterface> = []
+//     ) { 
+//         super(eventtarget, eventtype, elements)
+//      }
+//     update = (ev: Event) => {
+//         switch (ev.type) {
+//             case "click": {
+//                 if ev.target
+//                 this.notify()
+//             }
+//         }
+        
+//     }
+// }
+
+// export class AppDrawerGa implements ObserverInterface {
+//     constructor(
+//         private open: boolean = false,
+//         public next: (property: any) => void
+//     ) {}
+// }
+
+
+export class AppDrawer {
+    constructor(
+        // public next: (property: any) => void
+        private _open: boolean = false
+    ) { }
+    // accessors
+    get open() {
+        return this._open
+    }
+    set open(bol: boolean) {
+        this._open = bol;
+    }
+    next(s: string) {
+        if (s === 'toggle') {
+            if (this._open) {
+                this._open = false
+            } else {
+                this._open = true
+            }
+        } else if (s === 'close') {
+            this._open = false
+        }  
+    }
+    // next: (property: any) => void
+    // settoggle() {
+    //     let toggle: (this: AppDrawer)=>void = function(this:AppDrawer) {
+    //             if (this.open) {
+    //                 this.open = false
+    //             } else {
+    //                 this.open = true
+    //             }
+    //         }
+    //     this.next = toggle 
+    // }
+    // next() {
+    //     if (this.open) {
+    //         this.open = false
+    //     } else {
+    //         this.open = true
+    //     }
+    // }
+}
+export class AppDrawerObserver implements ObserverInterface {
+    // constructor(public e: HTMLInputElement) { }
+    next(ad: AppDrawer): void {
+        console.log(ad.open)
     }
 }
 
-
-// class AppDrawer {
-//     private element: Element;
-//     constructor(id: string) {
-//         this.element = document.querySelector(id);
-
-//         // listener on element?
-//         // this.element.addEventListener('click', e => {
-//         //     do something
-//         // });
-//     }
+// export class AppDrawerElement {
+//     constructor(
+//         public element: HTMLElement,
+//         // public next: (property: any) => void
+//         ) { }
 //     // accessors
 //     get open() {
 //         return this.element.hasAttribute('open');
@@ -141,14 +291,85 @@ export class ObservableEventData {
 //             this.element.removeAttribute('open');
 //         }
 //     }
-//     toggleDrawer() {
-//         if (this.open) {
-//             this.open = false
-//         } else {
-//             this.open = true
-//         }
+//     // next: (property: any) => void
+//     // settoggle() {
+//     //     let toggle: (this: AppDrawer)=>void = function(this:AppDrawer) {
+//     //             if (this.open) {
+//     //                 this.open = false
+//     //             } else {
+//     //                 this.open = true
+//     //             }
+//     //         }
+//     //     this.next = toggle 
+//     // }
+//     // next() {
+//     //     if (this.open) {
+//     //         this.open = false
+//     //     } else {
+//     //         this.open = true
+//     //     }
+//     // }
+// }
+
+// // export class AppDrawer implements ObserverInterface {
+// //     constructor(
+// //         public element: HTMLElement,
+// //         ) { }
+// //     // accessors
+// //     get open() {
+// //         return this.element.hasAttribute('open');
+// //     }
+
+// //     set open(open: Boolean) {
+// //         // Reflect the value of the open property as an HTML attribute.
+// //         if (open) {
+// //             this.element.setAttribute('open', '');
+// //         } else {
+// //             this.element.removeAttribute('open');
+// //         }
+// //     }
+// //     next() {
+// //         if (this.open) {
+// //             this.open = false
+// //         } else {
+// //             this.open = true
+// //         }
+// //     }
+// // }
+
+// export class AppDrawerCloser extends AppDrawer {
+//     constructor(element: HTMLElement) {
+//         super(element)
+//     }
+//     next() {
+//         this.open = false
 //     }
 // }
+
+
+
+export class AppDrawerNew implements ObserverInterface {
+    constructor(
+        public element: HTMLElement, 
+        public next: (property: any) => void
+        ) {}
+    // accessors
+    get open() {
+        return this.element.hasAttribute('open');
+    }
+
+    set open(open: Boolean) {
+        // Reflect the value of the open property as an HTML attribute.
+        if (open) {
+            this.element.setAttribute('open', '');
+        } else {
+            this.element.removeAttribute('open');
+        }
+    }
+}
+
+
+
 
 // let appdrawer = new AppDrawer('.linkcontainer')
 // let appbar = new AppDrawer('.top-bar-mobile');
