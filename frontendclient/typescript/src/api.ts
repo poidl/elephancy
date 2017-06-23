@@ -23,15 +23,8 @@ interface PageRaw {
     'linkname': string;
     'linkweight': string;
     'metatitle': string;
-    [key: string]: any;
 }
 
-
-function applyMixins(p1: PageRaw, p2: Page) {
-    Object.getOwnPropertyNames(p1).forEach(key => {
-        p2[key] = p1[key]
-    })
-}
 
 export class Page {
     'id': number;
@@ -40,19 +33,6 @@ export class Page {
     'linkname': string;
     'linkweight': string;
     'metatitle': string;
-    constructor(p: PageRaw) {
-        applyMixins(p, this)
-    };
-    // currently unused
-    // getLinkByRel(this: Page, rel: string): string {
-    //     for (let l of this.links) {
-    //         if (l.rel === 'self') {
-    //             return l.href
-    //         }
-    //     }
-    //     // throw new TypeError("Link not found: rel: self ");
-    //     return ''
-    // }
     [key: string]: any;
 }
 
@@ -71,9 +51,6 @@ export class PagesContainer {
     }
 }
 
-function toPageArray(val: PageRaw): Page {
-    return new Page(val)
-}
 
 function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
     return new Promise((resolve, reject) => {
@@ -82,8 +59,8 @@ function parse_pages(obj: { code: number, body: string }): Promise<Pages> {
             // of the user's request). Shutdown.
             shutdown({ code: obj.code, body: obj.body })
         } else {
-            let pages = JSON.parse(obj.body)
-            resolve(pages.map(toPageArray))
+            let pages = <Pages>JSON.parse(obj.body)
+            resolve(pages)
         }
     })
 }
@@ -95,24 +72,6 @@ export function shutdown(obj: { code: number, body: string }) {
 
 export class Api {
 
-    // public listPages(): Promise<Pages> {
-    //     return new Promise<Pages>((resolve, reject) => {
-    //         request(basepath + '/pages', (error, response, body) => {
-    //             if (error) {
-    //                 reject(error);
-    //             } else {
-    //                 if (response.statusCode >= 200 && response.statusCode <= 299) {
-    //                     let obj = JSON.parse(body)
-    //                     resolve(obj.map(toPageArray))
-    //                     // resolve(body);
-    //                 } else {
-    //                     reject({ response: response, body: body });
-    //                 }
-    //             }
-    //         });
-    //     });
-
-    // }
     public listPages(): Promise<Pages> {
         let options = {
             protocol: 'http:',

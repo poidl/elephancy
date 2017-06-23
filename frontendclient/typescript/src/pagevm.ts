@@ -1,40 +1,22 @@
-import { Api } from "./apinew";
-import { Page } from "./apinew";
-import { Pages } from "./apinew";
-import { PagesContainer } from "./apinew";
-import { Link } from "./apinew";
+import { Page } from "./api";
+import { Pages } from "./api";
+import { PagesContainer } from "./api";
 
-import { Observable } from "./scriptnew";
-import { ObservableEventData } from "./scriptnew";
-import { ObserverInterface } from "./scriptnew";
-import { Mylinklist } from "./scriptnew";
-import { Mypageview } from "./scriptnew";
-import { Myinput } from "./scriptnew";
-import { Myp } from "./scriptnew";
-import { AppDrawer } from "./scriptnew";
-// import { AppDrawerNew } from "./scriptnew";
-// import { AppDrawerCloser } from "./scriptnew";
-// import { AppDrawerObserver } from "./scriptnew";
-import { AppDrawerElement } from "./scriptnew";
-import { Subject } from "./scriptnew";
+import { Observable } from "./observables";
+import { ObservableEventData } from "./observables";
+import { ObserverInterface } from "./observables";
+import { Subject } from "./observables";
 
-import * as req from "./myrequest";
 
-let host = '127.0.0.1';
-let port = 8080;
-let basepath = '/api';
+import { Api } from "./api";
 
 let api = new Api()
 
 // Some of this is from there:
 // https://visualstudiomagazine.com/articles/2013/04/01/introducing-practical-javascript.aspx
 
-export interface IPageVM 
-{
-  fetchAllPages(): void;
-}
 
-export interface Myelements {
+export interface PageVMElements {
     linkcontainer: HTMLElement,
     linklist: HTMLElement,
     titledesktop: HTMLElement,
@@ -45,28 +27,17 @@ export interface Myelements {
     menubutton: HTMLElement,
 }
 
-let me: Myelements = {
-    linkcontainer: <HTMLElement>document.querySelector('.linkcontainer'),
-    linklist: <HTMLElement>document.getElementById('linklist'),
-    titledesktop: <HTMLElement>document.querySelector('.title-desktop'),
-    titlemobile: <HTMLElement>document.querySelector('.title-mobile'),
-    mainpanel: <HTMLElement>document.getElementById("mainPanel"),
-    metatitle: <HTMLElement>document.getElementById("metatitle"),
-    topbarmobile: <HTMLElement>document.querySelector(".top-bar-mobile"),
-    menubutton: <HTMLElement>document.querySelector(".menubutton"),
-}
-
-export class PageVM implements IPageVM 
+export class PageVM
 {
     constructor(
+        private elements: PageVMElements,
         public buttonclicked: ObservableEventData = null,
         public linkcontainerclicked: ObservableEventData = null,
         public appdrawerelem1: AppDrawerElement = null,
         public appdrawerelem2: AppDrawerElement = null,
         public appdrawerSubject = new Subject(new AppDrawer),
-        public pages = new Observable<Pages>(),
-        public page = new Observable<Page>(),
-        private elements = me,
+        public obsPages = new Observable<Pages>(),
+        public obsPage = new Observable<Page>(),
         ){
 
             // set up appdrawer
@@ -96,32 +67,38 @@ export class PageVM implements IPageVM
             // currently this is useless, since the links are already
             // filled in on the server
             let mylinklist = new Mylinklist(this.elements.linklist)
-            this.pages.subscribe(mylinklist)
+            this.obsPages.subscribe(mylinklist)
 
             let mypageview = new Mypageview(this.elements.mainpanel, this.elements.metatitle)
-            this.page.subscribe(mypageview)
+            this.obsPage.subscribe(mypageview)
 
             this.fetchAllPages()
         }
     async fetchAllPages() { 
-        this.setPages = await api.listPages()
+        this.pages = await api.listPages()
         // Clicking on the links *before* data has arrived should reload the
         // entire page. *After* data has arrived, attach the AJAX 'click' 
         // event handler
         this.attach_ajax_handlers()
     };
-    set setPages(pages: Pages) {
-        this.pages.update(pages)
+    set pages(pages: Pages) {
+        this.obsPages.update(pages)
     };
-    get getPages(): Pages {
-        let pages = this.pages.item
+    get pages(): Pages {
+        let pages = this.obsPages.item
         if (pages.length === 0) {
             return null
         } 
-        return this.pages.item;
+        return this.obsPages.item;
+    }
+    set page(page: Page) {
+        this.obsPage.update(page)
+    }
+    get page(): Page {
+        return this.obsPage.item;
     }
     attach_ajax_handlers() {
-        if (this.getPages) {
+        if (this.obsPages) {
             this.elements.linkcontainer.addEventListener('click', this.ajax, false);
             this.elements.titledesktop.addEventListener('click', this.ajax, false);
             this.elements.titlemobile.addEventListener('click', this.ajax, false);
@@ -133,33 +110,92 @@ export class PageVM implements IPageVM
         let a = (<HTMLAnchorElement>e.target)
         if (a.className === 'xhr') {
             e.preventDefault();
-            let p = new PagesContainer(this.pages.item)
+            let p = new PagesContainer(this.obsPages.item)
             let page = p.findPageByKeyValue('prettyurl', a.pathname)
 
-            this.setPage = page
+            this.page = page
             history.pushState(null, null, a.href);
             // TODO: what does the next line do?
             e.stopPropagation();
         }
     }
-    set setPage(page: Page) {
-        this.page.update(page)
+}
+
+class Mypageview implements ObserverInterface {
+    constructor(
+        public content: HTMLElement, 
+        public metatitle: HTMLElement
+        ) { }
+    async next(page: Page) {
+        let obj = await api.getPageContent(page.id)
+        this.content.innerHTML = obj.body
+        this.metatitle.innerHTML = page.metatitle
     }
 }
 
-let vm = new PageVM()
 
+export class Mylinklist implements ObserverInterface {
+    constructor(public e: HTMLElement) { }
+    next(pages: Pages) {
+        this.e.innerHTML = template(pages)
+    }
+}
 
-window.onload = function () {
-    window.addEventListener("popstate", doit, false);
+function template(pages: Pages): string {
+    return pages.map(
+            (page) => 
+            `<li><a class="xhr" href="${page.prettyurl}"> ${page.linkname}</a></li>`
+        ).join('')
+}
 
-    function doit() {
-        let p = new PagesContainer(vm.pages.item)
-        let page = p.findPageByKeyValue('prettyurl', '/' + location.href.split('/').pop())
-        if (!page) {
-            let err = new Error('Error in popstate event handler')
-            throw err
+class AppDrawer {
+    constructor(
+        private _open: boolean = false
+    ) { }
+    get open() {
+        return this._open
+    }
+    set open(bol: boolean) {
+        this._open = bol;
+    }
+    next(s: string) {
+        if (s === 'toggle') {
+            if (this._open) {
+                this._open = false
+            } else {
+                this._open = true
+            }
+        } else if (s === 'close') {
+            this._open = false
+        }  
+    }
+}
+
+class AppDrawerObserver implements ObserverInterface {
+    next(ad: AppDrawer): void {
+        console.log(ad.open)
+    }
+}
+
+class AppDrawerElement {
+    constructor(
+        public element: HTMLElement,
+        ) { }
+    get open() {
+        return this.element.hasAttribute('open');
+    }
+    set open(open: Boolean) {
+        if (open) {
+            this.element.setAttribute('open', '');
+        } else {
+            this.element.removeAttribute('open');
         }
-        vm.setPage = page
+    }
+    next(ad: AppDrawer) {
+        if (ad.open) {
+            this.open = true
+        } else {
+            this.open = false
+        }
     }
 }
