@@ -18,5 +18,6 @@ script:
  - webpack
  - echo $TRAVIS_BUILD_DIR
  - cd $TRAVIS_BUILD_DIR
- - cd ./elephancy
+ - ls
+ - cd elephancy
  - go build
