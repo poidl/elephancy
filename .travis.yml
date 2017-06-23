@@ -15,4 +15,6 @@ install:
  - npm install --save @types/node
 
 script:
- - webpack   
+ - webpack
+ - cd ../../elephancy/elephancy
+ - go build
