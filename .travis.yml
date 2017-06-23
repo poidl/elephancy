@@ -7,7 +7,7 @@ node_js:
   - "node"
 
 before_install:  
- - sudo $(which npm) install -g webpack
+ - npm install -g webpack
 
 install:
  - cd ./frontendclient/typescript
