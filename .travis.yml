@@ -16,6 +16,5 @@ install:
 
 script:
  - webpack
- - ls
- - cd ../../elephancy
+ - cd ../elephancy
  - go build
