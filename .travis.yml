@@ -16,8 +16,5 @@ install:
 
 script:
  - webpack
- - echo $TRAVIS_BUILD_DIR
- - cd $TRAVIS_BUILD_DIR
- - ls
- - cd elephancy
+ - cd ../../elephancy
  - go build
