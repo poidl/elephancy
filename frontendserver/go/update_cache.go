@@ -22,6 +22,17 @@ var fingerprintdir = "../frontendclient/resources_fingerprinted"
 var templateCacheFile = resourcedir + "/static_cache.json"
 var templateCacheFileFingerprinted = fingerprintdir + "/static_cache_fingerprinted.json"
 
+type siteData struct {
+	Titlemobile  string
+	Titledesktop string
+}
+
+type cacheData struct {
+	Buttonpic  string
+	Script     string
+	Stylesheet string
+}
+
 func cp(src string, dest string) {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	cmd := "cp"
@@ -73,31 +84,39 @@ func FingerprintFile(fname string) string {
 	return fname_new
 }
 
-type TemplateData struct {
-	Buttonpic  string
-	Script     string
-	Stylesheet string
-}
-
-// loadTemplateData opens a json file and returns the contents as a struct
+// loadCacheData opens a json file and returns the contents as a struct
 // TODO: handle errors
-func loadTemplateData(filename string) (TemplateData, error) {
+func loadCacheData(filename string) (cacheData, error) {
 
 	bytearr, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return TemplateData{}, err
+		return cacheData{}, err
 	}
-	var m TemplateData
+	var m cacheData
 	err = json.Unmarshal(bytearr, &m)
 	if err != nil {
-		return TemplateData{}, err
+		return cacheData{}, err
 	}
 	return m, nil
 }
 
-func writeTemplateData(TemplateData TemplateData, filename string) {
+func loadSiteData(filename string) (siteData, error) {
 
-	data, err := json.Marshal(TemplateData)
+	bytearr, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return siteData{}, err
+	}
+	var m siteData
+	err = json.Unmarshal(bytearr, &m)
+	if err != nil {
+		return siteData{}, err
+	}
+	return m, nil
+}
+
+func writecacheData(cacheData cacheData, filename string) {
+
+	data, err := json.Marshal(cacheData)
 	err = ioutil.WriteFile(filename, data, 0644)
 	if err != nil {
 		log.Fatal("Writing " + filename + " failed.")
@@ -143,7 +162,7 @@ func SetupcacheNew() {
 	cp(tcf, tcffp)
 
 	// load the resource data
-	resource, err := loadTemplateData(tcf)
+	resource, err := loadCacheData(tcf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -152,7 +171,7 @@ func SetupcacheNew() {
 	resource.Script = createFingerprintedResource(resource.Script)
 	resource.Stylesheet = createFingerprintedResource(resource.Stylesheet)
 	// write to file holding fingerprinted resources
-	writeTemplateData(resource, tcffp)
+	writecacheData(resource, tcffp)
 }
 
 func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
@@ -163,7 +182,7 @@ func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
 		log.Fatal(err)
 	}
 	tcffp := templateCacheFileFingerprinted
-	cachedat, err := loadTemplateData(tcffp)
+	cachedat, err := loadCacheData(tcffp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -177,4 +196,29 @@ func GenerateFingerprintedTemplate(ftmpl string, ftmplFingerpr string) {
 		log.Fatal(err)
 	}
 	f.Close()
+}
+
+func FillTitle(ftemplFingerpr string) {
+	// /////////////////////////////////
+	templ := template.New(path.Base(ftemplFingerpr))
+	templ = templ.Delims("||", "||")
+	templ, err := templ.ParseFiles(ftemplFingerpr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tcffp := "../frontendserver/data/site.json"
+	cachedat, err := loadSiteData(tcffp)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	f, err := os.Create(ftemplFingerpr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = templ.Execute(f, &cachedat)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

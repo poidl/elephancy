@@ -10,13 +10,13 @@ import (
 	"regexp"
 	"time"
 
-	fe "github.com/poidl/elephancy/frontendserver"
+	fe "github.com/poidl/elephancy/frontendserver/go"
 	api "github.com/poidl/elephancy/restapi/go"
 )
 
 var frontendClientPath = "../frontendclient"
 var pathFavicon = frontendClientPath + "/resources/favicon.ico"
-var ftempl = frontendClientPath + "/resources/framenew.html"
+var ftempl = frontendClientPath + "/resources/frame.html"
 var ftemplFingerpr = frontendClientPath + "/resources_fingerprinted/frame_fingerprinted.html"
 
 var apiConf = api.Configuration{
@@ -127,6 +127,7 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 		templ, err := template.ParseFiles(ftemplFingerpr)
 
 		templ.Execute(w, &templdat)
+
 		w.Header().Add("Cache-Control", "no-cache")
 		if err != nil {
 			http.NotFound(w, r)
@@ -186,6 +187,7 @@ func main() {
 
 	fe.SetupcacheNew()
 	fe.GenerateFingerprintedTemplate(ftempl, ftemplFingerpr)
+	fe.FillTitle(ftemplFingerpr)
 
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
