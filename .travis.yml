@@ -1,7 +1,3 @@
-language: go
-go:
-  - master
-
 language: node_js
 node_js:
   - "node"
@@ -16,6 +12,4 @@ install:
 
 script:
  - webpack
- - cd ../../elephancy
- - go build
- 
+
