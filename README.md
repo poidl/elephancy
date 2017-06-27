@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/poidl/elephancy.svg?branch=master)](https://travis-ci.org/poidl/elephancy)
+
 # elephancy
 
 A beginner's exercise in full-stack web development.
