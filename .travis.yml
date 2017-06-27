@@ -2,7 +2,18 @@ language: go
 go:
   - master
 
+before_install:  
+ - nvm install node
+ - npm install -g webpack
+
+install:
+ - cd ./frontendclient/typescript
+ - npm install --save-dev typescript awesome-typescript-loader source-map-loader
+ - npm install --save @types/node
+
 script:
- - cd elephancy
+ - webpack
+ - cd ../../elephancy
  - go build
+
  
