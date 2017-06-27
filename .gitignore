@@ -4,7 +4,6 @@ resources_fingerprinted
 dummy_test.png
 *_backup.png
 .directory
-frame.html
 jsbuild
 node_modules
 bower_components
