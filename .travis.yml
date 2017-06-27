@@ -1,16 +1,21 @@
--language: node_js
--node_js:
+language: go
+go:
+  - master
+
+language: node_js
+node_js:
   - "node"
 
 before_install:  
-  - npm install -g webpack
+ - npm install -g webpack
 
 install:
-  - cd ./frontendclient/typescript
-  - npm install --save-dev typescript awesome-typescript-loader source-map-loader
-  - npm install --save @types/node
+ - cd ./frontendclient/typescript
+ - npm install --save-dev typescript awesome-typescript-loader source-map-loader
+ - npm install --save @types/node
 
 script:
-  - webpack
-  - cd ../../elephancy
-  - go build
+ - webpack
+ - cd ../../elephancy
+ - go build
+ 
