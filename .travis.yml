@@ -3,6 +3,6 @@ go:
   - master
 
 script:
- - cd ../../elephancy
+ - cd elephancy
  - go build
  
