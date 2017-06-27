@@ -12,11 +12,5 @@ install:
 
 script:
   - webpack
-
-language: go
-go:
-  - master
-
-script:
   - cd ../../elephancy
   - go build
