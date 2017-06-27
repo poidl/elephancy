@@ -3,14 +3,15 @@ package main
 import (
 	"html/template"
 	"log"
-	fe "mystuff/elephancy/frontendserver"
-	api "mystuff/elephancy/restapi/go"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 	"regexp"
 	"time"
+
+	fe "github.com/poidl/elephancy/frontendserver"
+	api "github.com/poidl/elephancy/restapi/go"
 )
 
 var frontendClientPath = "../frontendclient"

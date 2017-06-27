@@ -23,11 +23,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	jc "mystuff/elephancy/jsoncommon"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	jc "github.com/poidl/elephancy/jsoncommon"
 )
 
 /**

@@ -17,9 +17,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
-	jc "mystuff/elephancy/jsoncommon"
 	"net/http"
 	"strconv"
+
+	jc "github.com/poidl/elephancy/jsoncommon"
 )
 
 type Configuration struct {
@@ -53,7 +54,7 @@ func ListPages(c Configuration, w http.ResponseWriter, r *http.Request) {
 
 // func FindPageByPrettyURL(w http.ResponseWriter, r *http.Request) {
 // 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	datafile := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	datafile := "/home/stefan/programs/go/src/github.com/poidl/elephancy/json/pages.json"
 // 	pages, err := jc.LoadPages(datafile)
 // 	if err != nil {
 // 		log.Fatal(err)
@@ -70,7 +71,7 @@ func ListPages(c Configuration, w http.ResponseWriter, r *http.Request) {
 
 // func FindPageByLinksSelf(w http.ResponseWriter, r *http.Request) {
 // 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	datafile := "/home/stefan/programs/go/src/mystuff/elephancy/json/pages.json"
+// 	datafile := "/home/stefan/programs/go/src/github.com/poidl/elephancy/json/pages.json"
 // 	pages, err := jc.LoadPages(datafile)
 // 	if err != nil {
 // 		log.Fatal(err)
