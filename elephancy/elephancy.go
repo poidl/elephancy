@@ -65,19 +65,6 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, pathFavicon)
 }
 
-func jsonHandler(w http.ResponseWriter, r *http.Request) {
-	m := jsonPath.FindStringSubmatch(r.URL.Path)
-	if m == nil {
-		http.NotFound(w, r)
-		return
-	}
-	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
-}
-
-func filesHandler(w http.ResponseWriter, r *http.Request) {
-	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
-}
-
 func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 
 	// check when template was last modified
@@ -136,32 +123,10 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// // makeFileServerHandler proxies fileserver on backend, provided that
-// // the correct header is set (redirect if not)
-// func makeFileServerHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		ajax := r.Header.Get("myheader")
-// 		if ajax == "XMLHttpRequest" {
-// 			rp.ServeHTTP(w, r)
-// 		} else {
-// 			pages, err := fe.ListPages()
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			}
-// 			page, err := pages.GetPageByLinksSelf(r.URL.Path)
-// 			if err != nil {
-// 				http.NotFound(w, r)
-// 				return
-// 			}
-// 			http.Redirect(w, r, page.Prettyurl, 302)
-// 		}
-// 	}
-// }
-
-// // FileServerNew serves files from the frontend
-// func FileServerNew(w http.ResponseWriter, r *http.Request) {
-// 	http.FileServer(http.Dir("./")).ServeHTTP(w, r)
-// }
+// FileServer serves files from the frontend
+func FileServerHandler(w http.ResponseWriter, r *http.Request) {
+	http.StripPrefix("/files/", http.FileServer(http.Dir("../files/"))).ServeHTTP(w, r)
+}
 
 func makeAPIHandler(rp *httputil.ReverseProxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -192,8 +157,7 @@ func main() {
 	http.HandleFunc("/", makePagesHandler())
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/staticcache/", staticcacheHandler)
-	http.HandleFunc("/json/", jsonHandler)
-	// http.HandleFunc("/fileserver/", makeFileServerHandler(frontendProxy))
+	http.HandleFunc("/files/", FileServerHandler)
 	http.HandleFunc("/api/", makeAPIHandler(frontendProxy))
 	http.ListenAndServe(":8080", nil)
 
