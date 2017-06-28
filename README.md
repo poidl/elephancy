@@ -44,7 +44,7 @@ npm install --save @types/node
 Then run `webpack` to generate the Javascript code
 
 ```
-./webpack
+webpack
 ```
 
 ##### Backend and server-side frontend
