@@ -5,10 +5,6 @@ import { Link } from "./api";
 
 import * as req from "./myrequest";
 
-let host = '127.0.0.1';
-let port = 8080;
-let basepath = '/api';
-
 let api = new Api()
 
 // let pagescontainer: PagesContainer

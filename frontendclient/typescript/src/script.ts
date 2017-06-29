@@ -5,9 +5,6 @@ import { PageVMElements } from "./pagevm";
 
 import * as req from "./myrequest";
 
-let host = '127.0.0.1';
-let port = 8080;
-let basepath = '/api';
 
 let elements: PageVMElements = {
     linkcontainer: <HTMLElement>document.querySelector('.linkcontainer'),
