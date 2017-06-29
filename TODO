@@ -1,8 +1,6 @@
-Backend:
-*) /api/content/ shouldn't be part of the API, that's just a file server with resources
-
 Tests:
 *) non-existing path must return 404
+*) does navigation work if javascript is disabled? browser history? pushState popstate?
 
 Bugs:
 *) If the file to be fingerprinted is not present, the following error message occurs: "update_cache.go:46: Error executing fingerprint in bash"
@@ -21,7 +19,9 @@ Caching:
 *) use templating for static files. Automatically update all links to fingerprinted files (e.g. in frame.html) 
 
 Other:
-*) does navigation work if javascript is disabled? browser history? pushState popstate?
+*) put all resources that have to be uploaded to the server in *one* directory, e.g. 
+    /resources/restapi
+    /resources/frontendclient
 *) Check if directories and/or individual files should be readable. /frontend/staticcache/ /json/pages.json are readable. Is that a problem? Search engines?
 *) check if content header plain text is right in ajaxYesHandler.
 *) check if "304 not modified" is wrongly sent if index.html is modified and / is requested.
