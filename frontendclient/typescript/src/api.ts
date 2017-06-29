@@ -1,7 +1,7 @@
 import * as req from "./myrequest";
 
-let host = '127.0.0.1';
-let port = 8080;
+let host = window.location.hostname;
+let port = window.location.port;
 let basepath = '/api';
 // let basepath = 'http://127.0.0.1:8080/api';
 
