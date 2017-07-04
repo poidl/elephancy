@@ -5,6 +5,17 @@ import { PageVMElements } from "./pagevm";
 
 import * as req from "./myrequest";
 
+function getDescriptionElement(): HTMLMetaElement { 
+   let metas = document.getElementsByTagName('meta'); 
+
+    for (var i=0; i<metas.length; i++) { 
+        if (metas[i].getAttribute("name") == "description") { 
+            return metas[i]; 
+        } 
+    } 
+
+    return null;
+} 
 
 let elements: PageVMElements = {
     linkcontainer: <HTMLElement>document.querySelector('.linkcontainer'),
@@ -13,7 +24,7 @@ let elements: PageVMElements = {
     titlemobile: <HTMLElement>document.querySelector('.title-mobile'),
     mainpanel: <HTMLElement>document.getElementById("mainPanel"),
     metatitle: <HTMLElement>document.getElementById("metatitle"),
-    description: <HTMLMetaElement>document.getElementById("description"),
+    description: getDescriptionElement(),
     topbarmobile: <HTMLElement>document.querySelector(".top-bar-mobile"),
     menubutton: <HTMLElement>document.querySelector(".menubutton"),
 }
