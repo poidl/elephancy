@@ -23,6 +23,7 @@ export interface PageVMElements {
     titlemobile: HTMLElement,
     mainpanel: HTMLElement,
     metatitle: HTMLElement,
+    description: HTMLMetaElement,
     topbarmobile: HTMLElement,
     menubutton: HTMLElement,
 }
@@ -69,8 +70,13 @@ export class PageVM
             let mylinklist = new Mylinklist(this.elements.linklist)
             this.obsPages.subscribe(mylinklist)
 
-            let mypageview = new Mypageview(this.elements.mainpanel, this.elements.metatitle)
+            let mypageview = new Mypageview(
+                this.elements.mainpanel,
+                this.elements.metatitle,
+                this.elements.description
+                )
             this.obsPage.subscribe(mypageview)
+
 
             this.fetchAllPages()
         }
@@ -120,16 +126,19 @@ export class PageVM
         }
     }
 }
+HTMLMetaElement
 
 class Mypageview implements ObserverInterface {
     constructor(
         public content: HTMLElement, 
-        public metatitle: HTMLElement
+        public metatitle: HTMLElement,
+        public description: HTMLMetaElement
         ) { }
     async next(page: Page) {
         let obj = await api.getPageContent(page.id)
         this.content.innerHTML = obj.body
         this.metatitle.innerHTML = page.metatitle
+        this.description.content = page.description
     }
 }
 

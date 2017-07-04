@@ -109,6 +109,7 @@ func makePagesHandler() func(w http.ResponseWriter, r *http.Request) {
 		templdat["Pages"] = pages
 		templdat["Content"] = template.HTML(string(body))
 		templdat["Metatitle"] = page.Metatitle
+		templdat["Description"] = page.Description
 
 		// fill template
 		templ, err := template.ParseFiles(ftemplFingerpr)

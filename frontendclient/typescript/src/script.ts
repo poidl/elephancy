@@ -13,6 +13,7 @@ let elements: PageVMElements = {
     titlemobile: <HTMLElement>document.querySelector('.title-mobile'),
     mainpanel: <HTMLElement>document.getElementById("mainPanel"),
     metatitle: <HTMLElement>document.getElementById("metatitle"),
+    description: <HTMLMetaElement>document.getElementById("description"),
     topbarmobile: <HTMLElement>document.querySelector(".top-bar-mobile"),
     menubutton: <HTMLElement>document.querySelector(".menubutton"),
 }

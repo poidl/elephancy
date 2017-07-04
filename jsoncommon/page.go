@@ -42,4 +42,6 @@ type Page struct {
 	Linkweight string `json:"linkweight,omitempty"`
 
 	Metatitle string `json:"metatitle,omitempty"`
+
+	Description string `json:"description,omitempty"`
 }

@@ -8,7 +8,8 @@
       "prettyurl": "/",
       "linkname": "Linkname1",
       "linkweight": "1",
-      "metatitle": "Metatitle for Page1"
+      "metatitle": "Metatitle of Page1",
+      "description": "Description of Page 1"
     },
     {
       "id": 2,
@@ -19,7 +20,8 @@
       "prettyurl": "/urlpath2",
       "linkname": "Linkname2",
       "linkweight": "2",
-      "metatitle": "Metatitle for Page2"
+      "metatitle": "Metatitle of Page2",
+      "description": "Description of Page 2"
     },
     {
       "id": 3,
@@ -30,6 +32,7 @@
       "prettyurl": "/urlpath3",
       "linkname": "Linkname3",
       "linkweight": "3",
-      "metatitle": "Metatitle for Page3"
+      "metatitle": "Metatitle of Page3",
+      "description": "Description of Page 3"
     }
 ]
