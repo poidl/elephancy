@@ -23,6 +23,7 @@ interface PageRaw {
     'linkname': string;
     'linkweight': string;
     'metatitle': string;
+    'description': string;
 }
 
 
@@ -33,7 +34,7 @@ export class Page {
     'linkname': string;
     'linkweight': string;
     'metatitle': string;
-    [key: string]: any;
+    'description': string;
 }
 
 export class PagesContainer {
@@ -43,7 +44,7 @@ export class PagesContainer {
     constructor(pages: Pages) {
         this.pages = pages
     }
-    findPageByKeyValue = function (this: PagesContainer, key: string, value: any): Page {
+    findPageByKeyValue = function (this: PagesContainer, key: keyof Page, value: any): Page {
         let p = this.pages.filter(function (p: Page) {
             return p[key] === value
         })

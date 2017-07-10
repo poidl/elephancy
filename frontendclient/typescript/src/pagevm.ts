@@ -126,7 +126,6 @@ export class PageVM
         }
     }
 }
-HTMLMetaElement
 
 class Mypageview implements ObserverInterface {
     constructor(
