@@ -189,4 +189,88 @@ body {
 }
 
 
+.teaser {
+}
+
+.teaser ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.teaser .teaseritem {
+    background-color: #E0E0E0;
+    /*display: flex;*/
+    min-height: 90px;
+    padding: 10px 10px;
+    margin: 3px;
+}
+
+
+.teaser .imagecontainer {
+    float: left;
+    min-height: 90px;
+    max-height: 90px;
+    min-width: 120px;
+    max-width: 120px;
+    display: inline-flex;
+    justify-content: center;
+    vertical-align: middle;
+    padding: 0 20px 20px 0;
+}
+
+.teaser .lines {
+  display: none
+}
+
+.teaser .linesmobile {
+  width: 100%;
+  max-height: 100px;
+  display: inline-block;
+}
+
+.teaser ul li .image {
+    float: left;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+
+.teaser .header {
+    vertical-align: middle;
+    margin: 0px;
+}
+
+@media (min-width: 950px) {
+    .teaser .header {
+        min-height: 90px;
+        /*flex-grow: 1;*/
+        /*flex-wrap: wrap;*/
+        display: flex;
+        align-items: center;
+        /*text-align: center;*/
+        /*vertical-align: middle;*/
+        padding: 0 50px;
+        margin: 0px;
+    }
+
+    .teaser .teaseritem {
+        padding: 3px 20px;
+    }
+
+    .teaser .imagecontainer {
+        padding: 0 20px 0px 0;
+    }
+
+    .teaser .lines {
+      width: 100%;
+      display: inline-block
+    }
+
+    .teaser .linesmobile {
+      display: none
+    }
+}
+
+
+
 

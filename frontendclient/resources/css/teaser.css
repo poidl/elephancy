@@ -6,7 +6,7 @@
     padding: 0;
 }
 
-.teaser .contributionitem {
+.teaser .teaseritem {
     background-color: #E0E0E0;
     /*display: flex;*/
     min-height: 90px;
@@ -52,7 +52,7 @@
         margin: 0px;
     }
 
-    .teaser .contributionitem {
+    .teaser .teaseritem {
         padding: 3px 20px;
 
     }
