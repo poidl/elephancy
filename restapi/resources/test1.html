@@ -1,55 +1,38 @@
+<script>
+    contribs = [
+        {
+        "href": "files/grids/index.html",
+        "pic": "files/teasermockup/plot.png",
+        "pic_title": "Boundaries of a rotated numerical grid aligning with the Southern Californian Bight.",
+        "pic_alt": "Boundaries of a rotated numerical grid on a map.",
+        "header" : "Generation of rotated grids for numerical ocean models. Does the projection matter?" 
+        },
+        {
+        "href": "files/awsroms/index.html",
+        "pic": "files/teasermockup/plot.png",
+        "pic_title": "Scaling of AWS EC2 clusters for numerical ocean modelling.",
+        "pic_alt": "Execution time of benchmark test for ROMS, as a function of the number of processors.",
+        "header" : "Notes on running the ROMS ocean model on Amazon Web Services (AWS)"
+        },
+        {
+        "href": "files/proposal_mfund/main.html",
+        "pic": "files/teasermockup/plot.png",
+        "pic_title": "Sketch of a network topology for cloud-based scientiﬁc computing.",
+        "pic_alt": "Sketch of a network topology for cloud-based scientiﬁc computing.",
+        "header" : "A proposal for a feasibility study of cloud-based infrastructure services specifically for ocean modellers."
+        },
+
+    ]
+</script>   
+
 <p> The case of orthogonal curvilinear coordinates occurs frequently in applications.
 Content1
     Cont ent1 
     Cont ent1 
     Cont ent1
 
-<div id="teaser" class="teaser">
-    <!--<img src="/files/teasermockup.png" alt="">-->
-    <ul>
-        <li>
-            <div class="teaseritem">
-                <div class="imagecontainer">
-                <img class="image" src="files/teasermockup/plot.png" title="Loading" alt="Failed loading">
-                </div>
-                    <span class="header"> 
-                        <!--<div class="imagecontainer2">-->
-                            <img class="lines" src="files/teasermockup/lines.png" title="Loading" alt="Failed loading">
-                            <img class="linesmobile" src="files/teasermockup/lines_mobile.png" title="Loading" alt="Failed loading">
-                        <!--</div>-->
-                    </span>
-            </div>
-        </li>
-        <li>
-            <div class="teaseritem">
-                <div class="imagecontainer">
-                <img class="image" src="files/teasermockup/plot.png" title="Loading" alt="Failed loading">
-                </div>
-                    <p class="header"> 
-                        <!--<div class="imagecontainer2">-->
-                            <img class="lines" src="files/teasermockup/lines.png" title="Loading" alt="Failed loading">
-                            <img class="linesmobile" src="files/teasermockup/lines_mobile.png" title="Loading" alt="Failed loading">
-                        <!--</div>-->
-                    </p>
-            </div>
-        </li>
-        <li>
-            <div class="teaseritem">
-                <div class="imagecontainer">
-                <img class="image" src="files/teasermockup/plot.png" title="Loading" alt="Failed loading">
-                </div>
-                    <p class="header"> 
-                        <!--<div class="imagecontainer2">-->
-                            <img class="lines" src="files/teasermockup/lines.png" title="Loading" alt="Failed loading">
-                            <img class="linesmobile" src="files/teasermockup/lines_mobile.png" title="Loading" alt="Failed loading">
-                        <!--</div>-->
-                    </p>
-            </div>
-        </li>
-
-    </ul>
-</div>
-
+     
+<div id="teaser" class="teaser"></div>
 
     Cont ent1 
     Cont ent1 
@@ -111,3 +94,44 @@ Content1
 <p> Content1 </p>
 <p> Content1 </p>
 
+<script>   
+    function build_teaser(arr) {
+        ul = document.createElement('ul')
+        for (var i = 0; i < arr.length; i++){
+
+            item = arr[i]
+            a = document.createElement('a')
+            a.href=item.href
+            li = document.createElement('li')
+            div = document.createElement('div')
+            div.className += "teaseritem"
+            div2 = document.createElement('div')
+            div2.className += "imagecontainer"
+            img = document.createElement('img')
+            img.className += "image"
+            img.src = item.pic
+            img.title = item.pic_title
+            img.alt = item.pic_alt
+            span = document.createElement('span')
+            span.className += "header"
+            
+            t = document.createTextNode(item.header)
+            
+            ul.appendChild(a)
+            a.appendChild(li)
+            li.appendChild(div)
+            div.appendChild(div2)
+            div2.appendChild(img)
+            div.appendChild(span)
+            span.appendChild(t)
+
+        }
+        teaser = document.getElementById('teaser')
+        teaser.appendChild(ul)
+
+    }
+    load = function()  {
+        build_teaser(contribs)
+    }
+    window.addEventListener('load', load, false);
+</script>
